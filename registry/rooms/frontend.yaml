@@ -1,0 +1,763 @@
+room: frontend
+name: "Frontend"
+description: "Aprenda HTML, CSS, DOM, Browser APIs, performance, acessibilidade e arquitetura de interfaces modernas que todo desenvolvedor frontend precisa dominar."
+icon: "monitor"
+order: 2
+
+categories:
+
+  - slug: "fundamentos-web"
+    name: "Fundamentos Web"
+    order: 1
+    topics:
+      - slug: "http-https"
+        title: "HTTP/HTTPS"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["protocolo", "comunicacao", "seguranca"]
+
+      - slug: "http-methods"
+        title: "HTTP Methods (GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD)"
+        difficulty: beginner
+        order: 2
+        prerequisites: ["http-https"]
+        tags: ["verbos", "crud", "semantica"]
+
+      - slug: "http-status-codes"
+        title: "HTTP Status Codes"
+        difficulty: beginner
+        order: 3
+        prerequisites: ["http-https"]
+        tags: ["resposta", "erro", "sucesso"]
+
+      - slug: "http-headers"
+        title: "HTTP Headers"
+        difficulty: beginner
+        order: 4
+        prerequisites: ["http-https"]
+        tags: ["metadata", "content-type", "autorizacao"]
+
+      - slug: "cookies"
+        title: "Cookies"
+        difficulty: beginner
+        order: 5
+        prerequisites: ["http-https"]
+        tags: ["armazenamento", "sessao", "autenticacao"]
+
+      - slug: "sessions"
+        title: "Sessions"
+        difficulty: beginner
+        order: 6
+        prerequisites: ["cookies"]
+        tags: ["estado", "servidor", "autenticacao"]
+
+      - slug: "local-storage"
+        title: "Local Storage"
+        difficulty: beginner
+        order: 7
+        prerequisites: ["http-https"]
+        tags: ["armazenamento", "browser", "persistencia"]
+
+      - slug: "session-storage"
+        title: "Session Storage"
+        difficulty: beginner
+        order: 8
+        prerequisites: ["local-storage"]
+        tags: ["armazenamento", "temporario", "aba"]
+
+      - slug: "indexeddb"
+        title: "IndexedDB"
+        difficulty: intermediate
+        order: 9
+        prerequisites: ["local-storage"]
+        tags: ["banco-de-dados", "browser", "offline"]
+
+      - slug: "cache-api"
+        title: "Cache API"
+        difficulty: intermediate
+        order: 10
+        prerequisites: ["http-https"]
+        tags: ["cache", "offline", "performance"]
+
+      - slug: "service-workers"
+        title: "Service Workers"
+        difficulty: intermediate
+        order: 11
+        prerequisites: ["cache-api", "http-https"]
+        tags: ["offline", "background", "proxy"]
+
+      - slug: "web-workers"
+        title: "Web Workers"
+        difficulty: intermediate
+        order: 12
+        prerequisites: ["event-loop"]
+        tags: ["thread", "background", "performance"]
+
+      - slug: "websockets"
+        title: "WebSockets"
+        difficulty: intermediate
+        order: 13
+        prerequisites: ["http-https"]
+        tags: ["tempo-real", "bidirecional", "conexao-persistente"]
+
+      - slug: "server-sent-events"
+        title: "Server-Sent Events (SSE)"
+        difficulty: intermediate
+        order: 14
+        prerequisites: ["http-https"]
+        tags: ["tempo-real", "unidirecional", "stream"]
+
+      - slug: "webrtc"
+        title: "WebRTC"
+        difficulty: advanced
+        order: 15
+        prerequisites: ["websockets"]
+        tags: ["peer-to-peer", "video", "audio"]
+
+      - slug: "cors"
+        title: "CORS"
+        difficulty: intermediate
+        order: 16
+        prerequisites: ["http-https", "same-origin-policy"]
+        tags: ["seguranca", "cross-origin", "headers"]
+
+      - slug: "csrf"
+        title: "CSRF"
+        difficulty: intermediate
+        order: 17
+        prerequisites: ["cookies", "http-methods"]
+        tags: ["seguranca", "ataque", "token"]
+
+      - slug: "xss"
+        title: "XSS"
+        difficulty: intermediate
+        order: 18
+        prerequisites: ["dom-manipulation"]
+        tags: ["seguranca", "ataque", "sanitizacao"]
+
+      - slug: "content-security-policy"
+        title: "Content Security Policy (CSP)"
+        difficulty: intermediate
+        order: 19
+        prerequisites: ["xss", "http-headers"]
+        tags: ["seguranca", "headers", "protecao"]
+
+      - slug: "same-origin-policy"
+        title: "Same-Origin Policy"
+        difficulty: intermediate
+        order: 20
+        prerequisites: ["http-https"]
+        tags: ["seguranca", "browser", "isolamento"]
+
+      - slug: "subresource-integrity"
+        title: "Subresource Integrity"
+        difficulty: intermediate
+        order: 21
+        prerequisites: ["http-https"]
+        tags: ["seguranca", "hash", "cdn"]
+
+  - slug: "dom-e-browser-apis"
+    name: "DOM e Browser APIs"
+    order: 2
+    topics:
+      - slug: "dom-manipulation"
+        title: "DOM Manipulation"
+        difficulty: beginner
+        order: 1
+        prerequisites: ["semantic-html"]
+        tags: ["selecao", "modificacao", "elementos"]
+
+      - slug: "event-loop"
+        title: "Event Loop"
+        difficulty: intermediate
+        order: 2
+        prerequisites: []
+        tags: ["assincrono", "call-stack", "task-queue"]
+
+      - slug: "event-bubbling-e-capturing"
+        title: "Event Bubbling e Capturing"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["dom-manipulation"]
+        tags: ["propagacao", "eventos", "fases"]
+
+      - slug: "event-delegation"
+        title: "Event Delegation"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["event-bubbling-e-capturing"]
+        tags: ["performance", "eventos", "delegacao"]
+
+      - slug: "virtual-dom"
+        title: "Virtual DOM (Conceito)"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["dom-manipulation"]
+        tags: ["diff", "reconciliacao", "performance"]
+
+      - slug: "shadow-dom"
+        title: "Shadow DOM"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["dom-manipulation"]
+        tags: ["encapsulamento", "web-components", "estilo"]
+
+      - slug: "custom-elements"
+        title: "Custom Elements"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["shadow-dom"]
+        tags: ["web-components", "registro", "lifecycle"]
+
+      - slug: "html-templates"
+        title: "HTML Templates"
+        difficulty: intermediate
+        order: 8
+        prerequisites: ["dom-manipulation"]
+        tags: ["template", "slot", "reutilizacao"]
+
+      - slug: "mutation-observer"
+        title: "Mutation Observer"
+        difficulty: intermediate
+        order: 9
+        prerequisites: ["dom-manipulation"]
+        tags: ["observacao", "mudancas", "dom"]
+
+      - slug: "intersection-observer"
+        title: "Intersection Observer"
+        difficulty: intermediate
+        order: 10
+        prerequisites: ["dom-manipulation"]
+        tags: ["visibilidade", "lazy-loading", "scroll"]
+
+      - slug: "resize-observer"
+        title: "Resize Observer"
+        difficulty: intermediate
+        order: 11
+        prerequisites: ["dom-manipulation"]
+        tags: ["dimensoes", "responsivo", "observacao"]
+
+      - slug: "performance-observer"
+        title: "Performance Observer"
+        difficulty: advanced
+        order: 12
+        prerequisites: ["web-vitals"]
+        tags: ["metricas", "monitoramento", "performance"]
+
+      - slug: "navigation-timing-api"
+        title: "Navigation Timing API"
+        difficulty: advanced
+        order: 13
+        prerequisites: ["performance-observer"]
+        tags: ["navegacao", "metricas", "carregamento"]
+
+      - slug: "resource-timing-api"
+        title: "Resource Timing API"
+        difficulty: advanced
+        order: 14
+        prerequisites: ["performance-observer"]
+        tags: ["recursos", "metricas", "rede"]
+
+      - slug: "user-timing-api"
+        title: "User Timing API"
+        difficulty: advanced
+        order: 15
+        prerequisites: ["performance-observer"]
+        tags: ["custom", "metricas", "marcacao"]
+
+  - slug: "css-fundamentals"
+    name: "CSS Fundamentals"
+    order: 3
+    topics:
+      - slug: "box-model"
+        title: "Box Model"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["margin", "padding", "border", "content"]
+
+      - slug: "flexbox"
+        title: "Flexbox"
+        difficulty: beginner
+        order: 2
+        prerequisites: ["box-model"]
+        tags: ["layout", "alinhamento", "unidimensional"]
+
+      - slug: "grid"
+        title: "Grid"
+        difficulty: beginner
+        order: 3
+        prerequisites: ["box-model"]
+        tags: ["layout", "bidimensional", "areas"]
+
+      - slug: "positioning"
+        title: "Positioning (Static, Relative, Absolute, Fixed, Sticky)"
+        difficulty: beginner
+        order: 4
+        prerequisites: ["box-model"]
+        tags: ["posicao", "fluxo", "empilhamento"]
+
+      - slug: "stacking-context"
+        title: "Stacking Context"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["positioning"]
+        tags: ["z-index", "camadas", "sobreposicao"]
+
+      - slug: "block-formatting-context"
+        title: "Block Formatting Context (BFC)"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["box-model"]
+        tags: ["layout", "colapso-margem", "contencao"]
+
+      - slug: "css-specificity"
+        title: "CSS Specificity"
+        difficulty: beginner
+        order: 7
+        prerequisites: []
+        tags: ["seletores", "prioridade", "peso"]
+
+      - slug: "cascade"
+        title: "Cascade"
+        difficulty: beginner
+        order: 8
+        prerequisites: ["css-specificity"]
+        tags: ["ordem", "origem", "importancia"]
+
+      - slug: "inheritance"
+        title: "Inheritance"
+        difficulty: beginner
+        order: 9
+        prerequisites: ["cascade"]
+        tags: ["heranca", "propriedades", "inherit"]
+
+      - slug: "css-variables"
+        title: "CSS Variables (Custom Properties)"
+        difficulty: beginner
+        order: 10
+        prerequisites: ["cascade"]
+        tags: ["variaveis", "temas", "reutilizacao"]
+
+      - slug: "css-animations"
+        title: "CSS Animations"
+        difficulty: intermediate
+        order: 11
+        prerequisites: ["css-variables"]
+        tags: ["keyframes", "animacao", "timing"]
+
+      - slug: "css-transitions"
+        title: "CSS Transitions"
+        difficulty: beginner
+        order: 12
+        prerequisites: ["box-model"]
+        tags: ["transicao", "easing", "hover"]
+
+      - slug: "transform"
+        title: "Transform"
+        difficulty: intermediate
+        order: 13
+        prerequisites: ["box-model"]
+        tags: ["translate", "rotate", "scale", "skew"]
+
+      - slug: "media-queries"
+        title: "Media Queries"
+        difficulty: beginner
+        order: 14
+        prerequisites: ["box-model"]
+        tags: ["responsivo", "breakpoints", "adaptacao"]
+
+      - slug: "container-queries"
+        title: "Container Queries"
+        difficulty: intermediate
+        order: 15
+        prerequisites: ["media-queries"]
+        tags: ["componente", "responsivo", "container"]
+
+      - slug: "css-methodologies"
+        title: "CSS Methodologies (BEM, SMACSS, OOCSS, ITCSS)"
+        difficulty: intermediate
+        order: 16
+        prerequisites: ["css-specificity", "cascade"]
+        tags: ["organizacao", "nomenclatura", "escalabilidade"]
+
+      - slug: "critical-css"
+        title: "Critical CSS"
+        difficulty: advanced
+        order: 17
+        prerequisites: ["css-methodologies", "critical-rendering-path"]
+        tags: ["performance", "above-the-fold", "inline"]
+
+      - slug: "css-in-js"
+        title: "CSS-in-JS (Conceito)"
+        difficulty: intermediate
+        order: 18
+        prerequisites: ["css-variables"]
+        tags: ["runtime", "scoped", "dinamico"]
+
+  - slug: "performance-frontend"
+    name: "Performance Frontend"
+    order: 4
+    topics:
+      - slug: "critical-rendering-path"
+        title: "Critical Rendering Path"
+        difficulty: intermediate
+        order: 1
+        prerequisites: ["dom-manipulation", "css-specificity"]
+        tags: ["renderizacao", "dom", "cssom"]
+
+      - slug: "reflow-e-repaint"
+        title: "Reflow e Repaint"
+        difficulty: intermediate
+        order: 2
+        prerequisites: ["critical-rendering-path"]
+        tags: ["layout", "pintura", "performance"]
+
+      - slug: "composite-layers"
+        title: "Composite Layers"
+        difficulty: advanced
+        order: 3
+        prerequisites: ["reflow-e-repaint"]
+        tags: ["gpu", "camadas", "composicao"]
+
+      - slug: "layout-thrashing"
+        title: "Layout Thrashing"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["reflow-e-repaint"]
+        tags: ["forced-reflow", "leitura-escrita", "batch"]
+
+      - slug: "code-splitting"
+        title: "Code Splitting"
+        difficulty: intermediate
+        order: 5
+        prerequisites: []
+        tags: ["bundle", "chunks", "carregamento"]
+
+      - slug: "tree-shaking"
+        title: "Tree Shaking"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["code-splitting"]
+        tags: ["dead-code", "eliminacao", "bundle"]
+
+      - slug: "lazy-loading"
+        title: "Lazy Loading"
+        difficulty: beginner
+        order: 7
+        prerequisites: ["intersection-observer"]
+        tags: ["sob-demanda", "imagens", "componentes"]
+
+      - slug: "prefetching"
+        title: "Prefetching"
+        difficulty: intermediate
+        order: 8
+        prerequisites: ["lazy-loading"]
+        tags: ["antecipacao", "navegacao", "recursos"]
+
+      - slug: "preloading"
+        title: "Preloading"
+        difficulty: intermediate
+        order: 9
+        prerequisites: ["http-https"]
+        tags: ["prioridade", "recursos-criticos", "hints"]
+
+      - slug: "resource-hints"
+        title: "Resource Hints (dns-prefetch, preconnect)"
+        difficulty: intermediate
+        order: 10
+        prerequisites: ["preloading"]
+        tags: ["dns", "conexao", "antecipacao"]
+
+      - slug: "image-optimization"
+        title: "Image Optimization"
+        difficulty: beginner
+        order: 11
+        prerequisites: []
+        tags: ["formatos", "compressao", "responsivo"]
+
+      - slug: "font-loading-strategies"
+        title: "Font Loading Strategies"
+        difficulty: intermediate
+        order: 12
+        prerequisites: ["critical-rendering-path"]
+        tags: ["fout", "foit", "swap"]
+
+      - slug: "debouncing-e-throttling"
+        title: "Debouncing e Throttling"
+        difficulty: intermediate
+        order: 13
+        prerequisites: ["event-loop"]
+        tags: ["otimizacao", "eventos", "frequencia"]
+
+      - slug: "memoization-frontend"
+        title: "Memoization"
+        difficulty: intermediate
+        order: 14
+        prerequisites: ["pure-functions"]
+        tags: ["cache", "resultado", "performance"]
+
+      - slug: "web-vitals"
+        title: "Web Vitals (LCP, FID, CLS, TTFB, INP)"
+        difficulty: intermediate
+        order: 15
+        prerequisites: ["critical-rendering-path"]
+        tags: ["metricas", "ux", "core-web-vitals"]
+
+      - slug: "lighthouse-metrics"
+        title: "Lighthouse Metrics"
+        difficulty: beginner
+        order: 16
+        prerequisites: ["web-vitals"]
+        tags: ["auditoria", "pontuacao", "recomendacoes"]
+
+      - slug: "bundle-analysis"
+        title: "Bundle Analysis"
+        difficulty: intermediate
+        order: 17
+        prerequisites: ["code-splitting", "tree-shaking"]
+        tags: ["tamanho", "dependencias", "visualizacao"]
+
+      - slug: "minification"
+        title: "Minification"
+        difficulty: beginner
+        order: 18
+        prerequisites: []
+        tags: ["tamanho", "producao", "otimizacao"]
+
+      - slug: "compression"
+        title: "Compression (gzip, brotli)"
+        difficulty: beginner
+        order: 19
+        prerequisites: ["http-headers"]
+        tags: ["tamanho", "transferencia", "encoding"]
+
+  - slug: "acessibilidade"
+    name: "Acessibilidade"
+    order: 5
+    topics:
+      - slug: "wcag-guidelines"
+        title: "WCAG Guidelines"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["padrao", "niveis", "conformidade"]
+
+      - slug: "aria-attributes"
+        title: "ARIA Attributes"
+        difficulty: intermediate
+        order: 2
+        prerequisites: ["semantic-html"]
+        tags: ["roles", "states", "properties"]
+
+      - slug: "semantic-html"
+        title: "Semantic HTML"
+        difficulty: beginner
+        order: 3
+        prerequisites: []
+        tags: ["significado", "estrutura", "acessibilidade"]
+
+      - slug: "keyboard-navigation"
+        title: "Keyboard Navigation"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["semantic-html"]
+        tags: ["tab", "foco", "atalhos"]
+
+      - slug: "screen-readers"
+        title: "Screen Readers"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["aria-attributes"]
+        tags: ["leitor-tela", "anuncio", "navegacao"]
+
+      - slug: "focus-management"
+        title: "Focus Management"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["keyboard-navigation"]
+        tags: ["foco", "trap", "restauracao"]
+
+      - slug: "color-contrast"
+        title: "Color Contrast"
+        difficulty: beginner
+        order: 7
+        prerequisites: ["wcag-guidelines"]
+        tags: ["contraste", "ratio", "legibilidade"]
+
+      - slug: "alt-text"
+        title: "Alt Text"
+        difficulty: beginner
+        order: 8
+        prerequisites: ["semantic-html"]
+        tags: ["imagens", "descricao", "contexto"]
+
+      - slug: "skip-links"
+        title: "Skip Links"
+        difficulty: beginner
+        order: 9
+        prerequisites: ["keyboard-navigation"]
+        tags: ["navegacao", "atalho", "conteudo-principal"]
+
+  - slug: "arquitetura-frontend"
+    name: "Arquitetura Frontend"
+    order: 6
+    topics:
+      - slug: "component-based-architecture"
+        title: "Component-Based Architecture"
+        difficulty: intermediate
+        order: 1
+        prerequisites: []
+        tags: ["componentes", "reutilizacao", "modularidade"]
+
+      - slug: "atomic-design"
+        title: "Atomic Design"
+        difficulty: intermediate
+        order: 2
+        prerequisites: ["component-based-architecture"]
+        tags: ["atomos", "moleculas", "organismos"]
+
+      - slug: "container-presentational"
+        title: "Container/Presentational Pattern"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["component-based-architecture"]
+        tags: ["separacao", "logica", "apresentacao"]
+
+      - slug: "compound-components"
+        title: "Compound Components"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["component-based-architecture"]
+        tags: ["composicao", "contexto", "flexibilidade"]
+
+      - slug: "render-props"
+        title: "Render Props"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["component-based-architecture", "higher-order-functions"]
+        tags: ["compartilhamento", "logica", "funcao"]
+
+      - slug: "higher-order-components"
+        title: "Higher-Order Components (HOC)"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["component-based-architecture", "higher-order-functions"]
+        tags: ["wrapper", "reutilizacao", "composicao"]
+
+      - slug: "composition-vs-inheritance"
+        title: "Composition vs Inheritance"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["component-based-architecture"]
+        tags: ["design", "flexibilidade", "reutilizacao"]
+
+      - slug: "state-management-patterns"
+        title: "State Management Patterns"
+        difficulty: intermediate
+        order: 8
+        prerequisites: ["component-based-architecture"]
+        tags: ["estado", "global", "local"]
+
+      - slug: "flux-architecture"
+        title: "Flux Architecture"
+        difficulty: intermediate
+        order: 9
+        prerequisites: ["state-management-patterns"]
+        tags: ["unidirecional", "actions", "store"]
+
+      - slug: "mvc-mvp-mvvm"
+        title: "MVC/MVP/MVVM (Conceitos)"
+        difficulty: intermediate
+        order: 10
+        prerequisites: ["component-based-architecture"]
+        tags: ["padrao", "separacao", "camadas"]
+
+      - slug: "micro-frontends"
+        title: "Micro Frontends"
+        difficulty: advanced
+        order: 11
+        prerequisites: ["component-based-architecture"]
+        tags: ["independencia", "deploy", "equipes"]
+
+      - slug: "module-federation"
+        title: "Module Federation"
+        difficulty: advanced
+        order: 12
+        prerequisites: ["micro-frontends", "code-splitting"]
+        tags: ["compartilhamento", "runtime", "modulos"]
+
+  - slug: "design-systems"
+    name: "Design Systems"
+    order: 7
+    topics:
+      - slug: "design-tokens"
+        title: "Design Tokens"
+        difficulty: intermediate
+        order: 1
+        prerequisites: ["css-variables"]
+        tags: ["variaveis", "padronizacao", "temas"]
+
+      - slug: "component-library"
+        title: "Component Library"
+        difficulty: intermediate
+        order: 2
+        prerequisites: ["component-based-architecture", "design-tokens"]
+        tags: ["biblioteca", "reutilizacao", "documentacao"]
+
+      - slug: "style-guide"
+        title: "Style Guide"
+        difficulty: beginner
+        order: 3
+        prerequisites: ["design-tokens"]
+        tags: ["diretrizes", "visual", "consistencia"]
+
+      - slug: "pattern-library"
+        title: "Pattern Library"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["component-library"]
+        tags: ["padroes", "ux", "templates"]
+
+      - slug: "design-principles"
+        title: "Design Principles"
+        difficulty: beginner
+        order: 5
+        prerequisites: []
+        tags: ["fundamentos", "visual", "decisoes"]
+
+      - slug: "typography-scale"
+        title: "Typography Scale"
+        difficulty: beginner
+        order: 6
+        prerequisites: ["design-tokens"]
+        tags: ["tipografia", "escala", "legibilidade"]
+
+      - slug: "color-systems"
+        title: "Color Systems"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["design-tokens"]
+        tags: ["paleta", "temas", "acessibilidade"]
+
+      - slug: "spacing-systems"
+        title: "Spacing Systems"
+        difficulty: beginner
+        order: 8
+        prerequisites: ["design-tokens"]
+        tags: ["espacamento", "grid", "consistencia"]
+
+      - slug: "iconography"
+        title: "Iconography"
+        difficulty: beginner
+        order: 9
+        prerequisites: ["design-principles"]
+        tags: ["icones", "svg", "sistema"]
+
+      - slug: "design-documentation"
+        title: "Documentation"
+        difficulty: intermediate
+        order: 10
+        prerequisites: ["component-library"]
+        tags: ["documentacao", "storybook", "exemplos"]

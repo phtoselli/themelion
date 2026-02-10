@@ -1,0 +1,461 @@
+room: fundamentos
+name: "Fundamentos da Computação e Algoritmos"
+description: "Aprenda as estruturas de dados (arrays, listas, árvores, grafos), algoritmos fundamentais (busca, ordenação, recursão, programação dinâmica) e conceitos essenciais de linguagens que todo desenvolvedor precisa dominar."
+icon: "brain"
+order: 1
+
+categories:
+
+  - slug: "estruturas-de-dados"
+    name: "Estruturas de Dados"
+    order: 1
+    topics:
+      - slug: "arrays"
+        title: "Arrays e Strings"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["performance", "busca", "indice"]
+
+      - slug: "linked-lists"
+        title: "Linked Lists"
+        difficulty: beginner
+        order: 2
+        prerequisites: ["arrays"]
+        tags: ["ponteiros", "alocacao-dinamica", "no"]
+
+      - slug: "stacks"
+        title: "Stacks (Pilhas)"
+        difficulty: beginner
+        order: 3
+        prerequisites: ["arrays", "linked-lists"]
+        tags: ["lifo", "recursao", "undo"]
+
+      - slug: "queues"
+        title: "Queues (Filas) e Deques"
+        difficulty: beginner
+        order: 4
+        prerequisites: ["arrays", "linked-lists"]
+        tags: ["fifo", "bfs", "processamento"]
+
+      - slug: "hash-tables"
+        title: "Hash Tables / Hash Maps"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["arrays"]
+        tags: ["hashing", "colisoes", "lookup"]
+
+      - slug: "sets"
+        title: "Sets"
+        difficulty: beginner
+        order: 6
+        prerequisites: ["hash-tables"]
+        tags: ["unicidade", "operacoes-conjunto"]
+
+      - slug: "trees"
+        title: "Trees (Árvore Binária, BST, AVL, Red-Black)"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["linked-lists", "recursao-e-backtracking"]
+        tags: ["hierarquia", "busca", "balanceamento"]
+
+      - slug: "heaps"
+        title: "Heaps (Min-Heap, Max-Heap)"
+        difficulty: intermediate
+        order: 8
+        prerequisites: ["trees", "arrays"]
+        tags: ["priority-queue", "ordenacao"]
+
+      - slug: "graphs"
+        title: "Graphs (Grafos Dirigidos e Não-Dirigidos)"
+        difficulty: intermediate
+        order: 9
+        prerequisites: ["trees", "hash-tables"]
+        tags: ["bfs", "dfs", "caminhos"]
+
+      - slug: "tries"
+        title: "Tries"
+        difficulty: intermediate
+        order: 10
+        prerequisites: ["trees", "hash-tables"]
+        tags: ["prefixos", "autocompletar", "strings"]
+
+      - slug: "union-find"
+        title: "Union-Find (Disjoint Set)"
+        difficulty: advanced
+        order: 11
+        prerequisites: ["graphs", "trees"]
+        tags: ["conectividade", "componentes"]
+
+  - slug: "algoritmos"
+    name: "Algoritmos Fundamentais"
+    order: 2
+    topics:
+      - slug: "busca-linear-e-binaria"
+        title: "Busca Linear e Binária"
+        difficulty: beginner
+        order: 1
+        prerequisites: ["arrays"]
+        tags: ["busca", "performance", "ordenacao"]
+
+      - slug: "ordenacao"
+        title: "Ordenação (Bubble, Selection, Insertion, Merge, Quick, Heap, Counting, Radix)"
+        difficulty: intermediate
+        order: 2
+        prerequisites: ["arrays", "big-o-notation"]
+        tags: ["sorting", "performance", "comparacao"]
+
+      - slug: "recursao-e-backtracking"
+        title: "Recursão e Backtracking"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["stacks"]
+        tags: ["chamada-recursiva", "base-case", "exploracao"]
+
+      - slug: "dividir-e-conquistar"
+        title: "Dividir e Conquistar"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["recursao-e-backtracking"]
+        tags: ["subproblemas", "merge", "performance"]
+
+      - slug: "programacao-dinamica"
+        title: "Programação Dinâmica"
+        difficulty: advanced
+        order: 5
+        prerequisites: ["recursao-e-backtracking", "big-o-notation"]
+        tags: ["memoization", "tabulation", "otimizacao"]
+
+      - slug: "algoritmos-gulosos"
+        title: "Algoritmos Gulosos (Greedy)"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["big-o-notation"]
+        tags: ["otimizacao-local", "escolha-gulosa"]
+
+      - slug: "two-pointers"
+        title: "Two Pointers"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["arrays", "busca-linear-e-binaria"]
+        tags: ["otimizacao", "arrays-ordenados"]
+
+      - slug: "sliding-window"
+        title: "Sliding Window"
+        difficulty: intermediate
+        order: 8
+        prerequisites: ["arrays", "two-pointers"]
+        tags: ["subarrays", "otimizacao", "janela"]
+
+      - slug: "bfs"
+        title: "BFS (Breadth-First Search)"
+        difficulty: intermediate
+        order: 9
+        prerequisites: ["graphs", "queues"]
+        tags: ["busca-em-largura", "caminho-curto", "nivel"]
+
+      - slug: "dfs"
+        title: "DFS (Depth-First Search)"
+        difficulty: intermediate
+        order: 10
+        prerequisites: ["graphs", "stacks", "recursao-e-backtracking"]
+        tags: ["busca-em-profundidade", "exploracao"]
+
+      - slug: "dijkstra"
+        title: "Dijkstra"
+        difficulty: advanced
+        order: 11
+        prerequisites: ["graphs", "heaps", "bfs"]
+        tags: ["caminho-minimo", "peso", "grafo-ponderado"]
+
+      - slug: "bellman-ford"
+        title: "Bellman-Ford"
+        difficulty: advanced
+        order: 12
+        prerequisites: ["graphs", "dijkstra"]
+        tags: ["caminho-minimo", "arestas-negativas"]
+
+      - slug: "floyd-warshall"
+        title: "Floyd-Warshall"
+        difficulty: advanced
+        order: 13
+        prerequisites: ["graphs", "programacao-dinamica"]
+        tags: ["todos-os-caminhos", "matriz"]
+
+      - slug: "kruskal-e-prim"
+        title: "Kruskal e Prim (MST)"
+        difficulty: advanced
+        order: 14
+        prerequisites: ["graphs", "union-find", "heaps"]
+        tags: ["arvore-geradora-minima", "greedy"]
+
+      - slug: "topological-sort"
+        title: "Topological Sort"
+        difficulty: advanced
+        order: 15
+        prerequisites: ["graphs", "dfs"]
+        tags: ["dag", "dependencias", "ordenacao"]
+
+      - slug: "string-matching"
+        title: "String Matching (KMP, Rabin-Karp)"
+        difficulty: advanced
+        order: 16
+        prerequisites: ["arrays", "hash-tables"]
+        tags: ["busca-de-padrao", "texto"]
+
+  - slug: "complexidade"
+    name: "Complexidade e Análise"
+    order: 3
+    topics:
+      - slug: "big-o-notation"
+        title: "Big O Notation"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["performance", "analise", "tempo"]
+
+      - slug: "big-theta-e-big-omega"
+        title: "Big Theta e Big Omega"
+        difficulty: intermediate
+        order: 2
+        prerequisites: ["big-o-notation"]
+        tags: ["limite-inferior", "limite-superior", "analise"]
+
+      - slug: "time-complexity"
+        title: "Time Complexity"
+        difficulty: beginner
+        order: 3
+        prerequisites: ["big-o-notation"]
+        tags: ["tempo", "analise", "performance"]
+
+      - slug: "space-complexity"
+        title: "Space Complexity"
+        difficulty: beginner
+        order: 4
+        prerequisites: ["big-o-notation"]
+        tags: ["memoria", "analise", "trade-off"]
+
+      - slug: "amortized-analysis"
+        title: "Amortized Analysis"
+        difficulty: advanced
+        order: 5
+        prerequisites: ["big-o-notation", "arrays"]
+        tags: ["media", "analise", "custo"]
+
+      - slug: "trade-offs"
+        title: "Trade-offs (Tempo vs Espaço)"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["time-complexity", "space-complexity"]
+        tags: ["decisao", "otimizacao", "equilibrio"]
+
+  - slug: "paradigmas"
+    name: "Paradigmas de Programação"
+    order: 4
+    topics:
+      - slug: "programacao-imperativa"
+        title: "Programação Imperativa"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["controle-fluxo", "estado", "comandos"]
+
+      - slug: "programacao-declarativa"
+        title: "Programação Declarativa"
+        difficulty: beginner
+        order: 2
+        prerequisites: ["programacao-imperativa"]
+        tags: ["o-que", "expressividade"]
+
+      - slug: "programacao-orientada-a-objetos"
+        title: "Programação Orientada a Objetos"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["programacao-imperativa"]
+        tags: ["classes", "heranca", "encapsulamento", "polimorfismo"]
+
+      - slug: "programacao-funcional"
+        title: "Programação Funcional"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["programacao-declarativa", "pure-functions"]
+        tags: ["imutabilidade", "composicao", "sem-efeito-colateral"]
+
+      - slug: "programacao-procedural"
+        title: "Programação Procedural"
+        difficulty: beginner
+        order: 5
+        prerequisites: ["programacao-imperativa"]
+        tags: ["procedimentos", "modularidade"]
+
+      - slug: "programacao-reativa"
+        title: "Programação Reativa"
+        difficulty: advanced
+        order: 6
+        prerequisites: ["programacao-funcional", "event-loop"]
+        tags: ["streams", "observables", "assincrono"]
+
+  - slug: "conceitos-de-linguagens"
+    name: "Conceitos de Linguagens"
+    order: 5
+    topics:
+      - slug: "tipos-de-dados-primitivos"
+        title: "Tipos de Dados Primitivos"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["int", "string", "boolean", "float"]
+
+      - slug: "tipos-compostos"
+        title: "Tipos Compostos"
+        difficulty: beginner
+        order: 2
+        prerequisites: ["tipos-de-dados-primitivos"]
+        tags: ["struct", "enum", "tuple", "record"]
+
+      - slug: "tipagem-estatica-vs-dinamica"
+        title: "Tipagem Estática vs Dinâmica"
+        difficulty: beginner
+        order: 3
+        prerequisites: ["tipos-de-dados-primitivos"]
+        tags: ["compilacao", "runtime", "seguranca"]
+
+      - slug: "tipagem-forte-vs-fraca"
+        title: "Tipagem Forte vs Fraca"
+        difficulty: beginner
+        order: 4
+        prerequisites: ["tipagem-estatica-vs-dinamica"]
+        tags: ["coercao", "conversao", "seguranca"]
+
+      - slug: "type-inference"
+        title: "Type Inference"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["tipagem-estatica-vs-dinamica"]
+        tags: ["deducao", "compilador", "tipos"]
+
+      - slug: "generics"
+        title: "Generics/Templates"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["tipos-compostos", "tipagem-estatica-vs-dinamica"]
+        tags: ["reusabilidade", "tipo-parametrizado"]
+
+      - slug: "null-safety"
+        title: "Null Safety"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["tipos-de-dados-primitivos"]
+        tags: ["null", "optional", "seguranca"]
+
+      - slug: "immutability"
+        title: "Immutability"
+        difficulty: intermediate
+        order: 8
+        prerequisites: ["tipos-de-dados-primitivos"]
+        tags: ["constante", "estado", "previsibilidade"]
+
+      - slug: "pure-functions"
+        title: "Pure Functions"
+        difficulty: beginner
+        order: 9
+        prerequisites: []
+        tags: ["sem-efeito-colateral", "determinismo", "testabilidade"]
+
+      - slug: "first-class-functions"
+        title: "First-Class Functions"
+        difficulty: intermediate
+        order: 10
+        prerequisites: ["pure-functions"]
+        tags: ["funcao-como-valor", "callback", "passagem"]
+
+      - slug: "higher-order-functions"
+        title: "Higher-Order Functions"
+        difficulty: intermediate
+        order: 11
+        prerequisites: ["first-class-functions"]
+        tags: ["map", "filter", "reduce", "composicao"]
+
+      - slug: "closures"
+        title: "Closures"
+        difficulty: intermediate
+        order: 12
+        prerequisites: ["first-class-functions", "scope"]
+        tags: ["captura", "contexto", "funcao-interna"]
+
+      - slug: "currying"
+        title: "Currying"
+        difficulty: advanced
+        order: 13
+        prerequisites: ["closures", "higher-order-functions"]
+        tags: ["aplicacao-parcial", "composicao"]
+
+      - slug: "lazy-evaluation"
+        title: "Lazy Evaluation"
+        difficulty: advanced
+        order: 14
+        prerequisites: ["higher-order-functions"]
+        tags: ["sob-demanda", "performance", "generators"]
+
+      - slug: "eager-evaluation"
+        title: "Eager Evaluation"
+        difficulty: beginner
+        order: 15
+        prerequisites: []
+        tags: ["imediato", "execucao", "padrao"]
+
+      - slug: "pass-by-value-vs-reference"
+        title: "Pass by Value vs Pass by Reference"
+        difficulty: beginner
+        order: 16
+        prerequisites: ["tipos-de-dados-primitivos"]
+        tags: ["copia", "referencia", "mutacao"]
+
+      - slug: "scope"
+        title: "Scope (Léxico, Dinâmico, Global, Local)"
+        difficulty: beginner
+        order: 17
+        prerequisites: []
+        tags: ["visibilidade", "variavel", "contexto"]
+
+      - slug: "hoisting"
+        title: "Hoisting"
+        difficulty: intermediate
+        order: 18
+        prerequisites: ["scope"]
+        tags: ["elevacao", "declaracao", "javascript"]
+
+      - slug: "shadowing"
+        title: "Shadowing"
+        difficulty: intermediate
+        order: 19
+        prerequisites: ["scope"]
+        tags: ["sobreposicao", "variavel", "escopo-interno"]
+
+      - slug: "memory-management"
+        title: "Memory Management"
+        difficulty: intermediate
+        order: 20
+        prerequisites: ["tipos-de-dados-primitivos"]
+        tags: ["alocacao", "liberacao", "ciclo-de-vida"]
+
+      - slug: "garbage-collection"
+        title: "Garbage Collection"
+        difficulty: intermediate
+        order: 21
+        prerequisites: ["memory-management"]
+        tags: ["automatico", "referencia", "gc"]
+
+      - slug: "stack-vs-heap"
+        title: "Stack vs Heap"
+        difficulty: intermediate
+        order: 22
+        prerequisites: ["memory-management"]
+        tags: ["alocacao", "velocidade", "tamanho"]
+
+      - slug: "pointers-e-references"
+        title: "Pointers e References"
+        difficulty: intermediate
+        order: 23
+        prerequisites: ["memory-management", "pass-by-value-vs-reference"]
+        tags: ["endereco", "indirection", "dereferencia"]

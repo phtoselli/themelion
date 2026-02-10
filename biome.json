@@ -1,0 +1,76 @@
+{
+	"$schema": "https://biomejs.dev/schemas/2.3.14/schema.json",
+	"vcs": {
+		"enabled": true,
+		"clientKind": "git",
+		"useIgnoreFile": true,
+		"defaultBranch": "main"
+	},
+	"files": {
+		"ignoreUnknown": true,
+		"includes": ["src/**/*.ts", "src/**/*.tsx", "plugins/**/*.ts", "*.ts"]
+	},
+	"overrides": [
+		{
+			"includes": ["src/shared/components/ui/**"],
+			"linter": {
+				"rules": {
+					"suspicious": {
+						"noDocumentCookie": "off"
+					},
+					"a11y": {
+						"useFocusableInteractive": "off",
+						"useSemanticElements": "off"
+					}
+				}
+			}
+		},
+		{
+			"includes": ["vite.config.ts", "plugins/**/*.ts"],
+			"linter": {
+				"rules": {
+					"style": {
+						"noDefaultExport": "off"
+					}
+				}
+			}
+		}
+	],
+	"formatter": {
+		"enabled": true,
+		"indentStyle": "tab",
+		"indentWidth": 2,
+		"lineWidth": 100,
+		"lineEnding": "lf"
+	},
+	"javascript": {
+		"formatter": {
+			"quoteStyle": "double",
+			"trailingCommas": "all",
+			"semicolons": "always",
+			"arrowParentheses": "always"
+		}
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true,
+			"correctness": {
+				"noUnusedImports": "error",
+				"noUnusedVariables": "warn"
+			},
+			"style": {
+				"noDefaultExport": "warn",
+				"useConst": "error"
+			}
+		}
+	},
+	"assist": {
+		"enabled": true,
+		"actions": {
+			"source": {
+				"organizeImports": "on"
+			}
+		}
+	}
+}

@@ -1,0 +1,13 @@
+import { cn } from "@client/shared/utils/utils";
+
+function Skeleton({ className, ...props }: React.ComponentProps<"div">) {
+	return (
+		<div
+			data-slot="skeleton"
+			className={cn("rounded-md bg-surface-light/60 animate-pulse", className)}
+			{...props}
+		/>
+	);
+}
+
+export { Skeleton };

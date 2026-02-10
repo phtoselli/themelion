@@ -1,0 +1,910 @@
+room: backend
+name: "Backend"
+description: "Aprenda protocolos HTTP/HTTPS, APIs REST/GraphQL, autenticação, arquitetura de servidores, concorrência, mensageria e performance para construir backends escaláveis."
+icon: "server"
+order: 3
+
+categories:
+
+  - slug: "protocolos-e-comunicacao"
+    name: "Protocolos e Comunicação"
+    order: 1
+    topics:
+      - slug: "tcp-ip"
+        title: "TCP/IP"
+        difficulty: intermediate
+        order: 1
+        prerequisites: []
+        tags: ["protocolo", "transporte", "conexao"]
+
+      - slug: "udp"
+        title: "UDP"
+        difficulty: intermediate
+        order: 2
+        prerequisites: ["tcp-ip"]
+        tags: ["protocolo", "sem-conexao", "velocidade"]
+
+      - slug: "dns"
+        title: "DNS"
+        difficulty: beginner
+        order: 3
+        prerequisites: []
+        tags: ["resolucao", "dominio", "ip"]
+
+      - slug: "tls-ssl"
+        title: "TLS/SSL"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["tcp-ip"]
+        tags: ["criptografia", "certificado", "handshake"]
+
+      - slug: "http-versions"
+        title: "HTTP/1.1, HTTP/2, HTTP/3"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["http-https", "tcp-ip"]
+        tags: ["evolucao", "multiplexing", "quic"]
+
+      - slug: "grpc"
+        title: "gRPC"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["http-versions"]
+        tags: ["protobuf", "bidirecional", "performance"]
+
+      - slug: "graphql"
+        title: "GraphQL"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["http-https", "http-methods"]
+        tags: ["query", "schema", "flexibilidade"]
+
+      - slug: "rest"
+        title: "REST"
+        difficulty: beginner
+        order: 8
+        prerequisites: ["http-https", "http-methods"]
+        tags: ["recursos", "stateless", "padrao"]
+
+      - slug: "soap"
+        title: "SOAP"
+        difficulty: intermediate
+        order: 9
+        prerequisites: ["http-https"]
+        tags: ["xml", "wsdl", "enterprise"]
+
+      - slug: "websockets-backend"
+        title: "WebSockets"
+        difficulty: intermediate
+        order: 10
+        prerequisites: ["tcp-ip", "http-https"]
+        tags: ["tempo-real", "bidirecional", "persistente"]
+
+      - slug: "mqtt"
+        title: "MQTT"
+        difficulty: intermediate
+        order: 11
+        prerequisites: ["tcp-ip"]
+        tags: ["iot", "leve", "pub-sub"]
+
+      - slug: "amqp"
+        title: "AMQP"
+        difficulty: intermediate
+        order: 12
+        prerequisites: ["tcp-ip"]
+        tags: ["mensageria", "protocolo", "fila"]
+
+      - slug: "server-sent-events-backend"
+        title: "Server-Sent Events"
+        difficulty: intermediate
+        order: 13
+        prerequisites: ["http-https"]
+        tags: ["tempo-real", "unidirecional", "stream"]
+
+  - slug: "apis-e-web-services"
+    name: "APIs e Web Services"
+    order: 2
+    topics:
+      - slug: "restful-principles"
+        title: "RESTful Principles"
+        difficulty: beginner
+        order: 1
+        prerequisites: ["rest"]
+        tags: ["recursos", "verbos", "stateless"]
+
+      - slug: "hateoas"
+        title: "HATEOAS"
+        difficulty: advanced
+        order: 2
+        prerequisites: ["restful-principles"]
+        tags: ["hyperlinks", "descoberta", "rest-maduro"]
+
+      - slug: "richardson-maturity-model"
+        title: "Richardson Maturity Model"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["restful-principles"]
+        tags: ["niveis", "maturidade", "rest"]
+
+      - slug: "api-versioning"
+        title: "API Versioning"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["restful-principles"]
+        tags: ["versionamento", "compatibilidade", "evolucao"]
+
+      - slug: "rate-limiting"
+        title: "Rate Limiting"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["restful-principles"]
+        tags: ["limite", "protecao", "throttle"]
+
+      - slug: "throttling-backend"
+        title: "Throttling"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["rate-limiting"]
+        tags: ["controle", "vazao", "protecao"]
+
+      - slug: "api-gateway-pattern"
+        title: "API Gateway Pattern"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["restful-principles"]
+        tags: ["proxy", "roteamento", "agregacao"]
+
+      - slug: "graphql-schema-design"
+        title: "GraphQL Schema Design"
+        difficulty: intermediate
+        order: 8
+        prerequisites: ["graphql"]
+        tags: ["tipos", "queries", "mutations"]
+
+      - slug: "graphql-resolvers"
+        title: "GraphQL Resolvers"
+        difficulty: intermediate
+        order: 9
+        prerequisites: ["graphql-schema-design"]
+        tags: ["resolucao", "dados", "funcoes"]
+
+      - slug: "n-plus-1-problem"
+        title: "N+1 Problem"
+        difficulty: intermediate
+        order: 10
+        prerequisites: ["graphql-resolvers"]
+        tags: ["performance", "queries", "otimizacao"]
+
+      - slug: "dataloader-pattern"
+        title: "DataLoader Pattern"
+        difficulty: intermediate
+        order: 11
+        prerequisites: ["n-plus-1-problem"]
+        tags: ["batching", "cache", "otimizacao"]
+
+      - slug: "pagination"
+        title: "Pagination (Offset, Cursor-Based)"
+        difficulty: beginner
+        order: 12
+        prerequisites: ["restful-principles"]
+        tags: ["lista", "performance", "navegacao"]
+
+      - slug: "filtering-e-sorting"
+        title: "Filtering e Sorting"
+        difficulty: beginner
+        order: 13
+        prerequisites: ["restful-principles"]
+        tags: ["consulta", "parametros", "ordenacao"]
+
+      - slug: "api-documentation"
+        title: "API Documentation (OpenAPI/Swagger)"
+        difficulty: beginner
+        order: 14
+        prerequisites: ["restful-principles"]
+        tags: ["documentacao", "especificacao", "contrato"]
+
+      - slug: "contract-testing"
+        title: "Contract Testing"
+        difficulty: intermediate
+        order: 15
+        prerequisites: ["api-documentation"]
+        tags: ["contrato", "compatibilidade", "consumidor"]
+
+      - slug: "api-security"
+        title: "API Security"
+        difficulty: intermediate
+        order: 16
+        prerequisites: ["restful-principles", "rate-limiting"]
+        tags: ["seguranca", "autenticacao", "protecao"]
+
+  - slug: "autenticacao-e-autorizacao"
+    name: "Autenticação e Autorização"
+    order: 3
+    topics:
+      - slug: "authentication-vs-authorization"
+        title: "Authentication vs Authorization"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["identidade", "permissao", "diferenca"]
+
+      - slug: "session-based-auth"
+        title: "Session-Based Auth"
+        difficulty: beginner
+        order: 2
+        prerequisites: ["authentication-vs-authorization", "sessions"]
+        tags: ["sessao", "cookie", "servidor"]
+
+      - slug: "token-based-auth"
+        title: "Token-Based Auth"
+        difficulty: beginner
+        order: 3
+        prerequisites: ["authentication-vs-authorization"]
+        tags: ["token", "stateless", "header"]
+
+      - slug: "jwt"
+        title: "JWT (JSON Web Tokens)"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["token-based-auth"]
+        tags: ["claims", "assinatura", "payload"]
+
+      - slug: "oauth2"
+        title: "OAuth 2.0"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["token-based-auth"]
+        tags: ["delegacao", "grant-types", "terceiros"]
+
+      - slug: "openid-connect"
+        title: "OpenID Connect"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["oauth2"]
+        tags: ["identidade", "id-token", "autenticacao"]
+
+      - slug: "saml"
+        title: "SAML"
+        difficulty: advanced
+        order: 7
+        prerequisites: ["authentication-vs-authorization"]
+        tags: ["xml", "enterprise", "federacao"]
+
+      - slug: "sso"
+        title: "SSO (Single Sign-On)"
+        difficulty: intermediate
+        order: 8
+        prerequisites: ["oauth2"]
+        tags: ["unico-login", "centralizacao", "ux"]
+
+      - slug: "mfa"
+        title: "Multi-Factor Authentication (MFA)"
+        difficulty: intermediate
+        order: 9
+        prerequisites: ["authentication-vs-authorization"]
+        tags: ["fatores", "seguranca", "totp"]
+
+      - slug: "api-keys"
+        title: "API Keys"
+        difficulty: beginner
+        order: 10
+        prerequisites: ["authentication-vs-authorization"]
+        tags: ["chave", "identificacao", "simples"]
+
+      - slug: "basic-auth"
+        title: "Basic Auth"
+        difficulty: beginner
+        order: 11
+        prerequisites: ["http-headers"]
+        tags: ["base64", "simples", "header"]
+
+      - slug: "bearer-token"
+        title: "Bearer Token"
+        difficulty: beginner
+        order: 12
+        prerequisites: ["token-based-auth"]
+        tags: ["header", "authorization", "portador"]
+
+      - slug: "refresh-tokens"
+        title: "Refresh Tokens"
+        difficulty: intermediate
+        order: 13
+        prerequisites: ["jwt"]
+        tags: ["renovacao", "expiracao", "seguranca"]
+
+      - slug: "rbac"
+        title: "RBAC (Role-Based Access Control)"
+        difficulty: intermediate
+        order: 14
+        prerequisites: ["authentication-vs-authorization"]
+        tags: ["papeis", "permissoes", "hierarquia"]
+
+      - slug: "abac"
+        title: "ABAC (Attribute-Based Access Control)"
+        difficulty: advanced
+        order: 15
+        prerequisites: ["rbac"]
+        tags: ["atributos", "politicas", "flexibilidade"]
+
+      - slug: "acl"
+        title: "ACL (Access Control Lists)"
+        difficulty: intermediate
+        order: 16
+        prerequisites: ["authentication-vs-authorization"]
+        tags: ["lista", "permissoes", "recurso"]
+
+      - slug: "permission-systems"
+        title: "Permission Systems"
+        difficulty: intermediate
+        order: 17
+        prerequisites: ["rbac"]
+        tags: ["granularidade", "modelo", "gestao"]
+
+      - slug: "password-hashing"
+        title: "Password Hashing (bcrypt, argon2)"
+        difficulty: intermediate
+        order: 18
+        prerequisites: ["authentication-vs-authorization"]
+        tags: ["hash", "seguranca", "armazenamento"]
+
+      - slug: "salt-e-pepper"
+        title: "Salt e Pepper"
+        difficulty: intermediate
+        order: 19
+        prerequisites: ["password-hashing"]
+        tags: ["aleatoriedade", "protecao", "rainbow-table"]
+
+  - slug: "arquitetura-backend"
+    name: "Arquitetura Backend"
+    order: 4
+    topics:
+      - slug: "monolith"
+        title: "Monolith"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["simples", "unico-deploy", "acoplado"]
+
+      - slug: "microservices"
+        title: "Microservices"
+        difficulty: intermediate
+        order: 2
+        prerequisites: ["monolith"]
+        tags: ["independencia", "escalabilidade", "complexidade"]
+
+      - slug: "soa"
+        title: "Service-Oriented Architecture (SOA)"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["monolith"]
+        tags: ["servicos", "enterprise", "integracao"]
+
+      - slug: "event-driven-architecture"
+        title: "Event-Driven Architecture"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["microservices"]
+        tags: ["eventos", "assincrono", "desacoplamento"]
+
+      - slug: "cqrs"
+        title: "CQRS (Command Query Responsibility Segregation)"
+        difficulty: advanced
+        order: 5
+        prerequisites: ["event-driven-architecture"]
+        tags: ["leitura-escrita", "separacao", "performance"]
+
+      - slug: "event-sourcing"
+        title: "Event Sourcing"
+        difficulty: advanced
+        order: 6
+        prerequisites: ["cqrs", "event-driven-architecture"]
+        tags: ["historico", "eventos", "reconstrucao"]
+
+      - slug: "ddd"
+        title: "Domain-Driven Design (DDD)"
+        difficulty: advanced
+        order: 7
+        prerequisites: ["microservices"]
+        tags: ["dominio", "bounded-context", "ubiquitous-language"]
+
+      - slug: "hexagonal-architecture"
+        title: "Hexagonal Architecture (Ports & Adapters)"
+        difficulty: advanced
+        order: 8
+        prerequisites: ["ddd"]
+        tags: ["portas", "adaptadores", "desacoplamento"]
+
+      - slug: "clean-architecture"
+        title: "Clean Architecture"
+        difficulty: advanced
+        order: 9
+        prerequisites: ["hexagonal-architecture"]
+        tags: ["camadas", "dependencia", "independencia"]
+
+      - slug: "onion-architecture"
+        title: "Onion Architecture"
+        difficulty: advanced
+        order: 10
+        prerequisites: ["clean-architecture"]
+        tags: ["camadas", "dominio-central", "inversao"]
+
+      - slug: "layered-architecture"
+        title: "Layered Architecture"
+        difficulty: beginner
+        order: 11
+        prerequisites: []
+        tags: ["camadas", "separacao", "responsabilidade"]
+
+      - slug: "repository-pattern"
+        title: "Repository Pattern"
+        difficulty: intermediate
+        order: 12
+        prerequisites: ["layered-architecture"]
+        tags: ["dados", "abstracao", "persistencia"]
+
+      - slug: "unit-of-work-pattern"
+        title: "Unit of Work Pattern"
+        difficulty: intermediate
+        order: 13
+        prerequisites: ["repository-pattern"]
+        tags: ["transacao", "consistencia", "batch"]
+
+      - slug: "service-layer-pattern"
+        title: "Service Layer Pattern"
+        difficulty: intermediate
+        order: 14
+        prerequisites: ["layered-architecture"]
+        tags: ["logica-negocio", "orquestracao", "camada"]
+
+      - slug: "factory-pattern"
+        title: "Factory Pattern"
+        difficulty: intermediate
+        order: 15
+        prerequisites: ["programacao-orientada-a-objetos"]
+        tags: ["criacao", "desacoplamento", "instanciacao"]
+
+      - slug: "strategy-pattern"
+        title: "Strategy Pattern"
+        difficulty: intermediate
+        order: 16
+        prerequisites: ["programacao-orientada-a-objetos"]
+        tags: ["comportamento", "intercambiavel", "algoritmo"]
+
+      - slug: "observer-pattern"
+        title: "Observer Pattern"
+        difficulty: intermediate
+        order: 17
+        prerequisites: ["programacao-orientada-a-objetos"]
+        tags: ["eventos", "notificacao", "pub-sub"]
+
+      - slug: "singleton-pattern"
+        title: "Singleton Pattern"
+        difficulty: beginner
+        order: 18
+        prerequisites: ["programacao-orientada-a-objetos"]
+        tags: ["instancia-unica", "global", "controverso"]
+
+      - slug: "dependency-injection"
+        title: "Dependency Injection"
+        difficulty: intermediate
+        order: 19
+        prerequisites: ["programacao-orientada-a-objetos"]
+        tags: ["inversao", "desacoplamento", "testabilidade"]
+
+      - slug: "inversion-of-control"
+        title: "Inversion of Control (IoC)"
+        difficulty: intermediate
+        order: 20
+        prerequisites: ["dependency-injection"]
+        tags: ["controle", "framework", "inversao"]
+
+      - slug: "separation-of-concerns"
+        title: "Separation of Concerns"
+        difficulty: beginner
+        order: 21
+        prerequisites: []
+        tags: ["responsabilidade", "modularidade", "clareza"]
+
+      - slug: "dry"
+        title: "DRY (Don't Repeat Yourself)"
+        difficulty: beginner
+        order: 22
+        prerequisites: []
+        tags: ["reutilizacao", "duplicacao", "abstracao"]
+
+      - slug: "solid-principles"
+        title: "SOLID Principles"
+        difficulty: intermediate
+        order: 23
+        prerequisites: ["programacao-orientada-a-objetos"]
+        tags: ["design", "principios", "manutencao"]
+
+      - slug: "kiss"
+        title: "KISS (Keep It Simple, Stupid)"
+        difficulty: beginner
+        order: 24
+        prerequisites: []
+        tags: ["simplicidade", "clareza", "pragmatismo"]
+
+      - slug: "yagni"
+        title: "YAGNI (You Aren't Gonna Need It)"
+        difficulty: beginner
+        order: 25
+        prerequisites: []
+        tags: ["pragmatismo", "overengineering", "foco"]
+
+  - slug: "concorrencia-e-paralelismo"
+    name: "Concorrência e Paralelismo"
+    order: 5
+    topics:
+      - slug: "threads-vs-processes"
+        title: "Threads vs Processes"
+        difficulty: intermediate
+        order: 1
+        prerequisites: []
+        tags: ["execucao", "isolamento", "memoria"]
+
+      - slug: "multi-threading"
+        title: "Multi-threading"
+        difficulty: intermediate
+        order: 2
+        prerequisites: ["threads-vs-processes"]
+        tags: ["paralelo", "compartilhamento", "sincronizacao"]
+
+      - slug: "multi-processing"
+        title: "Multi-processing"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["threads-vs-processes"]
+        tags: ["isolamento", "ipc", "cpu-bound"]
+
+      - slug: "asynchronous-programming"
+        title: "Asynchronous Programming"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["event-loop"]
+        tags: ["nao-bloqueante", "io-bound", "eficiencia"]
+
+      - slug: "promises-futures"
+        title: "Promises/Futures"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["asynchronous-programming"]
+        tags: ["resultado-futuro", "composicao", "encadeamento"]
+
+      - slug: "async-await"
+        title: "Async/Await"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["promises-futures"]
+        tags: ["sintaxe", "legibilidade", "assincrono"]
+
+      - slug: "callbacks"
+        title: "Callbacks"
+        difficulty: beginner
+        order: 7
+        prerequisites: ["first-class-functions"]
+        tags: ["funcao", "continuacao", "callback-hell"]
+
+      - slug: "event-loop-backend"
+        title: "Event Loop"
+        difficulty: intermediate
+        order: 8
+        prerequisites: ["asynchronous-programming"]
+        tags: ["loop", "io", "single-thread"]
+
+      - slug: "non-blocking-io"
+        title: "Non-blocking I/O"
+        difficulty: intermediate
+        order: 9
+        prerequisites: ["event-loop-backend"]
+        tags: ["io", "eficiencia", "escalabilidade"]
+
+      - slug: "coroutines"
+        title: "Coroutines"
+        difficulty: advanced
+        order: 10
+        prerequisites: ["async-await"]
+        tags: ["cooperativo", "suspensao", "retomada"]
+
+      - slug: "green-threads"
+        title: "Green Threads"
+        difficulty: advanced
+        order: 11
+        prerequisites: ["multi-threading"]
+        tags: ["user-space", "leve", "runtime"]
+
+      - slug: "thread-pools"
+        title: "Thread Pools"
+        difficulty: intermediate
+        order: 12
+        prerequisites: ["multi-threading"]
+        tags: ["reutilizacao", "limite", "eficiencia"]
+
+      - slug: "race-conditions"
+        title: "Race Conditions"
+        difficulty: intermediate
+        order: 13
+        prerequisites: ["multi-threading"]
+        tags: ["bug", "concorrencia", "nao-determinismo"]
+
+      - slug: "deadlocks"
+        title: "Deadlocks"
+        difficulty: intermediate
+        order: 14
+        prerequisites: ["race-conditions"]
+        tags: ["bloqueio-mutuo", "espera-circular", "prevencao"]
+
+      - slug: "mutexes"
+        title: "Mutexes"
+        difficulty: intermediate
+        order: 15
+        prerequisites: ["race-conditions"]
+        tags: ["exclusao-mutua", "lock", "sincronizacao"]
+
+      - slug: "semaphores"
+        title: "Semaphores"
+        difficulty: intermediate
+        order: 16
+        prerequisites: ["mutexes"]
+        tags: ["contador", "controle", "acesso"]
+
+      - slug: "locks"
+        title: "Locks"
+        difficulty: intermediate
+        order: 17
+        prerequisites: ["mutexes"]
+        tags: ["bloqueio", "read-write", "sincronizacao"]
+
+      - slug: "atomic-operations"
+        title: "Atomic Operations"
+        difficulty: intermediate
+        order: 18
+        prerequisites: ["race-conditions"]
+        tags: ["indivisivel", "lock-free", "cas"]
+
+      - slug: "message-passing"
+        title: "Message Passing"
+        difficulty: intermediate
+        order: 19
+        prerequisites: ["threads-vs-processes"]
+        tags: ["comunicacao", "canal", "desacoplamento"]
+
+      - slug: "actor-model"
+        title: "Actor Model"
+        difficulty: advanced
+        order: 20
+        prerequisites: ["message-passing"]
+        tags: ["atores", "isolamento", "mensagens"]
+
+      - slug: "csp"
+        title: "CSP (Communicating Sequential Processes)"
+        difficulty: advanced
+        order: 21
+        prerequisites: ["message-passing"]
+        tags: ["canais", "go-channels", "sincronizacao"]
+
+  - slug: "mensageria-e-filas"
+    name: "Mensageria e Filas"
+    order: 6
+    topics:
+      - slug: "message-queues"
+        title: "Message Queues"
+        difficulty: intermediate
+        order: 1
+        prerequisites: []
+        tags: ["fila", "assincrono", "desacoplamento"]
+
+      - slug: "pub-sub-pattern"
+        title: "Pub/Sub Pattern"
+        difficulty: intermediate
+        order: 2
+        prerequisites: ["message-queues"]
+        tags: ["publicacao", "assinatura", "broadcast"]
+
+      - slug: "message-brokers"
+        title: "Message Brokers"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["message-queues"]
+        tags: ["intermediario", "roteamento", "persistencia"]
+
+      - slug: "dead-letter-queues"
+        title: "Dead Letter Queues"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["message-queues"]
+        tags: ["erro", "reprocessamento", "monitoramento"]
+
+      - slug: "message-ordering"
+        title: "Message Ordering"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["message-queues"]
+        tags: ["ordem", "fifo", "particao"]
+
+      - slug: "exactly-once-delivery"
+        title: "Exactly-Once Delivery"
+        difficulty: advanced
+        order: 6
+        prerequisites: ["message-queues", "idempotency"]
+        tags: ["garantia", "entrega", "transacao"]
+
+      - slug: "at-least-once-delivery"
+        title: "At-Least-Once Delivery"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["message-queues"]
+        tags: ["garantia", "duplicacao", "retry"]
+
+      - slug: "at-most-once-delivery"
+        title: "At-Most-Once Delivery"
+        difficulty: intermediate
+        order: 8
+        prerequisites: ["message-queues"]
+        tags: ["garantia", "perda", "fire-and-forget"]
+
+      - slug: "idempotency"
+        title: "Idempotency"
+        difficulty: intermediate
+        order: 9
+        prerequisites: []
+        tags: ["repetibilidade", "seguranca", "chave"]
+
+      - slug: "saga-pattern"
+        title: "Saga Pattern"
+        difficulty: advanced
+        order: 10
+        prerequisites: ["message-queues", "event-driven-architecture"]
+        tags: ["transacao-distribuida", "compensacao", "orquestracao"]
+
+      - slug: "outbox-pattern"
+        title: "Outbox Pattern"
+        difficulty: advanced
+        order: 11
+        prerequisites: ["saga-pattern"]
+        tags: ["consistencia", "evento", "banco-fila"]
+
+      - slug: "event-bus"
+        title: "Event Bus"
+        difficulty: intermediate
+        order: 12
+        prerequisites: ["pub-sub-pattern"]
+        tags: ["barramento", "eventos", "desacoplamento"]
+
+  - slug: "performance-backend"
+    name: "Performance Backend"
+    order: 7
+    topics:
+      - slug: "caching-strategies"
+        title: "Caching Strategies"
+        difficulty: intermediate
+        order: 1
+        prerequisites: []
+        tags: ["cache", "velocidade", "estrategia"]
+
+      - slug: "cache-invalidation"
+        title: "Cache Invalidation"
+        difficulty: intermediate
+        order: 2
+        prerequisites: ["caching-strategies"]
+        tags: ["invalidacao", "consistencia", "ttl"]
+
+      - slug: "cache-aside-pattern"
+        title: "Cache-Aside Pattern"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["caching-strategies"]
+        tags: ["lazy-load", "manual", "aplicacao"]
+
+      - slug: "read-through-write-through"
+        title: "Read-Through/Write-Through Cache"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["caching-strategies"]
+        tags: ["transparente", "automatico", "sincronizacao"]
+
+      - slug: "write-behind-cache"
+        title: "Write-Behind Cache"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["read-through-write-through"]
+        tags: ["assincrono", "batch", "performance"]
+
+      - slug: "cdn"
+        title: "CDN"
+        difficulty: beginner
+        order: 6
+        prerequisites: ["http-https"]
+        tags: ["distribuicao", "proximidade", "estatico"]
+
+      - slug: "edge-computing"
+        title: "Edge Computing"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["cdn"]
+        tags: ["borda", "latencia", "processamento"]
+
+      - slug: "load-balancing"
+        title: "Load Balancing"
+        difficulty: intermediate
+        order: 8
+        prerequisites: ["http-https"]
+        tags: ["distribuicao", "carga", "disponibilidade"]
+
+      - slug: "horizontal-scaling"
+        title: "Horizontal Scaling"
+        difficulty: intermediate
+        order: 9
+        prerequisites: ["load-balancing"]
+        tags: ["instancias", "escalabilidade", "stateless"]
+
+      - slug: "vertical-scaling"
+        title: "Vertical Scaling"
+        difficulty: beginner
+        order: 10
+        prerequisites: []
+        tags: ["recursos", "upgrade", "limite"]
+
+      - slug: "connection-pooling"
+        title: "Connection Pooling"
+        difficulty: intermediate
+        order: 11
+        prerequisites: []
+        tags: ["reutilizacao", "conexoes", "eficiencia"]
+
+      - slug: "database-indexing"
+        title: "Database Indexing"
+        difficulty: intermediate
+        order: 12
+        prerequisites: []
+        tags: ["indice", "busca", "performance"]
+
+      - slug: "query-optimization"
+        title: "Query Optimization"
+        difficulty: intermediate
+        order: 13
+        prerequisites: ["database-indexing"]
+        tags: ["plano-execucao", "otimizacao", "analise"]
+
+      - slug: "n-plus-1-query-problem"
+        title: "N+1 Query Problem"
+        difficulty: intermediate
+        order: 14
+        prerequisites: ["query-optimization"]
+        tags: ["lazy-loading", "eager-loading", "performance"]
+
+      - slug: "eager-loading-vs-lazy-loading-backend"
+        title: "Eager Loading vs Lazy Loading"
+        difficulty: intermediate
+        order: 15
+        prerequisites: ["n-plus-1-query-problem"]
+        tags: ["carregamento", "estrategia", "performance"]
+
+      - slug: "batching"
+        title: "Batching"
+        difficulty: intermediate
+        order: 16
+        prerequisites: []
+        tags: ["agrupamento", "eficiencia", "reducao-chamadas"]
+
+      - slug: "compression-backend"
+        title: "Compression"
+        difficulty: beginner
+        order: 17
+        prerequisites: ["http-headers"]
+        tags: ["gzip", "brotli", "tamanho"]
+
+      - slug: "profiling"
+        title: "Profiling"
+        difficulty: intermediate
+        order: 18
+        prerequisites: []
+        tags: ["analise", "gargalo", "metricas"]
+
+      - slug: "apm"
+        title: "APM (Application Performance Monitoring)"
+        difficulty: intermediate
+        order: 19
+        prerequisites: ["profiling"]
+        tags: ["monitoramento", "metricas", "alertas"]

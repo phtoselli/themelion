@@ -1,0 +1,373 @@
+room: avancados
+name: "Conceitos Avançados e Emergentes"
+description: "Aprenda sistemas distribuídos, data pipelines, machine learning, blockchain e conceitos emergentes para resolver problemas de alta complexidade."
+icon: "rocket"
+order: 7
+
+categories:
+
+  - slug: "distributed-systems"
+    name: "Distributed Systems"
+    order: 1
+    topics:
+      - slug: "consistency-models"
+        title: "Consistency Models"
+        difficulty: advanced
+        order: 1
+        prerequisites: ["cap-theorem"]
+        tags: ["forte", "eventual", "linearizavel"]
+
+      - slug: "partition-tolerance"
+        title: "Partition Tolerance"
+        difficulty: advanced
+        order: 2
+        prerequisites: ["cap-theorem"]
+        tags: ["rede", "falha", "disponibilidade"]
+
+      - slug: "network-partitions"
+        title: "Network Partitions"
+        difficulty: advanced
+        order: 3
+        prerequisites: ["partition-tolerance"]
+        tags: ["divisao", "rede", "isolamento"]
+
+      - slug: "split-brain"
+        title: "Split Brain"
+        difficulty: advanced
+        order: 4
+        prerequisites: ["network-partitions"]
+        tags: ["divergencia", "conflito", "resolucao"]
+
+      - slug: "quorum"
+        title: "Quorum"
+        difficulty: advanced
+        order: 5
+        prerequisites: ["consistency-models"]
+        tags: ["maioria", "votacao", "consenso"]
+
+      - slug: "consensus-algorithms"
+        title: "Consensus Algorithms (Paxos, Raft)"
+        difficulty: advanced
+        order: 6
+        prerequisites: ["quorum"]
+        tags: ["acordo", "lider", "replicacao"]
+
+      - slug: "vector-clocks"
+        title: "Vector Clocks"
+        difficulty: advanced
+        order: 7
+        prerequisites: ["consistency-models"]
+        tags: ["causalidade", "ordenacao", "versao"]
+
+      - slug: "lamport-timestamps"
+        title: "Lamport Timestamps"
+        difficulty: advanced
+        order: 8
+        prerequisites: ["vector-clocks"]
+        tags: ["logico", "ordenacao", "evento"]
+
+      - slug: "gossip-protocol"
+        title: "Gossip Protocol"
+        difficulty: advanced
+        order: 9
+        prerequisites: []
+        tags: ["disseminacao", "epidemico", "eventual"]
+
+      - slug: "distributed-locking"
+        title: "Distributed Locking"
+        difficulty: advanced
+        order: 10
+        prerequisites: ["consensus-algorithms"]
+        tags: ["bloqueio", "coordenacao", "fencing"]
+
+      - slug: "leader-election"
+        title: "Leader Election"
+        difficulty: advanced
+        order: 11
+        prerequisites: ["consensus-algorithms"]
+        tags: ["lider", "eleicao", "coordenacao"]
+
+      - slug: "circuit-breaker-pattern"
+        title: "Circuit Breaker Pattern"
+        difficulty: intermediate
+        order: 12
+        prerequisites: []
+        tags: ["resiliencia", "falha", "protecao"]
+
+      - slug: "bulkhead-pattern"
+        title: "Bulkhead Pattern"
+        difficulty: intermediate
+        order: 13
+        prerequisites: ["circuit-breaker-pattern"]
+        tags: ["isolamento", "falha", "compartimento"]
+
+      - slug: "retry-pattern"
+        title: "Retry Pattern"
+        difficulty: intermediate
+        order: 14
+        prerequisites: []
+        tags: ["tentativa", "backoff", "resiliencia"]
+
+      - slug: "timeout-pattern"
+        title: "Timeout Pattern"
+        difficulty: intermediate
+        order: 15
+        prerequisites: []
+        tags: ["limite-tempo", "protecao", "recurso"]
+
+      - slug: "fallback-pattern"
+        title: "Fallback Pattern"
+        difficulty: intermediate
+        order: 16
+        prerequisites: ["circuit-breaker-pattern"]
+        tags: ["alternativa", "degradacao", "graceful"]
+
+      - slug: "rate-limiting-patterns"
+        title: "Rate Limiting Patterns"
+        difficulty: intermediate
+        order: 17
+        prerequisites: ["rate-limiting"]
+        tags: ["token-bucket", "sliding-window", "controle"]
+
+      - slug: "backpressure"
+        title: "Backpressure"
+        difficulty: advanced
+        order: 18
+        prerequisites: ["message-queues"]
+        tags: ["controle-fluxo", "sobrecarga", "produtor-consumidor"]
+
+  - slug: "data-engineering"
+    name: "Data Engineering (Conceitos Básicos)"
+    order: 2
+    topics:
+      - slug: "etl-vs-elt"
+        title: "ETL vs ELT"
+        difficulty: intermediate
+        order: 1
+        prerequisites: []
+        tags: ["transformacao", "carregamento", "pipeline"]
+
+      - slug: "data-pipeline"
+        title: "Data Pipeline"
+        difficulty: intermediate
+        order: 2
+        prerequisites: ["etl-vs-elt"]
+        tags: ["fluxo", "automatizacao", "orquestracao"]
+
+      - slug: "batch-processing"
+        title: "Batch Processing"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["data-pipeline"]
+        tags: ["lote", "agendado", "volume"]
+
+      - slug: "stream-processing"
+        title: "Stream Processing"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["data-pipeline"]
+        tags: ["tempo-real", "continuo", "evento"]
+
+      - slug: "data-lake"
+        title: "Data Lake"
+        difficulty: intermediate
+        order: 5
+        prerequisites: []
+        tags: ["armazenamento", "bruto", "schema-on-read"]
+
+      - slug: "data-warehouse"
+        title: "Data Warehouse"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["data-lake"]
+        tags: ["estruturado", "analise", "historico"]
+
+      - slug: "data-mart"
+        title: "Data Mart"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["data-warehouse"]
+        tags: ["subconjunto", "departamento", "especifico"]
+
+      - slug: "oltp-vs-olap"
+        title: "OLTP vs OLAP"
+        difficulty: intermediate
+        order: 8
+        prerequisites: []
+        tags: ["transacional", "analitico", "comparacao"]
+
+      - slug: "star-schema"
+        title: "Star Schema"
+        difficulty: intermediate
+        order: 9
+        prerequisites: ["data-warehouse"]
+        tags: ["fato", "dimensao", "modelagem"]
+
+      - slug: "snowflake-schema"
+        title: "Snowflake Schema"
+        difficulty: intermediate
+        order: 10
+        prerequisites: ["star-schema"]
+        tags: ["normalizado", "dimensao", "hierarquia"]
+
+      - slug: "data-partitioning"
+        title: "Data Partitioning"
+        difficulty: intermediate
+        order: 11
+        prerequisites: []
+        tags: ["divisao", "performance", "gerenciamento"]
+
+      - slug: "data-replication"
+        title: "Data Replication"
+        difficulty: intermediate
+        order: 12
+        prerequisites: []
+        tags: ["copia", "disponibilidade", "consistencia"]
+
+  - slug: "machine-learning"
+    name: "Machine Learning (Conceitos para Desenvolvedores)"
+    order: 3
+    topics:
+      - slug: "model-serving"
+        title: "Model Serving"
+        difficulty: intermediate
+        order: 1
+        prerequisites: []
+        tags: ["deploy", "api", "inferencia"]
+
+      - slug: "model-versioning"
+        title: "Model Versioning"
+        difficulty: intermediate
+        order: 2
+        prerequisites: ["model-serving"]
+        tags: ["versionamento", "reproducibilidade", "registro"]
+
+      - slug: "feature-engineering"
+        title: "Feature Engineering"
+        difficulty: intermediate
+        order: 3
+        prerequisites: []
+        tags: ["features", "transformacao", "selecao"]
+
+      - slug: "training-vs-inference"
+        title: "Training vs Inference"
+        difficulty: beginner
+        order: 4
+        prerequisites: []
+        tags: ["treinamento", "predicao", "diferenca"]
+
+      - slug: "online-learning"
+        title: "Online Learning"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["training-vs-inference"]
+        tags: ["continuo", "adaptacao", "stream"]
+
+      - slug: "batch-prediction"
+        title: "Batch Prediction"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["training-vs-inference"]
+        tags: ["lote", "agendado", "offline"]
+
+      - slug: "real-time-prediction"
+        title: "Real-Time Prediction"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["training-vs-inference"]
+        tags: ["tempo-real", "latencia", "api"]
+
+      - slug: "ab-testing-models"
+        title: "A/B Testing Models"
+        difficulty: intermediate
+        order: 8
+        prerequisites: ["model-serving"]
+        tags: ["experimento", "comparacao", "metrica"]
+
+      - slug: "model-monitoring"
+        title: "Model Monitoring"
+        difficulty: intermediate
+        order: 9
+        prerequisites: ["model-serving"]
+        tags: ["monitoramento", "performance", "degradacao"]
+
+      - slug: "drift-detection"
+        title: "Drift Detection"
+        difficulty: advanced
+        order: 10
+        prerequisites: ["model-monitoring"]
+        tags: ["deriva", "dados", "conceito"]
+
+      - slug: "mlops"
+        title: "MLOps"
+        difficulty: advanced
+        order: 11
+        prerequisites: ["model-serving", "model-versioning", "model-monitoring"]
+        tags: ["operacoes", "pipeline", "automacao"]
+
+  - slug: "web3-e-blockchain"
+    name: "Web3 e Blockchain (Conceitos)"
+    order: 4
+    topics:
+      - slug: "blockchain-fundamentals"
+        title: "Blockchain Fundamentals"
+        difficulty: intermediate
+        order: 1
+        prerequisites: ["hash-tables"]
+        tags: ["blocos", "cadeia", "imutavel"]
+
+      - slug: "distributed-ledger"
+        title: "Distributed Ledger"
+        difficulty: intermediate
+        order: 2
+        prerequisites: ["blockchain-fundamentals"]
+        tags: ["livro-razao", "distribuido", "consenso"]
+
+      - slug: "smart-contracts"
+        title: "Smart Contracts"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["blockchain-fundamentals"]
+        tags: ["contrato", "autoexecutavel", "logica"]
+
+      - slug: "consensus-mechanisms"
+        title: "Consensus Mechanisms"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["distributed-ledger"]
+        tags: ["acordo", "validacao", "rede"]
+
+      - slug: "proof-of-work"
+        title: "Proof of Work"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["consensus-mechanisms"]
+        tags: ["mineracao", "computacao", "energia"]
+
+      - slug: "proof-of-stake"
+        title: "Proof of Stake"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["consensus-mechanisms"]
+        tags: ["staking", "validador", "eficiencia"]
+
+      - slug: "immutability-blockchain"
+        title: "Immutability"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["blockchain-fundamentals"]
+        tags: ["imutavel", "confianca", "historico"]
+
+      - slug: "cryptographic-hashing"
+        title: "Cryptographic Hashing"
+        difficulty: intermediate
+        order: 8
+        prerequisites: ["hash-tables"]
+        tags: ["hash", "seguranca", "integridade"]
+
+      - slug: "public-vs-private-keys"
+        title: "Public vs Private Keys"
+        difficulty: intermediate
+        order: 9
+        prerequisites: ["cryptographic-hashing"]
+        tags: ["criptografia", "assinatura", "identidade"]

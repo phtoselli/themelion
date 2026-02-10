@@ -1,0 +1,9 @@
+{
+	"id": "typescript",
+	"name": "TypeScript",
+	"ext": ".ts",
+	"runner": "typescript-runner",
+	"monacoLanguage": "typescript",
+	"label": "Tipagem estática, ecossistema web",
+	"icon": "typescript"
+}

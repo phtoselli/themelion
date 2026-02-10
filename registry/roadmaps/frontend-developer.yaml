@@ -1,0 +1,170 @@
+roadmap: frontend-developer
+name: "Frontend Developer"
+description: "Caminho de aprendizado para se tornar um desenvolvedor frontend completo, desde os fundamentos até arquitetura avançada"
+icon: "monitor"
+
+stages:
+
+  - slug: "base-computacional"
+    name: "Base Computacional"
+    description: "Conceitos fundamentais de computação que todo dev precisa saber"
+    order: 1
+    topics:
+      - "big-o-notation"
+      - "time-complexity"
+      - "space-complexity"
+      - "trade-offs"
+      - "arrays"
+      - "hash-tables"
+      - "stacks"
+      - "queues"
+      - "busca-linear-e-binaria"
+      - "ordenacao"
+
+  - slug: "linguagem-e-tipos"
+    name: "Linguagem e Tipos"
+    description: "Entendendo como linguagens de programação funcionam"
+    order: 2
+    topics:
+      - "tipos-de-dados-primitivos"
+      - "tipos-compostos"
+      - "tipagem-estatica-vs-dinamica"
+      - "tipagem-forte-vs-fraca"
+      - "scope"
+      - "closures"
+      - "pure-functions"
+      - "first-class-functions"
+      - "higher-order-functions"
+      - "immutability"
+      - "pass-by-value-vs-reference"
+
+  - slug: "como-a-web-funciona"
+    name: "Como a Web Funciona"
+    description: "Fundamentos de como a web funciona antes de tocar qualquer framework"
+    order: 3
+    topics:
+      - "http-https"
+      - "http-methods"
+      - "http-status-codes"
+      - "http-headers"
+      - "cookies"
+      - "sessions"
+      - "local-storage"
+      - "session-storage"
+      - "cors"
+      - "same-origin-policy"
+      - "csrf"
+      - "xss"
+
+  - slug: "html-css-fundamentos"
+    name: "HTML e CSS Fundamentos"
+    description: "Base sólida de HTML semântico e CSS"
+    order: 4
+    topics:
+      - "semantic-html"
+      - "box-model"
+      - "flexbox"
+      - "grid"
+      - "positioning"
+      - "css-specificity"
+      - "cascade"
+      - "inheritance"
+      - "css-variables"
+      - "css-transitions"
+      - "css-animations"
+      - "transform"
+      - "media-queries"
+      - "container-queries"
+
+  - slug: "dom-e-browser"
+    name: "DOM e Browser"
+    description: "Entender o navegador como plataforma de desenvolvimento"
+    order: 5
+    topics:
+      - "dom-manipulation"
+      - "event-loop"
+      - "event-bubbling-e-capturing"
+      - "event-delegation"
+      - "virtual-dom"
+      - "shadow-dom"
+      - "intersection-observer"
+      - "debouncing-e-throttling"
+
+  - slug: "performance"
+    name: "Performance Frontend"
+    description: "Fazer rápido, não só funcionar"
+    order: 6
+    topics:
+      - "critical-rendering-path"
+      - "reflow-e-repaint"
+      - "code-splitting"
+      - "tree-shaking"
+      - "lazy-loading"
+      - "memoization-frontend"
+      - "web-vitals"
+      - "lighthouse-metrics"
+      - "image-optimization"
+      - "minification"
+      - "compression"
+      - "bundle-analysis"
+
+  - slug: "acessibilidade"
+    name: "Acessibilidade"
+    description: "Web para todos, não só para quem enxerga bem"
+    order: 7
+    topics:
+      - "wcag-guidelines"
+      - "semantic-html"
+      - "aria-attributes"
+      - "keyboard-navigation"
+      - "focus-management"
+      - "color-contrast"
+      - "alt-text"
+      - "skip-links"
+
+  - slug: "arquitetura"
+    name: "Arquitetura Frontend"
+    description: "Pensar em escala, não só em componentes"
+    order: 8
+    topics:
+      - "component-based-architecture"
+      - "atomic-design"
+      - "container-presentational"
+      - "compound-components"
+      - "composition-vs-inheritance"
+      - "state-management-patterns"
+      - "flux-architecture"
+      - "mvc-mvp-mvvm"
+      - "design-tokens"
+      - "component-library"
+
+  - slug: "qualidade"
+    name: "Qualidade e Testes"
+    description: "Código que não quebra na sexta-feira às 17h"
+    order: 9
+    topics:
+      - "unit-testing"
+      - "integration-testing"
+      - "end-to-end-testing"
+      - "tdd"
+      - "mocking"
+      - "snapshot-testing"
+      - "visual-regression-testing"
+      - "code-smells"
+      - "refactoring-techniques"
+      - "linting"
+      - "code-formatting"
+
+  - slug: "colaboracao"
+    name: "Colaboração e Processo"
+    description: "Trabalhar em equipe como um profissional"
+    order: 10
+    topics:
+      - "git-fundamentals"
+      - "branching-strategies"
+      - "conventional-commits"
+      - "pull-request-workflow"
+      - "code-review-practices"
+      - "code-review-etiquette"
+      - "pair-programming"
+      - "decomposicao-de-problemas"

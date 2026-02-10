@@ -1,0 +1,9 @@
+{
+	"id": "rust",
+	"name": "Rust",
+	"ext": ".rs",
+	"runner": "rust-runner",
+	"monacoLanguage": "rust",
+	"label": "Baixo nível, ownership, sem garbage collector",
+	"icon": "rust"
+}

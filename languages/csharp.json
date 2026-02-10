@@ -1,0 +1,9 @@
+{
+	"id": "csharp",
+	"name": "C#",
+	"ext": ".cs",
+	"runner": "csharp-runner",
+	"monacoLanguage": "csharp",
+	"label": "OOP clássica, tipagem forte, managed memory",
+	"icon": "csharp"
+}

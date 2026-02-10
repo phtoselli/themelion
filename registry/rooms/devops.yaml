@@ -1,0 +1,801 @@
+room: devops
+name: "DevOps e Infraestrutura"
+description: "Aprenda Docker, Kubernetes, CI/CD, cloud computing, monitoramento, observabilidade e segurança para automatizar e escalar infraestrutura."
+icon: "cloud"
+order: 5
+
+categories:
+
+  - slug: "containerizacao"
+    name: "Containerização"
+    order: 1
+    topics:
+      - slug: "containers-vs-vms"
+        title: "Containers vs VMs"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["virtualizacao", "isolamento", "comparacao"]
+
+      - slug: "container-images"
+        title: "Container Images"
+        difficulty: beginner
+        order: 2
+        prerequisites: ["containers-vs-vms"]
+        tags: ["imagem", "template", "imutavel"]
+
+      - slug: "layers"
+        title: "Layers"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["container-images"]
+        tags: ["camadas", "cache", "otimizacao"]
+
+      - slug: "dockerfile-best-practices"
+        title: "Dockerfile Best Practices"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["layers"]
+        tags: ["construcao", "otimizacao", "seguranca"]
+
+      - slug: "multi-stage-builds"
+        title: "Multi-Stage Builds"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["dockerfile-best-practices"]
+        tags: ["tamanho", "build", "producao"]
+
+      - slug: "container-orchestration"
+        title: "Container Orchestration"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["containers-vs-vms"]
+        tags: ["orquestracao", "escala", "gerenciamento"]
+
+      - slug: "container-networking"
+        title: "Container Networking"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["containers-vs-vms"]
+        tags: ["rede", "bridge", "overlay"]
+
+      - slug: "container-volumes"
+        title: "Container Volumes"
+        difficulty: beginner
+        order: 8
+        prerequisites: ["containers-vs-vms"]
+        tags: ["persistencia", "dados", "montagem"]
+
+      - slug: "container-registry"
+        title: "Container Registry"
+        difficulty: beginner
+        order: 9
+        prerequisites: ["container-images"]
+        tags: ["armazenamento", "distribuicao", "versao"]
+
+      - slug: "image-scanning"
+        title: "Image Scanning"
+        difficulty: intermediate
+        order: 10
+        prerequisites: ["container-images"]
+        tags: ["vulnerabilidade", "seguranca", "analise"]
+
+  - slug: "ci-cd"
+    name: "CI/CD"
+    order: 2
+    topics:
+      - slug: "continuous-integration"
+        title: "Continuous Integration"
+        difficulty: beginner
+        order: 1
+        prerequisites: ["git-fundamentals"]
+        tags: ["integracao", "automatizacao", "build"]
+
+      - slug: "continuous-delivery"
+        title: "Continuous Delivery"
+        difficulty: intermediate
+        order: 2
+        prerequisites: ["continuous-integration"]
+        tags: ["entrega", "release", "manual"]
+
+      - slug: "continuous-deployment"
+        title: "Continuous Deployment"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["continuous-delivery"]
+        tags: ["deploy", "automatico", "producao"]
+
+      - slug: "pipeline-as-code"
+        title: "Pipeline as Code"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["continuous-integration"]
+        tags: ["configuracao", "versionamento", "yaml"]
+
+      - slug: "build-automation"
+        title: "Build Automation"
+        difficulty: beginner
+        order: 5
+        prerequisites: ["continuous-integration"]
+        tags: ["compilacao", "automatizacao", "artefato"]
+
+      - slug: "test-automation"
+        title: "Test Automation"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["continuous-integration", "unit-testing"]
+        tags: ["testes", "automatico", "pipeline"]
+
+      - slug: "deployment-strategies"
+        title: "Deployment Strategies (Blue-Green, Canary, Rolling, Recreate)"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["continuous-deployment"]
+        tags: ["deploy", "zero-downtime", "risco"]
+
+      - slug: "feature-flags"
+        title: "Feature Flags"
+        difficulty: intermediate
+        order: 8
+        prerequisites: ["continuous-delivery"]
+        tags: ["toggle", "gradual", "controle"]
+
+      - slug: "trunk-based-development"
+        title: "Trunk-Based Development"
+        difficulty: intermediate
+        order: 9
+        prerequisites: ["branching-strategies"]
+        tags: ["main", "integracao", "curto"]
+
+      - slug: "gitflow"
+        title: "GitFlow"
+        difficulty: intermediate
+        order: 10
+        prerequisites: ["branching-strategies"]
+        tags: ["branches", "release", "hotfix"]
+
+      - slug: "release-management"
+        title: "Release Management"
+        difficulty: intermediate
+        order: 11
+        prerequisites: ["continuous-delivery"]
+        tags: ["versao", "changelog", "coordenacao"]
+
+      - slug: "artifact-management"
+        title: "Artifact Management"
+        difficulty: intermediate
+        order: 12
+        prerequisites: ["build-automation"]
+        tags: ["artefato", "repositorio", "versionamento"]
+
+  - slug: "cloud-e-infraestrutura"
+    name: "Cloud e Infraestrutura"
+    order: 3
+    topics:
+      - slug: "iaas-paas-saas-faas"
+        title: "IaaS vs PaaS vs SaaS vs FaaS"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["modelos", "servico", "responsabilidade"]
+
+      - slug: "virtual-machines"
+        title: "Virtual Machines"
+        difficulty: beginner
+        order: 2
+        prerequisites: []
+        tags: ["vm", "hypervisor", "isolamento"]
+
+      - slug: "auto-scaling"
+        title: "Auto-Scaling"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["horizontal-scaling"]
+        tags: ["automatico", "metricas", "elasticidade"]
+
+      - slug: "load-balancers"
+        title: "Load Balancers"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["load-balancing"]
+        tags: ["distribuicao", "algoritmos", "health-check"]
+
+      - slug: "reverse-proxy"
+        title: "Reverse Proxy"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["http-https"]
+        tags: ["proxy", "ssl-termination", "cache"]
+
+      - slug: "forward-proxy"
+        title: "Forward Proxy"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["http-https"]
+        tags: ["proxy", "anonimato", "filtro"]
+
+      - slug: "api-gateway"
+        title: "API Gateway"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["reverse-proxy", "api-gateway-pattern"]
+        tags: ["roteamento", "autenticacao", "rate-limit"]
+
+      - slug: "service-mesh"
+        title: "Service Mesh"
+        difficulty: advanced
+        order: 8
+        prerequisites: ["microservices", "container-orchestration"]
+        tags: ["sidecar", "observabilidade", "trafico"]
+
+      - slug: "infrastructure-as-code"
+        title: "Infrastructure as Code (IaC)"
+        difficulty: intermediate
+        order: 9
+        prerequisites: []
+        tags: ["declarativo", "reprodutivel", "versionamento"]
+
+      - slug: "configuration-management"
+        title: "Configuration Management"
+        difficulty: intermediate
+        order: 10
+        prerequisites: ["infrastructure-as-code"]
+        tags: ["configuracao", "consistencia", "automatizacao"]
+
+      - slug: "immutable-infrastructure"
+        title: "Immutable Infrastructure"
+        difficulty: intermediate
+        order: 11
+        prerequisites: ["infrastructure-as-code"]
+        tags: ["imutavel", "replace", "previsibilidade"]
+
+      - slug: "serverless-architecture"
+        title: "Serverless Architecture"
+        difficulty: intermediate
+        order: 12
+        prerequisites: ["iaas-paas-saas-faas"]
+        tags: ["sem-servidor", "evento", "escala"]
+
+      - slug: "cold-start"
+        title: "Cold Start"
+        difficulty: intermediate
+        order: 13
+        prerequisites: ["serverless-architecture"]
+        tags: ["latencia", "inicializacao", "warmup"]
+
+      - slug: "lambda-functions"
+        title: "Lambda/Functions"
+        difficulty: intermediate
+        order: 14
+        prerequisites: ["serverless-architecture"]
+        tags: ["funcao", "evento", "efemero"]
+
+      - slug: "object-storage"
+        title: "Object Storage"
+        difficulty: beginner
+        order: 15
+        prerequisites: []
+        tags: ["blob", "s3", "estatico"]
+
+      - slug: "block-storage"
+        title: "Block Storage"
+        difficulty: intermediate
+        order: 16
+        prerequisites: ["object-storage"]
+        tags: ["disco", "volume", "performance"]
+
+      - slug: "nas"
+        title: "Network Attached Storage (NAS)"
+        difficulty: intermediate
+        order: 17
+        prerequisites: ["object-storage"]
+        tags: ["compartilhado", "rede", "arquivo"]
+
+      - slug: "cdn-infra"
+        title: "Content Delivery Network (CDN)"
+        difficulty: beginner
+        order: 18
+        prerequisites: []
+        tags: ["distribuicao", "cache", "borda"]
+
+  - slug: "monitoramento-e-observabilidade"
+    name: "Monitoramento e Observabilidade"
+    order: 4
+    topics:
+      - slug: "logging"
+        title: "Logging"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["registro", "depuracao", "rastreamento"]
+
+      - slug: "log-levels"
+        title: "Log Levels"
+        difficulty: beginner
+        order: 2
+        prerequisites: ["logging"]
+        tags: ["debug", "info", "error", "severidade"]
+
+      - slug: "structured-logging"
+        title: "Structured Logging"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["logging"]
+        tags: ["json", "parseavel", "consulta"]
+
+      - slug: "log-aggregation"
+        title: "Log Aggregation"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["structured-logging"]
+        tags: ["centralizado", "busca", "analise"]
+
+      - slug: "metrics"
+        title: "Metrics"
+        difficulty: intermediate
+        order: 5
+        prerequisites: []
+        tags: ["numeros", "tendencia", "alerta"]
+
+      - slug: "time-series-data"
+        title: "Time-Series Data"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["metrics"]
+        tags: ["temporal", "agregacao", "retencao"]
+
+      - slug: "monitoring"
+        title: "Monitoring"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["metrics"]
+        tags: ["vigilancia", "dashboards", "status"]
+
+      - slug: "alerting"
+        title: "Alerting"
+        difficulty: intermediate
+        order: 8
+        prerequisites: ["monitoring"]
+        tags: ["notificacao", "threshold", "escalacao"]
+
+      - slug: "tracing"
+        title: "Tracing"
+        difficulty: intermediate
+        order: 9
+        prerequisites: []
+        tags: ["rastreamento", "requisicao", "latencia"]
+
+      - slug: "distributed-tracing"
+        title: "Distributed Tracing"
+        difficulty: intermediate
+        order: 10
+        prerequisites: ["tracing", "microservices"]
+        tags: ["servicos", "propagacao", "correlacao"]
+
+      - slug: "correlation-ids"
+        title: "Correlation IDs"
+        difficulty: intermediate
+        order: 11
+        prerequisites: ["distributed-tracing"]
+        tags: ["identificador", "rastreamento", "requisicao"]
+
+      - slug: "span-e-trace"
+        title: "Span e Trace"
+        difficulty: intermediate
+        order: 12
+        prerequisites: ["distributed-tracing"]
+        tags: ["unidade", "hierarquia", "tempo"]
+
+      - slug: "health-checks"
+        title: "Health Checks"
+        difficulty: beginner
+        order: 13
+        prerequisites: []
+        tags: ["status", "endpoint", "disponibilidade"]
+
+      - slug: "liveness-probes"
+        title: "Liveness Probes"
+        difficulty: intermediate
+        order: 14
+        prerequisites: ["health-checks"]
+        tags: ["vivo", "reinicio", "container"]
+
+      - slug: "readiness-probes"
+        title: "Readiness Probes"
+        difficulty: intermediate
+        order: 15
+        prerequisites: ["health-checks"]
+        tags: ["pronto", "trafico", "startup"]
+
+      - slug: "sli"
+        title: "SLI (Service Level Indicators)"
+        difficulty: intermediate
+        order: 16
+        prerequisites: ["metrics"]
+        tags: ["indicador", "medida", "qualidade"]
+
+      - slug: "slo"
+        title: "SLO (Service Level Objectives)"
+        difficulty: intermediate
+        order: 17
+        prerequisites: ["sli"]
+        tags: ["objetivo", "meta", "confiabilidade"]
+
+      - slug: "sla"
+        title: "SLA (Service Level Agreements)"
+        difficulty: intermediate
+        order: 18
+        prerequisites: ["slo"]
+        tags: ["contrato", "garantia", "penalidade"]
+
+      - slug: "error-budget"
+        title: "Error Budget"
+        difficulty: intermediate
+        order: 19
+        prerequisites: ["slo"]
+        tags: ["orcamento", "risco", "inovacao"]
+
+      - slug: "dashboards"
+        title: "Dashboards"
+        difficulty: beginner
+        order: 20
+        prerequisites: ["metrics"]
+        tags: ["visualizacao", "painel", "tempo-real"]
+
+      - slug: "synthetic-monitoring"
+        title: "Synthetic Monitoring"
+        difficulty: intermediate
+        order: 21
+        prerequisites: ["monitoring"]
+        tags: ["simulacao", "proativo", "disponibilidade"]
+
+      - slug: "rum"
+        title: "Real User Monitoring (RUM)"
+        difficulty: intermediate
+        order: 22
+        prerequisites: ["monitoring", "web-vitals"]
+        tags: ["usuario-real", "experiencia", "browser"]
+
+  - slug: "seguranca"
+    name: "Segurança"
+    order: 5
+    topics:
+      - slug: "defense-in-depth"
+        title: "Defense in Depth"
+        difficulty: intermediate
+        order: 1
+        prerequisites: []
+        tags: ["camadas", "protecao", "estrategia"]
+
+      - slug: "principle-of-least-privilege"
+        title: "Principle of Least Privilege"
+        difficulty: beginner
+        order: 2
+        prerequisites: []
+        tags: ["minimo", "permissao", "acesso"]
+
+      - slug: "zero-trust"
+        title: "Zero Trust Architecture"
+        difficulty: advanced
+        order: 3
+        prerequisites: ["defense-in-depth"]
+        tags: ["nunca-confiar", "verificar", "microsegmentacao"]
+
+      - slug: "network-segmentation"
+        title: "Network Segmentation"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["defense-in-depth"]
+        tags: ["rede", "isolamento", "zona"]
+
+      - slug: "firewalls"
+        title: "Firewalls"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["network-segmentation"]
+        tags: ["filtro", "regras", "trafego"]
+
+      - slug: "waf"
+        title: "WAF (Web Application Firewall)"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["firewalls"]
+        tags: ["web", "protecao", "regras"]
+
+      - slug: "ddos-protection"
+        title: "DDoS Protection"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["firewalls"]
+        tags: ["ataque", "mitigacao", "distribuido"]
+
+      - slug: "secrets-management"
+        title: "Secrets Management"
+        difficulty: intermediate
+        order: 8
+        prerequisites: ["principle-of-least-privilege"]
+        tags: ["segredos", "vault", "rotacao"]
+
+      - slug: "encryption-at-rest"
+        title: "Encryption at Rest"
+        difficulty: intermediate
+        order: 9
+        prerequisites: []
+        tags: ["armazenamento", "criptografia", "chave"]
+
+      - slug: "encryption-in-transit"
+        title: "Encryption in Transit"
+        difficulty: intermediate
+        order: 10
+        prerequisites: ["tls-ssl"]
+        tags: ["transporte", "criptografia", "tls"]
+
+      - slug: "certificate-management"
+        title: "Certificate Management"
+        difficulty: intermediate
+        order: 11
+        prerequisites: ["tls-ssl"]
+        tags: ["certificado", "renovacao", "ca"]
+
+      - slug: "pki"
+        title: "Public Key Infrastructure (PKI)"
+        difficulty: advanced
+        order: 12
+        prerequisites: ["certificate-management"]
+        tags: ["chave-publica", "hierarquia", "confianca"]
+
+      - slug: "security-headers"
+        title: "Security Headers"
+        difficulty: intermediate
+        order: 13
+        prerequisites: ["http-headers"]
+        tags: ["headers", "protecao", "browser"]
+
+      - slug: "sql-injection"
+        title: "SQL Injection"
+        difficulty: intermediate
+        order: 14
+        prerequisites: ["joins"]
+        tags: ["ataque", "injecao", "sanitizacao"]
+
+      - slug: "xss-security"
+        title: "XSS (Cross-Site Scripting)"
+        difficulty: intermediate
+        order: 15
+        prerequisites: ["dom-manipulation"]
+        tags: ["ataque", "script", "sanitizacao"]
+
+      - slug: "csrf-security"
+        title: "CSRF (Cross-Site Request Forgery)"
+        difficulty: intermediate
+        order: 16
+        prerequisites: ["cookies", "sessions"]
+        tags: ["ataque", "token", "origem"]
+
+      - slug: "clickjacking"
+        title: "Clickjacking"
+        difficulty: intermediate
+        order: 17
+        prerequisites: ["security-headers"]
+        tags: ["iframe", "ataque", "x-frame-options"]
+
+      - slug: "directory-traversal"
+        title: "Directory Traversal"
+        difficulty: intermediate
+        order: 18
+        prerequisites: []
+        tags: ["ataque", "caminho", "acesso"]
+
+      - slug: "command-injection"
+        title: "Command Injection"
+        difficulty: intermediate
+        order: 19
+        prerequisites: []
+        tags: ["ataque", "shell", "sanitizacao"]
+
+      - slug: "ssrf"
+        title: "SSRF (Server-Side Request Forgery)"
+        difficulty: intermediate
+        order: 20
+        prerequisites: ["http-https"]
+        tags: ["ataque", "servidor", "interno"]
+
+      - slug: "xxe"
+        title: "XXE (XML External Entity)"
+        difficulty: advanced
+        order: 21
+        prerequisites: []
+        tags: ["xml", "ataque", "entidade-externa"]
+
+      - slug: "deserialization-attacks"
+        title: "Deserialization Attacks"
+        difficulty: advanced
+        order: 22
+        prerequisites: []
+        tags: ["objeto", "ataque", "execucao"]
+
+      - slug: "owasp-top-10"
+        title: "OWASP Top 10"
+        difficulty: intermediate
+        order: 23
+        prerequisites: []
+        tags: ["vulnerabilidades", "ranking", "referencia"]
+
+      - slug: "penetration-testing"
+        title: "Penetration Testing"
+        difficulty: advanced
+        order: 24
+        prerequisites: ["owasp-top-10"]
+        tags: ["teste", "invasao", "etico"]
+
+      - slug: "vulnerability-scanning"
+        title: "Vulnerability Scanning"
+        difficulty: intermediate
+        order: 25
+        prerequisites: ["owasp-top-10"]
+        tags: ["automatico", "varredura", "deteccao"]
+
+      - slug: "security-audits"
+        title: "Security Audits"
+        difficulty: advanced
+        order: 26
+        prerequisites: ["vulnerability-scanning"]
+        tags: ["auditoria", "conformidade", "revisao"]
+
+      - slug: "compliance"
+        title: "Compliance (GDPR, SOC2, HIPAA)"
+        difficulty: advanced
+        order: 27
+        prerequisites: ["security-audits"]
+        tags: ["regulamento", "conformidade", "dados"]
+
+      - slug: "data-privacy"
+        title: "Data Privacy"
+        difficulty: intermediate
+        order: 28
+        prerequisites: []
+        tags: ["privacidade", "consentimento", "direitos"]
+
+      - slug: "pii-handling"
+        title: "PII Handling"
+        difficulty: intermediate
+        order: 29
+        prerequisites: ["data-privacy"]
+        tags: ["dados-pessoais", "protecao", "mascaramento"]
+
+  - slug: "networking"
+    name: "Networking"
+    order: 6
+    topics:
+      - slug: "osi-model"
+        title: "OSI Model"
+        difficulty: intermediate
+        order: 1
+        prerequisites: []
+        tags: ["camadas", "referencia", "comunicacao"]
+
+      - slug: "tcp-ip-model"
+        title: "TCP/IP Model"
+        difficulty: intermediate
+        order: 2
+        prerequisites: ["osi-model"]
+        tags: ["camadas", "pratico", "internet"]
+
+      - slug: "ip-addressing"
+        title: "IP Addressing (IPv4, IPv6)"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["tcp-ip-model"]
+        tags: ["endereco", "versoes", "identificacao"]
+
+      - slug: "subnetting"
+        title: "Subnetting"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["ip-addressing"]
+        tags: ["sub-rede", "mascara", "divisao"]
+
+      - slug: "cidr-notation"
+        title: "CIDR Notation"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["subnetting"]
+        tags: ["notacao", "prefixo", "faixa"]
+
+      - slug: "nat"
+        title: "NAT (Network Address Translation)"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["ip-addressing"]
+        tags: ["traducao", "privado", "publico"]
+
+      - slug: "vpn"
+        title: "VPN"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["encryption-in-transit"]
+        tags: ["tunel", "privado", "remoto"]
+
+      - slug: "proxy-servers"
+        title: "Proxy Servers"
+        difficulty: intermediate
+        order: 8
+        prerequisites: ["http-https"]
+        tags: ["intermediario", "cache", "filtragem"]
+
+      - slug: "dns-resolution"
+        title: "DNS Resolution"
+        difficulty: intermediate
+        order: 9
+        prerequisites: ["dns"]
+        tags: ["resolucao", "hierarquia", "cache"]
+
+      - slug: "dns-records"
+        title: "DNS Records (A, AAAA, CNAME, MX, TXT)"
+        difficulty: intermediate
+        order: 10
+        prerequisites: ["dns-resolution"]
+        tags: ["registros", "tipos", "configuracao"]
+
+      - slug: "ttl"
+        title: "TTL"
+        difficulty: beginner
+        order: 11
+        prerequisites: ["dns-records"]
+        tags: ["tempo-de-vida", "cache", "expiracao"]
+
+      - slug: "load-balancing-algorithms"
+        title: "Load Balancing Algorithms (Round-Robin, Least Connections, IP Hash)"
+        difficulty: intermediate
+        order: 12
+        prerequisites: ["load-balancing"]
+        tags: ["algoritmo", "distribuicao", "estrategia"]
+
+      - slug: "sticky-sessions"
+        title: "Sticky Sessions"
+        difficulty: intermediate
+        order: 13
+        prerequisites: ["load-balancing-algorithms"]
+        tags: ["afinidade", "sessao", "servidor"]
+
+      - slug: "websockets-vs-long-polling"
+        title: "WebSockets vs Long Polling"
+        difficulty: intermediate
+        order: 14
+        prerequisites: ["websockets"]
+        tags: ["tempo-real", "comparacao", "trade-off"]
+
+      - slug: "latency"
+        title: "Latency"
+        difficulty: beginner
+        order: 15
+        prerequisites: []
+        tags: ["atraso", "tempo", "rede"]
+
+      - slug: "bandwidth"
+        title: "Bandwidth"
+        difficulty: beginner
+        order: 16
+        prerequisites: []
+        tags: ["capacidade", "transferencia", "limite"]
+
+      - slug: "throughput"
+        title: "Throughput"
+        difficulty: beginner
+        order: 17
+        prerequisites: ["bandwidth"]
+        tags: ["vazao", "taxa", "real"]
+
+      - slug: "packet-loss"
+        title: "Packet Loss"
+        difficulty: intermediate
+        order: 18
+        prerequisites: ["tcp-ip"]
+        tags: ["perda", "retransmissao", "qualidade"]
+
+      - slug: "network-protocols"
+        title: "Network Protocols (FTP, SMTP, POP3, IMAP)"
+        difficulty: intermediate
+        order: 19
+        prerequisites: ["tcp-ip"]
+        tags: ["aplicacao", "transferencia", "email"]

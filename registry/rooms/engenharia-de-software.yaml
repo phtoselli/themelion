@@ -1,0 +1,909 @@
+room: engenharia-de-software
+name: "Engenharia de Software"
+description: "Aprenda testes automatizados, Git, code review, refatoração, metodologias ágeis e soft skills essenciais para trabalhar em equipe."
+icon: "code"
+order: 6
+
+categories:
+
+  - slug: "testes"
+    name: "Testes"
+    order: 1
+    topics:
+      - slug: "unit-testing"
+        title: "Unit Testing"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["isolado", "funcao", "rapido"]
+
+      - slug: "integration-testing"
+        title: "Integration Testing"
+        difficulty: intermediate
+        order: 2
+        prerequisites: ["unit-testing"]
+        tags: ["integrado", "modulos", "dependencias"]
+
+      - slug: "end-to-end-testing"
+        title: "End-to-End Testing"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["integration-testing"]
+        tags: ["fluxo-completo", "usuario", "browser"]
+
+      - slug: "acceptance-testing"
+        title: "Acceptance Testing"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["end-to-end-testing"]
+        tags: ["requisitos", "stakeholder", "validacao"]
+
+      - slug: "smoke-testing"
+        title: "Smoke Testing"
+        difficulty: beginner
+        order: 5
+        prerequisites: ["unit-testing"]
+        tags: ["basico", "sanidade", "deploy"]
+
+      - slug: "regression-testing"
+        title: "Regression Testing"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["unit-testing"]
+        tags: ["regressao", "mudanca", "garantia"]
+
+      - slug: "performance-testing"
+        title: "Performance Testing"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["integration-testing"]
+        tags: ["velocidade", "carga", "metricas"]
+
+      - slug: "load-testing"
+        title: "Load Testing"
+        difficulty: intermediate
+        order: 8
+        prerequisites: ["performance-testing"]
+        tags: ["carga", "usuarios", "capacidade"]
+
+      - slug: "stress-testing"
+        title: "Stress Testing"
+        difficulty: intermediate
+        order: 9
+        prerequisites: ["load-testing"]
+        tags: ["limite", "quebra", "recuperacao"]
+
+      - slug: "spike-testing"
+        title: "Spike Testing"
+        difficulty: intermediate
+        order: 10
+        prerequisites: ["load-testing"]
+        tags: ["pico", "subita", "elasticidade"]
+
+      - slug: "soak-testing"
+        title: "Soak Testing"
+        difficulty: intermediate
+        order: 11
+        prerequisites: ["load-testing"]
+        tags: ["duracao", "memoria", "vazamento"]
+
+      - slug: "security-testing"
+        title: "Security Testing"
+        difficulty: intermediate
+        order: 12
+        prerequisites: ["integration-testing"]
+        tags: ["vulnerabilidade", "seguranca", "ataque"]
+
+      - slug: "usability-testing"
+        title: "Usability Testing"
+        difficulty: beginner
+        order: 13
+        prerequisites: []
+        tags: ["usuario", "experiencia", "feedback"]
+
+      - slug: "ab-testing"
+        title: "A/B Testing"
+        difficulty: intermediate
+        order: 14
+        prerequisites: []
+        tags: ["experimento", "variante", "decisao"]
+
+      - slug: "tdd"
+        title: "Test-Driven Development (TDD)"
+        difficulty: intermediate
+        order: 15
+        prerequisites: ["unit-testing"]
+        tags: ["red-green-refactor", "design", "confianca"]
+
+      - slug: "bdd"
+        title: "Behavior-Driven Development (BDD)"
+        difficulty: intermediate
+        order: 16
+        prerequisites: ["tdd"]
+        tags: ["comportamento", "gherkin", "dado-quando-entao"]
+
+      - slug: "test-coverage"
+        title: "Test Coverage"
+        difficulty: beginner
+        order: 17
+        prerequisites: ["unit-testing"]
+        tags: ["cobertura", "metrica", "linhas"]
+
+      - slug: "code-coverage"
+        title: "Code Coverage"
+        difficulty: intermediate
+        order: 18
+        prerequisites: ["test-coverage"]
+        tags: ["branch", "statement", "funcao"]
+
+      - slug: "mocking"
+        title: "Mocking"
+        difficulty: intermediate
+        order: 19
+        prerequisites: ["unit-testing"]
+        tags: ["simulacao", "isolamento", "dependencia"]
+
+      - slug: "stubbing"
+        title: "Stubbing"
+        difficulty: intermediate
+        order: 20
+        prerequisites: ["mocking"]
+        tags: ["resposta-fixa", "substituicao", "simples"]
+
+      - slug: "fixtures"
+        title: "Fixtures"
+        difficulty: beginner
+        order: 21
+        prerequisites: ["unit-testing"]
+        tags: ["dados-teste", "setup", "reutilizacao"]
+
+      - slug: "test-doubles"
+        title: "Test Doubles (Mock, Stub, Fake, Spy, Dummy)"
+        difficulty: intermediate
+        order: 22
+        prerequisites: ["mocking", "stubbing"]
+        tags: ["tipos", "substituicao", "isolamento"]
+
+      - slug: "snapshot-testing"
+        title: "Snapshot Testing"
+        difficulty: beginner
+        order: 23
+        prerequisites: ["unit-testing"]
+        tags: ["snapshot", "comparacao", "regressao"]
+
+      - slug: "visual-regression-testing"
+        title: "Visual Regression Testing"
+        difficulty: intermediate
+        order: 24
+        prerequisites: ["snapshot-testing"]
+        tags: ["visual", "pixel", "comparacao"]
+
+      - slug: "contract-testing-eng"
+        title: "Contract Testing"
+        difficulty: intermediate
+        order: 25
+        prerequisites: ["integration-testing"]
+        tags: ["contrato", "api", "consumidor-provedor"]
+
+      - slug: "chaos-engineering"
+        title: "Chaos Engineering"
+        difficulty: advanced
+        order: 26
+        prerequisites: ["integration-testing"]
+        tags: ["falha", "resiliencia", "experimento"]
+
+  - slug: "versionamento-e-colaboracao"
+    name: "Versionamento e Colaboração"
+    order: 2
+    topics:
+      - slug: "git-fundamentals"
+        title: "Git Fundamentals"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["versionamento", "commits", "branches"]
+
+      - slug: "branching-strategies"
+        title: "Branching Strategies"
+        difficulty: intermediate
+        order: 2
+        prerequisites: ["git-fundamentals"]
+        tags: ["estrategia", "feature-branch", "main"]
+
+      - slug: "merge-vs-rebase"
+        title: "Merge vs Rebase"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["branching-strategies"]
+        tags: ["historico", "linear", "merge-commit"]
+
+      - slug: "cherry-pick"
+        title: "Cherry-Pick"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["merge-vs-rebase"]
+        tags: ["seletivo", "commit", "aplicar"]
+
+      - slug: "git-hooks"
+        title: "Git Hooks"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["git-fundamentals"]
+        tags: ["automatizacao", "pre-commit", "validacao"]
+
+      - slug: "conventional-commits"
+        title: "Conventional Commits"
+        difficulty: beginner
+        order: 6
+        prerequisites: ["git-fundamentals"]
+        tags: ["padrao", "mensagem", "semantico"]
+
+      - slug: "semantic-versioning"
+        title: "Semantic Versioning"
+        difficulty: beginner
+        order: 7
+        prerequisites: ["conventional-commits"]
+        tags: ["major", "minor", "patch"]
+
+      - slug: "monorepo-vs-polyrepo"
+        title: "Monorepo vs Polyrepo"
+        difficulty: intermediate
+        order: 8
+        prerequisites: ["git-fundamentals"]
+        tags: ["repositorio", "organizacao", "trade-off"]
+
+      - slug: "code-review-practices"
+        title: "Code Review Best Practices"
+        difficulty: intermediate
+        order: 9
+        prerequisites: ["git-fundamentals"]
+        tags: ["revisao", "qualidade", "feedback"]
+
+      - slug: "pull-request-workflow"
+        title: "Pull Request Workflow"
+        difficulty: beginner
+        order: 10
+        prerequisites: ["branching-strategies"]
+        tags: ["pr", "revisao", "merge"]
+
+      - slug: "merge-conflicts-resolution"
+        title: "Merge Conflicts Resolution"
+        difficulty: intermediate
+        order: 11
+        prerequisites: ["merge-vs-rebase"]
+        tags: ["conflito", "resolucao", "manual"]
+
+      - slug: "git-bisect"
+        title: "Git Bisect"
+        difficulty: intermediate
+        order: 12
+        prerequisites: ["git-fundamentals"]
+        tags: ["depuracao", "busca-binaria", "bug"]
+
+      - slug: "git-reflog"
+        title: "Git Reflog"
+        difficulty: intermediate
+        order: 13
+        prerequisites: ["git-fundamentals"]
+        tags: ["historico", "recuperacao", "referencia"]
+
+      - slug: "submodules"
+        title: "Submodules"
+        difficulty: intermediate
+        order: 14
+        prerequisites: ["git-fundamentals"]
+        tags: ["dependencia", "repositorio", "externo"]
+
+      - slug: "subtrees"
+        title: "Subtrees"
+        difficulty: intermediate
+        order: 15
+        prerequisites: ["submodules"]
+        tags: ["alternativa", "mesclagem", "subprojeto"]
+
+  - slug: "qualidade-de-codigo"
+    name: "Qualidade de Código"
+    order: 3
+    topics:
+      - slug: "code-smells"
+        title: "Code Smells"
+        difficulty: intermediate
+        order: 1
+        prerequisites: []
+        tags: ["indicador", "problema", "refatoracao"]
+
+      - slug: "refactoring-techniques"
+        title: "Refactoring Techniques"
+        difficulty: intermediate
+        order: 2
+        prerequisites: ["code-smells"]
+        tags: ["melhoria", "estrutura", "comportamento"]
+
+      - slug: "technical-debt"
+        title: "Technical Debt"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["code-smells"]
+        tags: ["divida", "custo", "gestao"]
+
+      - slug: "code-metrics"
+        title: "Code Metrics (Cyclomatic Complexity, Cognitive Complexity)"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["code-smells"]
+        tags: ["complexidade", "medida", "qualidade"]
+
+      - slug: "code-duplication"
+        title: "Code Duplication"
+        difficulty: beginner
+        order: 5
+        prerequisites: []
+        tags: ["duplicacao", "dry", "extracao"]
+
+      - slug: "linting"
+        title: "Linting"
+        difficulty: beginner
+        order: 6
+        prerequisites: []
+        tags: ["estatica", "regras", "consistencia"]
+
+      - slug: "static-analysis"
+        title: "Static Analysis"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["linting"]
+        tags: ["analise", "automatica", "bugs"]
+
+      - slug: "code-formatting"
+        title: "Code Formatting"
+        difficulty: beginner
+        order: 8
+        prerequisites: []
+        tags: ["formatacao", "estilo", "automatico"]
+
+      - slug: "naming-conventions"
+        title: "Naming Conventions"
+        difficulty: beginner
+        order: 9
+        prerequisites: []
+        tags: ["nomes", "clareza", "padrao"]
+
+      - slug: "comments-best-practices"
+        title: "Comments Best Practices"
+        difficulty: beginner
+        order: 10
+        prerequisites: []
+        tags: ["comentarios", "documentacao", "por-que"]
+
+      - slug: "documentation"
+        title: "Documentation"
+        difficulty: intermediate
+        order: 11
+        prerequisites: ["comments-best-practices"]
+        tags: ["documentacao", "manutencao", "referencia"]
+
+      - slug: "self-documenting-code"
+        title: "Self-Documenting Code"
+        difficulty: intermediate
+        order: 12
+        prerequisites: ["naming-conventions"]
+        tags: ["legibilidade", "expressividade", "clareza"]
+
+      - slug: "readme-best-practices"
+        title: "README Best Practices"
+        difficulty: beginner
+        order: 13
+        prerequisites: []
+        tags: ["readme", "projeto", "primeira-impressao"]
+
+      - slug: "changelog"
+        title: "Changelog"
+        difficulty: beginner
+        order: 14
+        prerequisites: ["conventional-commits"]
+        tags: ["mudancas", "historico", "versao"]
+
+      - slug: "api-documentation-eng"
+        title: "API Documentation"
+        difficulty: intermediate
+        order: 15
+        prerequisites: ["documentation"]
+        tags: ["api", "referencia", "exemplos"]
+
+  - slug: "metodologias-e-processos"
+    name: "Metodologias e Processos"
+    order: 4
+    topics:
+      - slug: "agile"
+        title: "Agile"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["manifesto", "principios", "iterativo"]
+
+      - slug: "scrum"
+        title: "Scrum"
+        difficulty: beginner
+        order: 2
+        prerequisites: ["agile"]
+        tags: ["framework", "sprints", "papeis"]
+
+      - slug: "kanban"
+        title: "Kanban"
+        difficulty: beginner
+        order: 3
+        prerequisites: ["agile"]
+        tags: ["fluxo", "wip", "visual"]
+
+      - slug: "extreme-programming"
+        title: "Extreme Programming (XP)"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["agile"]
+        tags: ["praticas", "pair-programming", "tdd"]
+
+      - slug: "lean"
+        title: "Lean"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["agile"]
+        tags: ["desperdicio", "valor", "fluxo"]
+
+      - slug: "devops-culture"
+        title: "DevOps Culture"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["agile"]
+        tags: ["colaboracao", "automatizacao", "feedback"]
+
+      - slug: "waterfall"
+        title: "Waterfall"
+        difficulty: beginner
+        order: 7
+        prerequisites: []
+        tags: ["sequencial", "fases", "tradicional"]
+
+      - slug: "sprints"
+        title: "Sprints"
+        difficulty: beginner
+        order: 8
+        prerequisites: ["scrum"]
+        tags: ["iteracao", "tempo-fixo", "entrega"]
+
+      - slug: "user-stories"
+        title: "User Stories"
+        difficulty: beginner
+        order: 9
+        prerequisites: ["agile"]
+        tags: ["requisito", "usuario", "valor"]
+
+      - slug: "story-points"
+        title: "Story Points"
+        difficulty: beginner
+        order: 10
+        prerequisites: ["user-stories"]
+        tags: ["estimativa", "complexidade", "relativo"]
+
+      - slug: "estimation-techniques"
+        title: "Estimation Techniques"
+        difficulty: intermediate
+        order: 11
+        prerequisites: ["story-points"]
+        tags: ["planning-poker", "t-shirt", "fibonacci"]
+
+      - slug: "retrospectives"
+        title: "Retrospectives"
+        difficulty: beginner
+        order: 12
+        prerequisites: ["scrum"]
+        tags: ["melhoria", "reflexao", "acao"]
+
+      - slug: "daily-standups"
+        title: "Daily Standups"
+        difficulty: beginner
+        order: 13
+        prerequisites: ["scrum"]
+        tags: ["diario", "bloqueios", "alinhamento"]
+
+      - slug: "sprint-planning"
+        title: "Sprint Planning"
+        difficulty: beginner
+        order: 14
+        prerequisites: ["sprints"]
+        tags: ["planejamento", "backlog", "compromisso"]
+
+      - slug: "backlog-refinement"
+        title: "Backlog Refinement"
+        difficulty: intermediate
+        order: 15
+        prerequisites: ["sprint-planning"]
+        tags: ["preparacao", "detalhamento", "priorizacao"]
+
+      - slug: "definition-of-done"
+        title: "Definition of Done"
+        difficulty: beginner
+        order: 16
+        prerequisites: ["scrum"]
+        tags: ["criterio", "qualidade", "completo"]
+
+      - slug: "definition-of-ready"
+        title: "Definition of Ready"
+        difficulty: beginner
+        order: 17
+        prerequisites: ["definition-of-done"]
+        tags: ["criterio", "preparado", "inicio"]
+
+      - slug: "velocity"
+        title: "Velocity"
+        difficulty: beginner
+        order: 18
+        prerequisites: ["story-points", "sprints"]
+        tags: ["metrica", "previsibilidade", "capacidade"]
+
+  - slug: "soft-skills"
+    name: "Soft Skills e Mindset"
+    order: 5
+    topics:
+      - slug: "documentacao-tecnica"
+        title: "Documentação Técnica"
+        difficulty: intermediate
+        order: 1
+        prerequisites: []
+        tags: ["escrita", "clareza", "referencia"]
+
+      - slug: "technical-writing"
+        title: "Technical Writing"
+        difficulty: intermediate
+        order: 2
+        prerequisites: ["documentacao-tecnica"]
+        tags: ["escrita", "audiencia", "estrutura"]
+
+      - slug: "apresentacoes-tecnicas"
+        title: "Apresentações Técnicas"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["technical-writing"]
+        tags: ["apresentacao", "comunicacao", "visual"]
+
+      - slug: "code-documentation"
+        title: "Code Documentation"
+        difficulty: beginner
+        order: 4
+        prerequisites: []
+        tags: ["codigo", "jsdoc", "inline"]
+
+      - slug: "adr"
+        title: "Architecture Decision Records (ADR)"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["documentacao-tecnica"]
+        tags: ["decisao", "registro", "contexto"]
+
+      - slug: "diagramacao"
+        title: "Diagramação (UML, C4 Model, Sequence Diagrams, Flowcharts)"
+        difficulty: intermediate
+        order: 6
+        prerequisites: []
+        tags: ["visual", "comunicacao", "modelo"]
+
+      - slug: "comunicacao-assincrona"
+        title: "Comunicação Assíncrona"
+        difficulty: beginner
+        order: 7
+        prerequisites: []
+        tags: ["escrita", "documentacao", "remoto"]
+
+      - slug: "comunicacao-sincrona"
+        title: "Comunicação Síncrona"
+        difficulty: beginner
+        order: 8
+        prerequisites: []
+        tags: ["reuniao", "call", "presencial"]
+
+      - slug: "feedback-efetivo"
+        title: "Feedback Efetivo"
+        difficulty: intermediate
+        order: 9
+        prerequisites: []
+        tags: ["construtivo", "especifico", "acionavel"]
+
+      - slug: "escuta-ativa"
+        title: "Escuta Ativa"
+        difficulty: beginner
+        order: 10
+        prerequisites: []
+        tags: ["atencao", "compreensao", "empatia"]
+
+      - slug: "clareza-e-concisao"
+        title: "Clareza e Concisão"
+        difficulty: beginner
+        order: 11
+        prerequisites: []
+        tags: ["simplicidade", "direto", "objetivo"]
+
+      - slug: "adaptacao-de-linguagem"
+        title: "Adaptação de Linguagem para Audiência"
+        difficulty: intermediate
+        order: 12
+        prerequisites: []
+        tags: ["contexto", "tecnico", "nao-tecnico"]
+
+      - slug: "pair-programming"
+        title: "Pair Programming"
+        difficulty: beginner
+        order: 13
+        prerequisites: []
+        tags: ["colaboracao", "driver-navigator", "aprendizado"]
+
+      - slug: "code-review-etiquette"
+        title: "Code Review Etiquette"
+        difficulty: beginner
+        order: 14
+        prerequisites: ["code-review-practices"]
+        tags: ["respeito", "sugestao", "tom"]
+
+      - slug: "mentoria"
+        title: "Mentoria"
+        difficulty: intermediate
+        order: 15
+        prerequisites: []
+        tags: ["ensino", "guia", "crescimento"]
+
+      - slug: "knowledge-sharing"
+        title: "Knowledge Sharing"
+        difficulty: beginner
+        order: 16
+        prerequisites: []
+        tags: ["compartilhamento", "equipe", "documentacao"]
+
+      - slug: "collective-ownership"
+        title: "Collective Ownership"
+        difficulty: intermediate
+        order: 17
+        prerequisites: []
+        tags: ["responsabilidade", "equipe", "codigo"]
+
+      - slug: "resolucao-de-conflitos"
+        title: "Resolução de Conflitos"
+        difficulty: intermediate
+        order: 18
+        prerequisites: []
+        tags: ["conflito", "mediacao", "consenso"]
+
+      - slug: "trabalho-remoto"
+        title: "Trabalho Remoto"
+        difficulty: beginner
+        order: 19
+        prerequisites: ["comunicacao-assincrona"]
+        tags: ["remoto", "produtividade", "disciplina"]
+
+      - slug: "colaboracao-cross-funcional"
+        title: "Colaboração Cross-Funcional"
+        difficulty: intermediate
+        order: 20
+        prerequisites: []
+        tags: ["equipes", "interdisciplinar", "alinhamento"]
+
+      - slug: "gestao-de-expectativas"
+        title: "Gestão de Expectativas"
+        difficulty: intermediate
+        order: 21
+        prerequisites: []
+        tags: ["transparencia", "comunicacao", "prazo"]
+
+      - slug: "decomposicao-de-problemas"
+        title: "Decomposição de Problemas"
+        difficulty: intermediate
+        order: 22
+        prerequisites: []
+        tags: ["analise", "partes", "abordagem"]
+
+      - slug: "root-cause-analysis"
+        title: "Root Cause Analysis"
+        difficulty: intermediate
+        order: 23
+        prerequisites: ["decomposicao-de-problemas"]
+        tags: ["causa-raiz", "investigacao", "sistematico"]
+
+      - slug: "five-whys"
+        title: "5 Whys"
+        difficulty: beginner
+        order: 24
+        prerequisites: ["root-cause-analysis"]
+        tags: ["por-que", "profundidade", "simples"]
+
+      - slug: "debugging-sistematico"
+        title: "Debugging Sistemático"
+        difficulty: intermediate
+        order: 25
+        prerequisites: ["decomposicao-de-problemas"]
+        tags: ["depuracao", "metodo", "hipotese"]
+
+      - slug: "rubber-duck-debugging"
+        title: "Rubber Duck Debugging"
+        difficulty: beginner
+        order: 26
+        prerequisites: []
+        tags: ["explicacao", "patinho", "verbalizacao"]
+
+      - slug: "pensamento-critico"
+        title: "Pensamento Crítico"
+        difficulty: intermediate
+        order: 27
+        prerequisites: []
+        tags: ["analise", "questionamento", "logica"]
+
+      - slug: "analise-de-trade-offs"
+        title: "Análise de Trade-offs"
+        difficulty: intermediate
+        order: 28
+        prerequisites: ["pensamento-critico"]
+        tags: ["decisao", "custo-beneficio", "comparacao"]
+
+      - slug: "decision-making"
+        title: "Decision Making"
+        difficulty: intermediate
+        order: 29
+        prerequisites: ["analise-de-trade-offs"]
+        tags: ["decisao", "criterios", "consequencias"]
+
+      - slug: "priorizacao"
+        title: "Priorização"
+        difficulty: intermediate
+        order: 30
+        prerequisites: []
+        tags: ["importancia", "urgencia", "foco"]
+
+      - slug: "time-management"
+        title: "Time Management"
+        difficulty: beginner
+        order: 31
+        prerequisites: ["priorizacao"]
+        tags: ["tempo", "produtividade", "foco"]
+
+      - slug: "estimativas-realistas"
+        title: "Estimativas Realistas"
+        difficulty: intermediate
+        order: 32
+        prerequisites: ["time-management"]
+        tags: ["estimativa", "buffer", "incerteza"]
+
+      - slug: "learning-by-doing"
+        title: "Learning by Doing"
+        difficulty: beginner
+        order: 33
+        prerequisites: []
+        tags: ["pratica", "experiencia", "iteracao"]
+
+      - slug: "documentar-o-que-aprende"
+        title: "Documentar o que Aprende"
+        difficulty: beginner
+        order: 34
+        prerequisites: []
+        tags: ["anotacao", "registro", "revisao"]
+
+      - slug: "ler-codigo-de-outros"
+        title: "Ler Código de Outros"
+        difficulty: intermediate
+        order: 35
+        prerequisites: []
+        tags: ["leitura", "padroes", "aprendizado"]
+
+      - slug: "open-source-contribution"
+        title: "Open Source Contribution"
+        difficulty: intermediate
+        order: 36
+        prerequisites: ["pull-request-workflow"]
+        tags: ["contribuicao", "comunidade", "codigo"]
+
+      - slug: "acompanhar-tendencias"
+        title: "Acompanhar Tendências"
+        difficulty: beginner
+        order: 37
+        prerequisites: []
+        tags: ["atualizacao", "industria", "curadoria"]
+
+      - slug: "aprofundar-vs-visao-geral"
+        title: "Saber quando Aprofundar vs Quando ter Visão Geral"
+        difficulty: intermediate
+        order: 38
+        prerequisites: []
+        tags: ["profundidade", "amplitude", "estrategia"]
+
+      - slug: "aprender-com-erros"
+        title: "Aprender com Erros"
+        difficulty: beginner
+        order: 39
+        prerequisites: []
+        tags: ["falha", "crescimento", "resiliencia"]
+
+      - slug: "post-mortems"
+        title: "Post-Mortems"
+        difficulty: intermediate
+        order: 40
+        prerequisites: ["root-cause-analysis"]
+        tags: ["analise", "incidente", "melhoria"]
+
+      - slug: "experimentation-mindset"
+        title: "Experimentation Mindset"
+        difficulty: beginner
+        order: 41
+        prerequisites: []
+        tags: ["experimentacao", "curiosidade", "hipotese"]
+
+      - slug: "saber-pedir-ajuda"
+        title: "Saber Pedir Ajuda"
+        difficulty: beginner
+        order: 42
+        prerequisites: []
+        tags: ["humildade", "contexto", "eficiencia"]
+
+      - slug: "technical-leadership"
+        title: "Technical Leadership vs Management"
+        difficulty: advanced
+        order: 43
+        prerequisites: []
+        tags: ["lideranca", "influencia", "direcao"]
+
+      - slug: "influencia-sem-autoridade"
+        title: "Influência sem Autoridade"
+        difficulty: advanced
+        order: 44
+        prerequisites: ["technical-leadership"]
+        tags: ["persuasao", "credibilidade", "exemplo"]
+
+      - slug: "decisoes-arquiteturais"
+        title: "Decisões Arquiteturais"
+        difficulty: advanced
+        order: 45
+        prerequisites: ["technical-leadership", "adr"]
+        tags: ["arquitetura", "impacto", "longo-prazo"]
+
+      - slug: "technical-debt-management"
+        title: "Technical Debt Management"
+        difficulty: advanced
+        order: 46
+        prerequisites: ["technical-debt"]
+        tags: ["gestao", "priorizacao", "refatoracao"]
+
+      - slug: "balancear-entrega-vs-qualidade"
+        title: "Balancear Entrega vs Qualidade"
+        difficulty: advanced
+        order: 47
+        prerequisites: ["technical-leadership"]
+        tags: ["trade-off", "pragmatismo", "negocio"]
+
+      - slug: "evangelizacao-boas-praticas"
+        title: "Evangelização de Boas Práticas"
+        difficulty: intermediate
+        order: 48
+        prerequisites: []
+        tags: ["disseminacao", "padrao", "cultura"]
+
+      - slug: "onboarding-devs"
+        title: "Onboarding de Desenvolvedores"
+        difficulty: intermediate
+        order: 49
+        prerequisites: []
+        tags: ["integracao", "produtividade", "documentacao"]
+
+      - slug: "code-standards-definition"
+        title: "Code Standards Definition"
+        difficulty: intermediate
+        order: 50
+        prerequisites: ["linting", "code-formatting"]
+        tags: ["padrao", "equipe", "consistencia"]
+
+      - slug: "roadmap-tecnico"
+        title: "Roadmap Técnico"
+        difficulty: advanced
+        order: 51
+        prerequisites: ["technical-leadership"]
+        tags: ["planejamento", "visao", "prioridade"]
+
+      - slug: "stakeholder-management"
+        title: "Stakeholder Management"
+        difficulty: advanced
+        order: 52
+        prerequisites: ["gestao-de-expectativas"]
+        tags: ["partes-interessadas", "comunicacao", "alinhamento"]

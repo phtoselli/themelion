@@ -1,0 +1,9 @@
+{
+	"id": "python",
+	"name": "Python",
+	"ext": ".py",
+	"runner": "python-runner",
+	"monacoLanguage": "python",
+	"label": "Sintaxe simples, alto nível",
+	"icon": "python"
+}

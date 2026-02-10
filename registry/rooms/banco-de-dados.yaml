@@ -1,0 +1,454 @@
+room: banco-de-dados
+name: "Banco de Dados"
+description: "Aprenda modelagem de dados, SQL, NoSQL, índices, transações, normalização e otimização de queries para gerenciar dados de forma eficiente."
+icon: "database"
+order: 4
+
+categories:
+
+  - slug: "fundamentos-db"
+    name: "Fundamentos"
+    order: 1
+    topics:
+      - slug: "acid-properties"
+        title: "ACID Properties"
+        difficulty: intermediate
+        order: 1
+        prerequisites: []
+        tags: ["atomicidade", "consistencia", "isolamento", "durabilidade"]
+
+      - slug: "base-properties"
+        title: "BASE Properties"
+        difficulty: intermediate
+        order: 2
+        prerequisites: ["acid-properties"]
+        tags: ["disponibilidade", "eventual", "soft-state"]
+
+      - slug: "cap-theorem"
+        title: "CAP Theorem"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["acid-properties", "base-properties"]
+        tags: ["consistencia", "disponibilidade", "particao"]
+
+      - slug: "transactions"
+        title: "Transactions"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["acid-properties"]
+        tags: ["atomicidade", "commit", "rollback"]
+
+      - slug: "isolation-levels"
+        title: "Isolation Levels (Read Uncommitted, Read Committed, Repeatable Read, Serializable)"
+        difficulty: advanced
+        order: 5
+        prerequisites: ["transactions"]
+        tags: ["concorrencia", "fantasma", "dirty-read"]
+
+      - slug: "locks-db"
+        title: "Locks (Pessimistic, Optimistic)"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["transactions"]
+        tags: ["bloqueio", "concorrencia", "conflito"]
+
+      - slug: "mvcc"
+        title: "MVCC (Multi-Version Concurrency Control)"
+        difficulty: advanced
+        order: 7
+        prerequisites: ["isolation-levels"]
+        tags: ["versoes", "concorrencia", "snapshot"]
+
+      - slug: "two-phase-commit"
+        title: "Two-Phase Commit"
+        difficulty: advanced
+        order: 8
+        prerequisites: ["transactions"]
+        tags: ["distribuido", "coordenador", "preparacao"]
+
+      - slug: "distributed-transactions"
+        title: "Distributed Transactions"
+        difficulty: advanced
+        order: 9
+        prerequisites: ["two-phase-commit"]
+        tags: ["distribuido", "consistencia", "complexidade"]
+
+  - slug: "sql-e-bancos-relacionais"
+    name: "SQL e Bancos Relacionais"
+    order: 2
+    topics:
+      - slug: "normalizacao"
+        title: "Normalização (1NF, 2NF, 3NF, BCNF)"
+        difficulty: intermediate
+        order: 1
+        prerequisites: []
+        tags: ["formas-normais", "redundancia", "dependencia"]
+
+      - slug: "denormalizacao"
+        title: "Denormalização"
+        difficulty: intermediate
+        order: 2
+        prerequisites: ["normalizacao"]
+        tags: ["performance", "redundancia", "leitura"]
+
+      - slug: "primary-keys"
+        title: "Primary Keys"
+        difficulty: beginner
+        order: 3
+        prerequisites: []
+        tags: ["identificador", "unicidade", "indice"]
+
+      - slug: "foreign-keys"
+        title: "Foreign Keys"
+        difficulty: beginner
+        order: 4
+        prerequisites: ["primary-keys"]
+        tags: ["relacionamento", "referencia", "integridade"]
+
+      - slug: "composite-keys"
+        title: "Composite Keys"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["primary-keys"]
+        tags: ["chave-composta", "unicidade", "combinacao"]
+
+      - slug: "unique-constraints"
+        title: "Unique Constraints"
+        difficulty: beginner
+        order: 6
+        prerequisites: ["primary-keys"]
+        tags: ["restricao", "unicidade", "validacao"]
+
+      - slug: "indexes"
+        title: "Indexes (B-Tree, Hash, Bitmap, Full-Text)"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["primary-keys"]
+        tags: ["performance", "busca", "estrutura"]
+
+      - slug: "clustered-vs-non-clustered"
+        title: "Clustered vs Non-Clustered Indexes"
+        difficulty: intermediate
+        order: 8
+        prerequisites: ["indexes"]
+        tags: ["ordenacao", "ponteiro", "armazenamento"]
+
+      - slug: "query-execution-plans"
+        title: "Query Execution Plans"
+        difficulty: intermediate
+        order: 9
+        prerequisites: ["indexes"]
+        tags: ["explain", "otimizacao", "analise"]
+
+      - slug: "joins"
+        title: "Joins (Inner, Left, Right, Full, Cross)"
+        difficulty: beginner
+        order: 10
+        prerequisites: ["foreign-keys"]
+        tags: ["combinacao", "tabelas", "relacionamento"]
+
+      - slug: "subqueries"
+        title: "Subqueries"
+        difficulty: intermediate
+        order: 11
+        prerequisites: ["joins"]
+        tags: ["subconsulta", "aninhada", "correlacionada"]
+
+      - slug: "ctes"
+        title: "CTEs (Common Table Expressions)"
+        difficulty: intermediate
+        order: 12
+        prerequisites: ["subqueries"]
+        tags: ["legibilidade", "recursao", "temporaria"]
+
+      - slug: "window-functions"
+        title: "Window Functions"
+        difficulty: intermediate
+        order: 13
+        prerequisites: ["joins"]
+        tags: ["particionamento", "ranking", "analise"]
+
+      - slug: "views"
+        title: "Views"
+        difficulty: beginner
+        order: 14
+        prerequisites: ["joins"]
+        tags: ["virtual", "abstracao", "seguranca"]
+
+      - slug: "materialized-views"
+        title: "Materialized Views"
+        difficulty: intermediate
+        order: 15
+        prerequisites: ["views"]
+        tags: ["cache", "performance", "refresh"]
+
+      - slug: "stored-procedures"
+        title: "Stored Procedures"
+        difficulty: intermediate
+        order: 16
+        prerequisites: ["joins"]
+        tags: ["logica", "servidor", "reutilizacao"]
+
+      - slug: "triggers"
+        title: "Triggers"
+        difficulty: intermediate
+        order: 17
+        prerequisites: ["stored-procedures"]
+        tags: ["automatico", "evento", "reacao"]
+
+      - slug: "user-defined-functions"
+        title: "User-Defined Functions"
+        difficulty: intermediate
+        order: 18
+        prerequisites: ["stored-procedures"]
+        tags: ["funcao", "customizada", "reutilizacao"]
+
+      - slug: "partitioning"
+        title: "Partitioning (Horizontal, Vertical)"
+        difficulty: advanced
+        order: 19
+        prerequisites: ["indexes"]
+        tags: ["divisao", "performance", "gerenciamento"]
+
+      - slug: "sharding"
+        title: "Sharding"
+        difficulty: advanced
+        order: 20
+        prerequisites: ["partitioning"]
+        tags: ["distribuicao", "escalabilidade", "shard-key"]
+
+      - slug: "replication"
+        title: "Replication (Master-Slave, Master-Master)"
+        difficulty: advanced
+        order: 21
+        prerequisites: ["partitioning"]
+        tags: ["copia", "disponibilidade", "leitura"]
+
+  - slug: "nosql"
+    name: "NoSQL"
+    order: 3
+    topics:
+      - slug: "document-stores"
+        title: "Document Stores"
+        difficulty: intermediate
+        order: 1
+        prerequisites: []
+        tags: ["json", "flexivel", "aninhado"]
+
+      - slug: "key-value-stores"
+        title: "Key-Value Stores"
+        difficulty: beginner
+        order: 2
+        prerequisites: ["hash-tables"]
+        tags: ["simples", "rapido", "cache"]
+
+      - slug: "column-family-stores"
+        title: "Column-Family Stores"
+        difficulty: intermediate
+        order: 3
+        prerequisites: []
+        tags: ["colunas", "leitura-pesada", "escalavel"]
+
+      - slug: "graph-databases"
+        title: "Graph Databases"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["graphs"]
+        tags: ["relacionamentos", "traversal", "nos"]
+
+      - slug: "time-series-databases"
+        title: "Time-Series Databases"
+        difficulty: intermediate
+        order: 5
+        prerequisites: []
+        tags: ["temporal", "metricas", "iot"]
+
+      - slug: "vector-databases"
+        title: "Vector Databases"
+        difficulty: intermediate
+        order: 6
+        prerequisites: []
+        tags: ["embeddings", "similaridade", "ia"]
+
+      - slug: "eventual-consistency"
+        title: "Eventual Consistency"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["cap-theorem"]
+        tags: ["convergencia", "replicacao", "latencia"]
+
+      - slug: "schema-less-design"
+        title: "Schema-less Design"
+        difficulty: intermediate
+        order: 8
+        prerequisites: ["document-stores"]
+        tags: ["flexibilidade", "evolucao", "trade-off"]
+
+      - slug: "embedded-documents-vs-references"
+        title: "Embedded Documents vs References"
+        difficulty: intermediate
+        order: 9
+        prerequisites: ["document-stores"]
+        tags: ["aninhamento", "normalizacao", "decisao"]
+
+      - slug: "aggregation-pipeline"
+        title: "Aggregation Pipeline"
+        difficulty: intermediate
+        order: 10
+        prerequisites: ["document-stores"]
+        tags: ["transformacao", "etapas", "analise"]
+
+      - slug: "map-reduce"
+        title: "Map-Reduce"
+        difficulty: advanced
+        order: 11
+        prerequisites: ["aggregation-pipeline"]
+        tags: ["distribuido", "processamento", "paralelo"]
+
+  - slug: "data-modeling"
+    name: "Data Modeling"
+    order: 4
+    topics:
+      - slug: "entity-relationship-diagrams"
+        title: "Entity-Relationship Diagrams (ERD)"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["diagrama", "entidades", "relacionamentos"]
+
+      - slug: "schema-design"
+        title: "Schema Design"
+        difficulty: intermediate
+        order: 2
+        prerequisites: ["entity-relationship-diagrams"]
+        tags: ["tabelas", "colunas", "planejamento"]
+
+      - slug: "one-to-one-relationships"
+        title: "One-to-One Relationships"
+        difficulty: beginner
+        order: 3
+        prerequisites: ["entity-relationship-diagrams"]
+        tags: ["1-para-1", "extensao", "opcional"]
+
+      - slug: "one-to-many-relationships"
+        title: "One-to-Many Relationships"
+        difficulty: beginner
+        order: 4
+        prerequisites: ["foreign-keys"]
+        tags: ["1-para-n", "pai-filho", "comum"]
+
+      - slug: "many-to-many-relationships"
+        title: "Many-to-Many Relationships"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["one-to-many-relationships"]
+        tags: ["n-para-n", "tabela-juncao", "associacao"]
+
+      - slug: "data-integrity"
+        title: "Data Integrity"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["foreign-keys"]
+        tags: ["consistencia", "validacao", "confiabilidade"]
+
+      - slug: "referential-integrity"
+        title: "Referential Integrity"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["data-integrity"]
+        tags: ["referencia", "cascata", "restricao"]
+
+      - slug: "constraints"
+        title: "Constraints"
+        difficulty: beginner
+        order: 8
+        prerequisites: []
+        tags: ["restricao", "validacao", "regras"]
+
+      - slug: "data-types-selection"
+        title: "Data Types Selection"
+        difficulty: beginner
+        order: 9
+        prerequisites: ["tipos-de-dados-primitivos"]
+        tags: ["tipo", "tamanho", "performance"]
+
+      - slug: "null-handling"
+        title: "NULL Handling"
+        difficulty: intermediate
+        order: 10
+        prerequisites: ["constraints"]
+        tags: ["ausencia", "three-valued-logic", "coalesce"]
+
+  - slug: "database-operations"
+    name: "Database Operations"
+    order: 5
+    topics:
+      - slug: "backup-strategies"
+        title: "Backup Strategies"
+        difficulty: intermediate
+        order: 1
+        prerequisites: []
+        tags: ["completo", "incremental", "diferencial"]
+
+      - slug: "point-in-time-recovery"
+        title: "Point-in-Time Recovery"
+        difficulty: advanced
+        order: 2
+        prerequisites: ["backup-strategies"]
+        tags: ["recuperacao", "wal", "timestamp"]
+
+      - slug: "migration-strategies"
+        title: "Migration Strategies"
+        difficulty: intermediate
+        order: 3
+        prerequisites: []
+        tags: ["schema", "versionamento", "evolucao"]
+
+      - slug: "seeding"
+        title: "Seeding"
+        difficulty: beginner
+        order: 4
+        prerequisites: ["migration-strategies"]
+        tags: ["dados-iniciais", "teste", "desenvolvimento"]
+
+      - slug: "connection-management"
+        title: "Connection Management"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["connection-pooling"]
+        tags: ["pool", "timeout", "limite"]
+
+      - slug: "query-caching"
+        title: "Query Caching"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["caching-strategies"]
+        tags: ["resultado", "cache", "invalidacao"]
+
+      - slug: "prepared-statements"
+        title: "Prepared Statements"
+        difficulty: beginner
+        order: 7
+        prerequisites: []
+        tags: ["seguranca", "performance", "parametrizado"]
+
+      - slug: "orm-concepts"
+        title: "ORM (Object-Relational Mapping) Concepts"
+        difficulty: intermediate
+        order: 8
+        prerequisites: ["programacao-orientada-a-objetos"]
+        tags: ["mapeamento", "abstracao", "produtividade"]
+
+      - slug: "active-record-pattern"
+        title: "Active Record Pattern"
+        difficulty: intermediate
+        order: 9
+        prerequisites: ["orm-concepts"]
+        tags: ["modelo-tabela", "simples", "acoplado"]
+
+      - slug: "data-mapper-pattern"
+        title: "Data Mapper Pattern"
+        difficulty: intermediate
+        order: 10
+        prerequisites: ["orm-concepts"]
+        tags: ["separacao", "dominio", "desacoplado"]

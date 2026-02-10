@@ -1,0 +1,9 @@
+{
+	"id": "go",
+	"name": "Go",
+	"ext": ".go",
+	"runner": "go-runner",
+	"monacoLanguage": "go",
+	"label": "Simplicidade, concorrência nativa, sem herança",
+	"icon": "go"
+}
