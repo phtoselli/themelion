@@ -8,12 +8,14 @@ interface NavigationState {
 	activeSection: ActiveSection;
 	currentRoom: Room | null;
 	roomsListOpen: boolean;
+	mobileOpen: boolean;
 	setExpanded: (expanded: boolean) => void;
 	toggleExpanded: () => void;
 	setActiveSection: (section: ActiveSection) => void;
 	setCurrentRoom: (room: Room | null) => void;
 	setRoomsListOpen: (open: boolean) => void;
 	toggleRoomsList: () => void;
+	setMobileOpen: (open: boolean) => void;
 }
 
 const NavigationContext = createContext<NavigationState | null>(null);
@@ -26,6 +28,7 @@ export const NavigationProvider = ({ children }: { children: ReactNode }) => {
 	const [activeSection, setActiveSection] = useState<ActiveSection>("home");
 	const [currentRoom, setCurrentRoom] = useState<Room | null>(null);
 	const [roomsListOpen, setRoomsListOpen] = useState(true);
+	const [mobileOpen, setMobileOpen] = useState(false);
 
 	const setExpanded = useCallback((value: boolean) => {
 		setExpandedState(value);
@@ -47,12 +50,14 @@ export const NavigationProvider = ({ children }: { children: ReactNode }) => {
 				activeSection,
 				currentRoom,
 				roomsListOpen,
+				mobileOpen,
 				setExpanded,
 				toggleExpanded,
 				setActiveSection,
 				setCurrentRoom,
 				setRoomsListOpen,
 				toggleRoomsList,
+				setMobileOpen,
 			}}
 		>
 			{children}

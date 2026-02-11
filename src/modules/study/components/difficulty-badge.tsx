@@ -1,8 +1,12 @@
+import { useLocale } from "@client/hooks/use-locale";
 import { Badge } from "@client/shared/components/ui/badge";
-import { difficultyLabels, difficultyStyles } from "@client/shared/constants/difficulty";
+import { difficultyStyles, getDifficultyLabels } from "@client/shared/constants/difficulty";
 import type { Difficulty } from "@client/shared/types";
 
 export const DifficultyBadge = ({ difficulty }: { difficulty: Difficulty }) => {
+	const { t } = useLocale();
+	const difficultyLabels = getDifficultyLabels(t);
+
 	return (
 		<Badge
 			variant="outline"

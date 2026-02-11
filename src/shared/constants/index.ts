@@ -1,3 +1,3 @@
-export { difficultyDotStyles, difficultyLabels, difficultyStyles } from "./difficulty";
-export { type NavItem, navItems } from "./navigation";
-export { statusLabels, statusStyles } from "./status";
+export { difficultyDotStyles, difficultyStyles, getDifficultyLabels } from "./difficulty";
+export { getNavItems, type NavItem } from "./navigation";
+export { getStatusLabels, statusStyles } from "./status";

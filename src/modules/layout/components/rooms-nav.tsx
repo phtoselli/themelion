@@ -14,6 +14,7 @@ interface RoomsNavProps {
 	activeTopicSlug?: string;
 	activeRef: RefObject<HTMLAnchorElement | null>;
 	onRoomSelect: (room: Room) => void;
+	onNavigate?: () => void;
 }
 
 export const RoomsNav = ({
@@ -23,6 +24,7 @@ export const RoomsNav = ({
 	activeTopicSlug,
 	activeRef,
 	onRoomSelect,
+	onNavigate,
 }: RoomsNavProps) => {
 	if (loading) return <SidebarSkeleton />;
 
@@ -38,7 +40,10 @@ export const RoomsNav = ({
 						<div key={r.slug}>
 							<Link
 								to={`/room/${r.slug}`}
-								onClick={() => onRoomSelect(r)}
+								onClick={() => {
+									onRoomSelect(r);
+									onNavigate?.();
+								}}
 								className={`flex items-center gap-2 px-2.5 py-1.5 text-sm rounded-md transition-all duration-200 ${
 									isRoomActive
 										? "text-primary font-medium bg-primary/5"
@@ -94,6 +99,7 @@ export const RoomsNav = ({
 																	key={topic.slug}
 																	ref={isActive ? activeRef : undefined}
 																	to={`/topic/${topic.slug}`}
+																	onClick={() => onNavigate?.()}
 																	className={itemClassName}
 																>
 																	{itemContent}

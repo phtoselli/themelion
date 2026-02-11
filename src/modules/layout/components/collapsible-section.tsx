@@ -23,7 +23,7 @@ export const CollapsibleSection = ({
 
 	return (
 		<Collapsible open={open} onOpenChange={setOpen}>
-			<CollapsibleTrigger className="flex items-center gap-2 w-full px-3 py-1.5 text-sm font-medium text-text-muted hover:text-text transition-all duration-200 rounded-md hover:bg-surface-hover group">
+			<CollapsibleTrigger className="flex items-center gap-2 w-full px-3 py-2.5 md:py-1.5 text-sm font-medium text-text-muted hover:text-text transition-all duration-200 rounded-md hover:bg-surface-hover group">
 				<ChevronRight
 					size={12}
 					className={`shrink-0 transition-transform duration-200 text-text-faint group-hover:text-text-muted ${open ? "rotate-90" : ""}`}
