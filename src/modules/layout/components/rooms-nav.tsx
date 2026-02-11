@@ -3,6 +3,7 @@ import { SidebarSkeleton } from "@client/modules/layout/components/skeletons";
 import { difficultyDotStyles } from "@client/shared/constants/difficulty";
 import type { Room } from "@client/shared/types";
 import { getRoomIcon } from "@client/shared/utils/helpers/room-icons";
+import "@client/styles/modules/rooms-nav.css";
 import { Circle } from "lucide-react";
 import type { RefObject } from "react";
 import { Link } from "react-router";
@@ -29,7 +30,7 @@ export const RoomsNav = ({
 	if (loading) return <SidebarSkeleton />;
 
 	return (
-		<div className="space-y-0.5 pl-2">
+		<div className="rooms-nav">
 			{rooms
 				.sort((a, b) => a.order - b.order)
 				.map((r) => {
@@ -44,18 +45,15 @@ export const RoomsNav = ({
 									onRoomSelect(r);
 									onNavigate?.();
 								}}
-								className={`flex items-center gap-2 px-2.5 py-1.5 text-sm rounded-md transition-all duration-200 ${
-									isRoomActive
-										? "text-primary font-medium bg-primary/5"
-										: "text-text-muted hover:text-text hover:bg-surface-hover"
-								}`}
+								className="rooms-nav-room"
+								data-active={isRoomActive}
 							>
-								<Icon size={13} className="shrink-0 opacity-70" />
+								<Icon size={13} />
 								<span className="truncate">{r.name}</span>
 							</Link>
 
 							{isRoomActive && (
-								<div className="ml-4 mt-1 space-y-0.5 animate-fade-in">
+								<div className="rooms-nav-categories">
 									{r.categories
 										.sort((a, b) => a.order - b.order)
 										.map((category) => (
@@ -65,7 +63,7 @@ export const RoomsNav = ({
 												count={category.topics.length}
 												defaultOpen={category.topics.some((t) => t.slug === activeTopicSlug)}
 											>
-												<div className="space-y-px py-0.5">
+												<div className="rooms-nav-topics">
 													{category.topics
 														.sort((a, b) => a.order - b.order)
 														.map((topic) => {
@@ -76,22 +74,20 @@ export const RoomsNav = ({
 																<>
 																	<Circle
 																		size={4}
-																		className={`shrink-0 fill-current ${difficultyDotStyles[topic.difficulty]}`}
+																		className={difficultyDotStyles[topic.difficulty]}
+																		style={{ fill: "currentColor" }}
 																	/>
 																	<span className="truncate">{topic.title}</span>
 																</>
 															);
 
-															const itemClassName = `flex items-center gap-1.5 px-2.5 py-1 text-xs rounded-md transition-all duration-200 ${
-																isActive
-																	? "bg-primary/10 text-primary font-medium"
-																	: isPlanned
-																		? "text-text-faint/70 cursor-not-allowed"
-																		: "text-text-muted hover:text-text hover:bg-surface-hover"
-															}`;
-
 															return isPlanned ? (
-																<div key={topic.slug} className={itemClassName}>
+																<div
+																	key={topic.slug}
+																	className="rooms-nav-topic"
+																	data-active={false}
+																	data-planned={true}
+																>
 																	{itemContent}
 																</div>
 															) : (
@@ -100,7 +96,9 @@ export const RoomsNav = ({
 																	ref={isActive ? activeRef : undefined}
 																	to={`/topic/${topic.slug}`}
 																	onClick={() => onNavigate?.()}
-																	className={itemClassName}
+																	className="rooms-nav-topic"
+																	data-active={isActive}
+																	data-planned={false}
 																>
 																	{itemContent}
 																</Link>

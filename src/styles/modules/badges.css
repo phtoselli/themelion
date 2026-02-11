@@ -1,0 +1,48 @@
+/* =============================================
+   Badge Components (difficulty, status, tag)
+   ============================================= */
+
+.badge-difficulty,
+.badge-status {
+	border-width: 0;
+	border-radius: var(--radius-md);
+	font-size: 10px;
+}
+
+.badge-tag {
+	border-radius: var(--radius-md);
+	font-weight: 400;
+	font-size: 10px;
+}
+
+/* Difficulty color overrides (specificity must match [data-slot][data-variant]) */
+[data-slot="badge"].difficulty-beginner {
+	background-color: color-mix(in srgb, var(--beginner) 12%, transparent);
+	color: var(--beginner);
+}
+
+[data-slot="badge"].difficulty-intermediate {
+	background-color: color-mix(in srgb, var(--intermediate) 12%, transparent);
+	color: var(--intermediate);
+}
+
+[data-slot="badge"].difficulty-advanced {
+	background-color: color-mix(in srgb, var(--advanced) 12%, transparent);
+	color: var(--advanced);
+}
+
+/* Status color overrides */
+[data-slot="badge"].status-implemented {
+	background-color: color-mix(in srgb, var(--accent) 15%, transparent);
+	color: var(--accent);
+}
+
+[data-slot="badge"].status-planned {
+	background-color: var(--muted);
+	color: var(--muted-foreground);
+}
+
+[data-slot="badge"].status-unregistered {
+	background-color: color-mix(in srgb, var(--warning) 15%, transparent);
+	color: var(--warning);
+}

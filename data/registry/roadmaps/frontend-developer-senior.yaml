@@ -1,0 +1,11 @@
+roadmap: frontend-developer-senior
+name: "Frontend Developer — Sênior"
+description: "Em breve: micro-frontends, arquitetura em escala, otimização extrema, acessibilidade avançada e liderança técnica"
+icon: "monitor"
+
+stages:
+  - slug: "em-breve"
+    name: "Em breve"
+    description: "Conteúdo em desenvolvimento"
+    order: 1
+    topics: []

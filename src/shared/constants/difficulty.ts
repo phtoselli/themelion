@@ -8,13 +8,13 @@ export const getDifficultyLabels = (t: Locale): Record<Difficulty, string> => ({
 });
 
 export const difficultyStyles: Record<Difficulty, string> = {
-	beginner: "bg-beginner/12 text-beginner",
-	intermediate: "bg-intermediate/12 text-intermediate",
-	advanced: "bg-advanced/12 text-advanced",
+	beginner: "difficulty-beginner",
+	intermediate: "difficulty-intermediate",
+	advanced: "difficulty-advanced",
 };
 
 export const difficultyDotStyles: Record<Difficulty, string> = {
-	beginner: "text-beginner",
-	intermediate: "text-intermediate",
-	advanced: "text-advanced",
+	beginner: "dot-beginner",
+	intermediate: "dot-intermediate",
+	advanced: "dot-advanced",
 };

@@ -2,84 +2,172 @@ import { roadmaps } from "virtual:content";
 import { useLocale } from "@client/hooks/use-locale";
 import { PageLayout } from "@client/modules/layout/components/page-layout";
 import { getRoomIcon } from "@client/shared/utils/helpers/room-icons";
-import { ArrowRight, Map as MapIcon } from "lucide-react";
+import { ArrowRight, Lock, Map as MapIcon } from "lucide-react";
 import { Link } from "react-router";
+import "@client/styles/pages/roadmaps.css";
+
+type RoadmapLevel = "junior" | "pleno" | "senior";
+
+const AVAILABLE_SLUGS = ["fullstack-developer-junior"];
+
+function isAvailable(slug: string): boolean {
+	return AVAILABLE_SLUGS.includes(slug);
+}
+
+function extractLevel(slug: string): RoadmapLevel | null {
+	if (slug.endsWith("-junior")) return "junior";
+	if (slug.endsWith("-pleno")) return "pleno";
+	if (slug.endsWith("-senior")) return "senior";
+	return null;
+}
+
+interface GroupedRoadmaps {
+	level: RoadmapLevel;
+	label: string;
+	roadmaps: typeof roadmaps;
+}
+
+function groupRoadmapsByLevel(list: typeof roadmaps, t: ReturnType<typeof useLocale>["t"]): GroupedRoadmaps[] {
+	const grouped: Record<RoadmapLevel, typeof roadmaps> = {
+		junior: [],
+		pleno: [],
+		senior: [],
+	};
+
+	for (const roadmap of list) {
+		const level = extractLevel(roadmap.slug);
+		if (level) {
+			grouped[level].push(roadmap);
+		}
+	}
+
+	// Dentro de cada grupo: disponíveis primeiro, depois alfabético
+	for (const level of Object.keys(grouped) as RoadmapLevel[]) {
+		grouped[level].sort((a, b) => {
+			const aAvailable = isAvailable(a.slug);
+			const bAvailable = isAvailable(b.slug);
+			if (aAvailable !== bAvailable) return aAvailable ? -1 : 1;
+			return a.name.localeCompare(b.name, "pt-BR");
+		});
+	}
+
+	return [
+		{ level: "junior", label: t.roadmapsPage.levelJunior, roadmaps: grouped.junior },
+		{ level: "pleno", label: t.roadmapsPage.levelPleno, roadmaps: grouped.pleno },
+		{ level: "senior", label: t.roadmapsPage.levelSenior, roadmaps: grouped.senior },
+	].filter((group) => group.roadmaps.length > 0);
+}
 
 export const RoadmapsPage = () => {
 	const { t } = useLocale();
+	const groupedRoadmaps = groupRoadmapsByLevel(roadmaps, t);
 
 	return (
 		<PageLayout breadcrumbs={[{ label: t.common.home, href: "/" }, { label: t.nav.roadmaps }]}>
 			{/* Header */}
-			<div className="relative mb-8 md:mb-10 animate-fade-in-up">
-				<div className="hidden md:block absolute -top-16 -left-16 w-[300px] h-[250px] bg-accent/[0.03] rounded-full blur-[80px] pointer-events-none" />
+			<div className="roadmaps-header">
+				<div className="roadmaps-glow" />
 
-				<div className="relative flex items-start gap-3 md:gap-4 mb-3 md:mb-4">
-					<div className="relative p-2.5 md:p-3 rounded-xl bg-accent/8 shrink-0">
-						<MapIcon size={20} className="text-accent relative z-10" />
-						<div className="absolute inset-0 bg-accent/5 rounded-xl blur-sm" />
+				<div className="roadmaps-title-row">
+					<div className="roadmaps-icon">
+						<MapIcon size={20} />
+						<div className="roadmaps-icon-glow" />
 					</div>
 					<div>
-						<h1 className="font-display text-xl md:text-2xl font-bold tracking-tight">
-							{t.roadmapsPage.title}
-						</h1>
-						<span className="text-xs text-text-faint font-medium mt-1 block">
-							{t.roadmapsPage.availableTracks(roadmaps.length)}
-						</span>
+						<h1 className="roadmaps-title">{t.roadmapsPage.title}</h1>
+						<span className="roadmaps-meta">{t.roadmapsPage.availableTracks(roadmaps.length)}</span>
 					</div>
 				</div>
-				<p className="text-text-muted text-xs md:text-sm leading-relaxed max-w-2xl">
-					{t.roadmapsPage.description}
-				</p>
+				<p className="roadmaps-desc">{t.roadmapsPage.description}</p>
 			</div>
 
-			{/* Grid de roadmaps */}
-			<div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
-				{roadmaps.map((roadmap, index) => {
-					const Icon = getRoomIcon(roadmap.icon);
-					const totalTopics = roadmap.stages.reduce((sum, s) => sum + s.topics.length, 0);
+			{/* Roadmaps agrupados por nível */}
+			{groupedRoadmaps.map((group) => (
+				<div key={group.level} className="roadmaps-level-section">
+					<div className="roadmaps-level-header">
+						<h2 className="roadmaps-level-title">{group.label}</h2>
+						<div className="roadmaps-level-divider" />
+					</div>
 
-					return (
-						<Link
-							key={roadmap.slug}
-							to={`/roadmap/${roadmap.slug}`}
-							className={`group room-card card-glow flex flex-col gap-3 md:gap-4 p-4 md:p-6 rounded-xl bg-surface-raised/80 border border-border hover:bg-surface-light/80 active:bg-surface-light/80 transition-all duration-300 animate-fade-in-up stagger-${index + 1}`}
-						>
-							<div className="flex items-center gap-3">
-								<div className="relative p-2 md:p-2.5 rounded-lg bg-accent/8">
-									<Icon size={18} className="text-accent relative z-10" />
+					<div className="roadmaps-grid">
+						{group.roadmaps.map((roadmap, index) => {
+							const Icon = getRoomIcon(roadmap.icon);
+							const totalTopics = roadmap.stages.reduce((sum, s) => sum + s.topics.length, 0);
+							const available = isAvailable(roadmap.slug);
+
+							if (available) {
+								return (
+									<Link
+										key={roadmap.slug}
+										to={`/roadmap/${roadmap.slug}`}
+										className="roadmaps-card card-glow animate-fade-in-up"
+										style={{ animationDelay: `${(index + 1) * 0.1}s` }}
+									>
+										<div className="roadmaps-card-header">
+											<div className="roadmaps-card-icon">
+												<Icon size={18} />
+											</div>
+											<div className="roadmaps-card-info">
+												<h3 className="roadmaps-card-name">{roadmap.name}</h3>
+												<span className="roadmaps-card-meta">
+													{roadmap.stages.length} {t.common.stages} · {totalTopics}{" "}
+													{t.common.topics.toLowerCase()}
+												</span>
+											</div>
+										</div>
+
+										<div className="roadmaps-card-progress">
+											{roadmap.stages.map((stage) => (
+												<div key={stage.slug} className="roadmaps-card-progress-bar" />
+											))}
+										</div>
+
+										<p className="roadmaps-card-desc">{roadmap.description}</p>
+
+										<div className="roadmaps-card-explore">
+											<span>{t.roadmapsPage.viewTrack}</span>
+											<ArrowRight size={12} />
+										</div>
+									</Link>
+								);
+							}
+
+							return (
+								<div
+									key={roadmap.slug}
+									className="roadmaps-card roadmaps-card-locked animate-fade-in-up"
+									style={{ animationDelay: `${(index + 1) * 0.1}s` }}
+								>
+									<div className="roadmaps-card-header">
+										<div className="roadmaps-card-icon roadmaps-card-icon-locked">
+											<Icon size={18} />
+										</div>
+										<div className="roadmaps-card-info">
+											<h3 className="roadmaps-card-name">{roadmap.name}</h3>
+											<span className="roadmaps-card-meta">
+												{roadmap.stages.length} {t.common.stages} · {totalTopics}{" "}
+												{t.common.topics.toLowerCase()}
+											</span>
+										</div>
+										<span className="roadmaps-coming-soon-badge">
+											<Lock size={10} />
+											{t.common.comingSoon}
+										</span>
+									</div>
+
+									<div className="roadmaps-card-progress">
+										{roadmap.stages.map((stage) => (
+											<div key={stage.slug} className="roadmaps-card-progress-bar" />
+										))}
+									</div>
+
+									<p className="roadmaps-card-desc">{roadmap.description}</p>
 								</div>
-								<div className="flex-1 min-w-0">
-									<h3 className="font-display font-bold text-sm">{roadmap.name}</h3>
-									<span className="text-[11px] text-text-faint">
-										{roadmap.stages.length} {t.common.stages} · {totalTopics}{" "}
-										{t.common.topics.toLowerCase()}
-									</span>
-								</div>
-							</div>
-
-							{/* Progresso visual */}
-							<div className="flex gap-1">
-								{roadmap.stages.map((stage) => (
-									<div
-										key={stage.slug}
-										className="flex-1 h-1 rounded-full bg-border group-hover:bg-accent/20 transition-colors duration-500"
-									/>
-								))}
-							</div>
-
-							<p className="text-xs text-text-muted line-clamp-2 leading-relaxed">
-								{roadmap.description}
-							</p>
-
-							<div className="flex items-center gap-1.5 text-xs text-accent md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 mt-auto translate-x-0 group-hover:translate-x-1">
-								<span className="font-medium">{t.roadmapsPage.viewTrack}</span>
-								<ArrowRight size={12} />
-							</div>
-						</Link>
-					);
-				})}
-			</div>
+							);
+						})}
+					</div>
+				</div>
+			))}
 		</PageLayout>
 	);
 };

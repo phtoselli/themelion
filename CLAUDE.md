@@ -11,7 +11,7 @@
 | Frontend | React + Vite + TypeScript | Leve, sem overhead de SSR desnecessário |
 | Editor de código | Monaco Editor | Mesmo engine do VS Code, syntax highlight e autocomplete |
 | Conteúdo | MDX | Markdown com componentes React interativos inline |
-| Styling | Tailwind CSS | Prototipagem rápida, design system consistente |
+| Styling | CSS puro (custom properties + data attributes) | Sem dependências externas, design system via variáveis CSS |
 | Linter/Formatter | Biome | Rápido, substitui ESLint + Prettier |
 | Persistência | localStorage | Zero config, progresso local do usuário |
 | i18n | Custom (sem lib) | Arquivos de locale em `src/i18n/locales/` |

@@ -1,13 +1,18 @@
 import { Skeleton } from "@client/shared/components/ui/skeleton";
+import "@client/styles/modules/skeletons.css";
 
 export const SidebarSkeleton = () => {
 	return (
-		<div className="space-y-2 px-2">
+		<div className="sidebar-skeleton">
 			{[1, 2, 3, 4, 5].map((i) => (
 				<Skeleton
 					key={i}
-					className="h-7 w-full rounded-md"
-					style={{ animationDelay: `${i * 0.08}s` }}
+					style={{
+						height: "1.75rem",
+						width: "100%",
+						borderRadius: "var(--radius-md)",
+						animationDelay: `${i * 0.08}s`,
+					}}
 				/>
 			))}
 		</div>
@@ -16,18 +21,35 @@ export const SidebarSkeleton = () => {
 
 export const PageSkeleton = () => {
 	return (
-		<div className="space-y-8">
-			<div className="space-y-3">
-				<Skeleton className="h-8 w-48 md:w-72 rounded-lg" />
-				<Skeleton className="h-4 w-full md:w-96 rounded-md" />
-				<Skeleton className="h-4 w-40 md:w-64 rounded-md" style={{ animationDelay: "0.1s" }} />
+		<div className="page-skeleton">
+			<div className="page-skeleton-header">
+				<Skeleton style={{ height: "2rem", width: "12rem", borderRadius: "var(--radius-lg)" }} />
+				<Skeleton
+					style={{
+						height: "1rem",
+						width: "100%",
+						maxWidth: "24rem",
+						borderRadius: "var(--radius-md)",
+					}}
+				/>
+				<Skeleton
+					style={{
+						height: "1rem",
+						width: "10rem",
+						borderRadius: "var(--radius-md)",
+						animationDelay: "0.1s",
+					}}
+				/>
 			</div>
-			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+			<div className="page-skeleton-grid">
 				{[1, 2, 3, 4, 5, 6].map((i) => (
 					<Skeleton
 						key={i}
-						className="h-36 rounded-xl"
-						style={{ animationDelay: `${i * 0.06}s` }}
+						style={{
+							height: "9rem",
+							borderRadius: "var(--radius-xl)",
+							animationDelay: `${i * 0.06}s`,
+						}}
 					/>
 				))}
 			</div>

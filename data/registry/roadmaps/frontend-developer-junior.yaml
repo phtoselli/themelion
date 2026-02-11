@@ -1,0 +1,97 @@
+roadmap: frontend-developer-junior
+name: "Frontend Developer — Júnior"
+description: "O essencial para começar sua carreira como desenvolvedor frontend: HTML, CSS, JavaScript, Git e os fundamentos da web que você vai usar todo dia"
+icon: "monitor"
+
+stages:
+
+  - slug: "base-computacional"
+    name: "Base Computacional"
+    description: "Conceitos fundamentais para entender performance e estruturas de dados"
+    order: 1
+    topics:
+      - "big-o-notation"
+      - "arrays"
+      - "hash-tables"
+
+  - slug: "linguagem-e-tipos"
+    name: "Linguagem e Tipos"
+    description: "JavaScript fundamental: tipos, funções e como a linguagem funciona"
+    order: 2
+    topics:
+      - "tipos-de-dados-primitivos"
+      - "tipos-compostos"
+      - "scope"
+      - "closures"
+      - "first-class-functions"
+
+  - slug: "como-a-web-funciona"
+    name: "Como a Web Funciona"
+    description: "HTTP, CORS, cookies e os fundamentos de comunicação cliente-servidor"
+    order: 3
+    topics:
+      - "http-https"
+      - "http-methods"
+      - "http-status-codes"
+      - "cors"
+      - "cookies"
+      - "local-storage"
+
+  - slug: "html-css-fundamentos"
+    name: "HTML e CSS Fundamentos"
+    description: "A base do frontend: HTML semântico e CSS para layout responsivo"
+    order: 4
+    topics:
+      - "semantic-html"
+      - "box-model"
+      - "flexbox"
+      - "grid"
+      - "positioning"
+      - "css-specificity"
+      - "media-queries"
+
+  - slug: "dom-e-browser"
+    name: "DOM e Browser"
+    description: "Manipular o DOM e entender o event loop"
+    order: 5
+    topics:
+      - "dom-manipulation"
+      - "event-loop"
+      - "event-delegation"
+
+  - slug: "performance-basica"
+    name: "Performance Básica"
+    description: "Fazer o site carregar rápido desde o início"
+    order: 6
+    topics:
+      - "lazy-loading"
+      - "image-optimization"
+
+  - slug: "acessibilidade-basica"
+    name: "Acessibilidade Básica"
+    description: "Web para todos: HTML semântico, ARIA e navegação por teclado"
+    order: 7
+    topics:
+      - "semantic-html"
+      - "aria-attributes"
+      - "keyboard-navigation"
+
+  - slug: "qualidade"
+    name: "Qualidade e Testes"
+    description: "Escrever código que funciona e não quebra facilmente"
+    order: 8
+    topics:
+      - "unit-testing"
+      - "integration-testing"
+      - "linting"
+      - "code-formatting"
+
+  - slug: "colaboracao"
+    name: "Colaboração e Git"
+    description: "Trabalhar em equipe com Git, PRs e code review"
+    order: 9
+    topics:
+      - "git-fundamentals"
+      - "branching-strategies"
+      - "pull-request-workflow"
+      - "code-review-practices"

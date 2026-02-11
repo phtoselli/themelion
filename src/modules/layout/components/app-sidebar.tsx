@@ -6,11 +6,13 @@ import { exportProgress, importProgress } from "@client/lib/progress";
 import { Sheet, SheetContent } from "@client/shared/components/ui/sheet";
 import { getNavItems } from "@client/shared/constants/navigation";
 import { ERROR_MESSAGE_DURATION } from "@client/shared/constants/timing";
+import "@client/styles/layout/app-sidebar.css";
 import {
 	ChevronLeft,
 	ChevronRight,
 	Download,
 	Landmark,
+	LogOut,
 	Moon,
 	Settings,
 	Sun,
@@ -75,25 +77,24 @@ export const AppSidebar = () => {
 		if (isMobile) setMobileOpen(false);
 	}, [isMobile, setMobileOpen]);
 
+	const showLabels = isMobile || expanded;
+
 	// Conteudo da sidebar (compartilhado entre desktop e mobile)
 	const sidebarContent = (
 		<>
 			{/* Logo */}
-			<div className="shrink-0 h-14 flex items-center gap-3 px-4 border-b border-sidebar-border">
-				<div className="relative">
-					<Landmark size={20} className="text-primary shrink-0 relative z-10" />
-					<div className="absolute -inset-1 bg-primary/10 rounded-lg blur-sm" />
+			<div className="sidebar-logo">
+				<div className="sidebar-logo-icon">
+					<Landmark size={20} />
+					<div className="sidebar-logo-glow" />
 				</div>
-				{(isMobile || expanded) && (
-					<span className="font-display font-bold text-sm text-text tracking-tight whitespace-nowrap">
-						Themelion
-					</span>
-				)}
+				{showLabels && <span className="sidebar-logo-text">Themelion</span>}
 				{isMobile ? (
 					<button
 						type="button"
 						onClick={() => setMobileOpen(false)}
-						className="ml-auto flex items-center justify-center rounded-lg p-1.5 text-text-faint hover:text-text hover:bg-surface-hover transition-all duration-200"
+						className="sidebar-toggle-btn"
+						data-position="end"
 						title={t.common.closeMenu}
 					>
 						<X size={18} />
@@ -102,7 +103,8 @@ export const AppSidebar = () => {
 					<button
 						type="button"
 						onClick={toggleExpanded}
-						className={`${expanded ? "ml-auto" : ""} flex items-center justify-center rounded-lg p-1.5 text-text-faint hover:text-text hover:bg-surface-hover transition-all duration-200`}
+						className="sidebar-toggle-btn"
+						data-position={expanded ? "end" : undefined}
 						title={expanded ? t.sidebar.collapse : t.sidebar.expand}
 					>
 						{expanded ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
@@ -111,11 +113,10 @@ export const AppSidebar = () => {
 			</div>
 
 			{/* Navegacao principal */}
-			<nav className="flex-1 overflow-y-auto overflow-x-hidden py-4 px-2.5 space-y-1">
+			<nav className="sidebar-nav">
 				{navItems.map((item) => {
 					const isActive = activeSection === item.id;
 					const Icon = item.icon;
-					const showLabels = isMobile || expanded;
 
 					return (
 						<Link
@@ -125,94 +126,75 @@ export const AppSidebar = () => {
 								setActiveSection(item.id);
 								closeMobileDrawer();
 							}}
-							className={`group flex items-center gap-3 rounded-lg transition-all duration-200 ${
-								showLabels ? "px-3 py-2.5" : "px-0 py-2 justify-center"
-							} ${
-								isActive
-									? "bg-primary/8 text-primary sidebar-active-indicator"
-									: "text-text-muted hover:text-text hover:bg-surface-hover"
-							}`}
+							className="sidebar-nav-item"
+							data-expanded={showLabels}
+							data-active={isActive}
 							title={showLabels ? undefined : item.label}
 						>
-							<Icon size={18} className="shrink-0" />
-							{showLabels && <span className="text-sm font-medium truncate">{item.label}</span>}
+							<Icon size={18} />
+							{showLabels && <span className="sidebar-nav-label">{item.label}</span>}
 						</Link>
 					);
 				})}
 			</nav>
 
 			{/* Configuracoes */}
-			<div className="shrink-0 border-t border-sidebar-border px-2.5 py-3 relative">
+			<div className="sidebar-settings">
 				<button
 					type="button"
 					onClick={() => {
 						if (!isMobile && !expanded) toggleExpanded();
 						setSettingsOpen((prev) => !prev);
 					}}
-					className={`group flex items-center gap-3 w-full rounded-lg transition-all duration-200 ${
-						isMobile || expanded ? "px-3 py-2.5" : "px-0 py-2 justify-center"
-					} ${
-						settingsOpen
-							? "bg-primary/8 text-primary"
-							: "text-text-muted hover:text-text hover:bg-surface-hover"
-					}`}
-					title={isMobile || expanded ? undefined : t.sidebar.settings}
+					className="sidebar-settings-btn"
+					data-expanded={showLabels}
+					data-active={settingsOpen}
+					title={showLabels ? undefined : t.sidebar.settings}
 				>
-					<Settings size={18} className="shrink-0" />
-					{(isMobile || expanded) && (
-						<span className="text-sm font-medium truncate">{t.sidebar.settings}</span>
-					)}
+					<Settings size={18} />
+					{showLabels && <span className="sidebar-nav-label">{t.sidebar.settings}</span>}
 				</button>
 
-				{(isMobile || expanded) && settingsOpen && (
-					<div className="mt-2 space-y-1 animate-fade-in">
+				{showLabels && settingsOpen && (
+					<div className="sidebar-settings-panel">
 						<button
 							type="button"
 							onClick={toggleTheme}
-							className="flex items-center gap-3 w-full rounded-lg px-3 py-2.5 text-text-muted hover:text-text hover:bg-surface-hover transition-all duration-200"
+							className="sidebar-settings-action"
 							title={theme === "dark" ? t.sidebar.lightMode : t.sidebar.darkMode}
 						>
-							{theme === "dark" ? (
-								<Sun size={16} className="shrink-0" />
-							) : (
-								<Moon size={16} className="shrink-0" />
-							)}
-							<span className="text-sm truncate">
-								{theme === "dark" ? t.sidebar.lightMode : t.sidebar.darkMode}
-							</span>
+							{theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+							<span>{theme === "dark" ? t.sidebar.lightMode : t.sidebar.darkMode}</span>
 						</button>
 
-						<button
-							type="button"
-							onClick={handleExport}
-							className="flex items-center gap-3 w-full rounded-lg px-3 py-2.5 text-text-muted hover:text-text hover:bg-surface-hover transition-all duration-200"
-						>
-							<Download size={16} className="shrink-0" />
-							<span className="text-sm truncate">{t.sidebar.downloadProgress}</span>
+						<button type="button" onClick={handleExport} className="sidebar-settings-action">
+							<Download size={16} />
+							<span>{t.sidebar.downloadProgress}</span>
 						</button>
 
-						<button
-							type="button"
-							onClick={handleImportClick}
-							className="flex items-center gap-3 w-full rounded-lg px-3 py-2.5 text-text-muted hover:text-text hover:bg-surface-hover transition-all duration-200"
-						>
-							<Upload size={16} className="shrink-0" />
-							<span className="text-sm truncate">{t.sidebar.uploadProgress}</span>
+						<button type="button" onClick={handleImportClick} className="sidebar-settings-action">
+							<Upload size={16} />
+							<span>{t.sidebar.uploadProgress}</span>
 						</button>
+
+						<Link
+							to="/"
+							onClick={closeMobileDrawer}
+							className="sidebar-settings-action sidebar-settings-action-danger"
+						>
+							<LogOut size={16} />
+							<span>{t.sidebar.logout}</span>
+						</Link>
 
 						<input
 							ref={fileInputRef}
 							type="file"
 							accept=".json"
 							onChange={handleFileChange}
-							className="hidden"
+							style={{ display: "none" }}
 						/>
 
-						{importError && (
-							<p className="text-xs px-3 py-1.5 rounded-md text-advanced bg-advanced/10">
-								{importError}
-							</p>
-						)}
+						{importError && <p className="sidebar-import-error">{importError}</p>}
 					</div>
 				)}
 			</div>
@@ -223,11 +205,7 @@ export const AppSidebar = () => {
 	if (isMobile) {
 		return (
 			<Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-				<SheetContent
-					side="left"
-					showCloseButton={false}
-					className="w-[280px] p-0 bg-sidebar border-sidebar-border flex flex-col"
-				>
+				<SheetContent side="left" showCloseButton={false} className="app-sidebar-mobile">
 					{sidebarContent}
 				</SheetContent>
 			</Sheet>
@@ -235,14 +213,8 @@ export const AppSidebar = () => {
 	}
 
 	// Desktop: sidebar fixa
-	const sidebarWidth = expanded
-		? "w-[var(--spacing-sidebar-expanded)]"
-		: "w-[var(--spacing-sidebar-collapsed)]";
-
 	return (
-		<aside
-			className={`fixed inset-y-0 left-0 z-40 ${sidebarWidth} glass border-r border-sidebar-border flex flex-col transition-[width] duration-300 ease-out overflow-hidden`}
-		>
+		<aside className="app-sidebar" data-expanded={expanded}>
 			{sidebarContent}
 		</aside>
 	);

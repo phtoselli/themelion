@@ -1,0 +1,11 @@
+roadmap: backend-developer-pleno
+name: "Backend Developer — Pleno"
+description: "Em breve: concorrência, mensageria, GraphQL, caching avançado, performance e observabilidade"
+icon: "server"
+
+stages:
+  - slug: "em-breve"
+    name: "Em breve"
+    description: "Conteúdo em desenvolvimento"
+    order: 1
+    topics: []

@@ -1,0 +1,124 @@
+/* =============================================
+   Page Layout
+   ============================================= */
+
+.page-layout {
+	min-height: 100vh;
+	min-height: 100svh;
+	background: var(--surface);
+}
+
+/* Mobile header */
+.page-header-mobile {
+	position: sticky;
+	top: 0;
+	z-index: 30;
+	backdrop-filter: blur(12px);
+	-webkit-backdrop-filter: blur(12px);
+	background: color-mix(in srgb, var(--surface) 80%, transparent);
+	border-bottom: 1px solid var(--sidebar-border);
+}
+
+.page-header-mobile-inner {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	height: 3.5rem;
+	padding: 0 1rem;
+}
+
+.page-header-hamburger {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: var(--radius-lg);
+	padding: 0.5rem;
+	margin-left: -0.25rem;
+	color: var(--text-muted);
+	transition: all 0.2s;
+}
+.page-header-hamburger:hover {
+	color: var(--text);
+	background: var(--surface-hover);
+}
+
+.page-header-logo {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.page-header-logo > svg {
+	color: var(--primary);
+}
+
+.page-header-logo > span {
+	font-family: "Syne", system-ui, sans-serif;
+	font-weight: 700;
+	font-size: 0.875rem;
+	color: var(--text);
+	letter-spacing: -0.025em;
+}
+
+.page-header-breadcrumbs {
+	padding: 0 1rem 0.625rem;
+	margin-top: -0.25rem;
+}
+
+/* Main content area */
+.page-main {
+	transition: margin 0.3s ease-out;
+}
+
+.page-main-inner {
+	max-width: 56rem;
+	margin: 0 auto;
+	padding: 1rem;
+}
+.page-main-inner[data-full-width="true"] {
+	max-width: none;
+}
+
+@media (min-width: 768px) {
+	.page-main-inner {
+		padding: 1.5rem;
+	}
+}
+@media (min-width: 1024px) {
+	.page-main-inner {
+		padding: 2.5rem;
+	}
+	.page-main-inner[data-full-width="true"] {
+		padding: 2rem;
+	}
+}
+
+/* Breadcrumb links */
+.breadcrumb-link {
+	color: var(--text-faint);
+	transition: color 0.2s;
+}
+.breadcrumb-link:hover {
+	color: var(--primary);
+}
+
+.breadcrumb-link-mobile {
+	font-size: 0.75rem;
+}
+
+.breadcrumb-current {
+	color: var(--text-muted);
+	font-weight: 500;
+}
+.breadcrumb-current-mobile {
+	font-size: 0.75rem;
+}
+
+.breadcrumb-sep {
+	color: color-mix(in srgb, var(--text-faint) 40%, transparent);
+}
+
+.page-breadcrumbs-desktop {
+	margin-bottom: 2rem;
+	animation: fade-in 0.3s ease-out;
+}

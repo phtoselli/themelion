@@ -1,162 +1,185 @@
-@import "tailwindcss";
+/* =============================================
+   Themelion — Global Styles
+   ============================================= */
 
-/* shadcn custom variants and keyframes */
-@theme inline {
-	@keyframes accordion-down {
-		from {
-			height: 0;
-		}
-		to {
-			height: var(
-				--radix-accordion-content-height,
-				var(--accordion-panel-height, auto)
-			);
-		}
-	}
+@import "./styles/utilities.css";
 
-	@keyframes accordion-up {
-		from {
-			height: var(
-				--radix-accordion-content-height,
-				var(--accordion-panel-height, auto)
-			);
-		}
-		to {
-			height: 0;
-		}
-	}
+/* =============================================
+   Reset (substitui Tailwind Preflight)
+   ============================================= */
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	border-width: 0;
+	border-style: solid;
+	border-color: var(--border);
+	outline-color: color-mix(in srgb, var(--ring) 50%, transparent);
 }
 
-@custom-variant data-open {
-	&:where([data-state="open"]),
-	&:where([data-open]:not([data-open="false"])) {
-		@slot;
-	}
+html {
+	line-height: 1.5;
+	-webkit-text-size-adjust: 100%;
+	tab-size: 4;
 }
 
-@custom-variant data-closed {
-	&:where([data-state="closed"]),
-	&:where([data-closed]:not([data-closed="false"])) {
-		@slot;
-	}
+body {
+	margin: 0;
+	line-height: inherit;
+	background-color: var(--background);
+	color: var(--foreground);
+	font-family: "Outfit", system-ui, sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	font-feature-settings: "cv11", "ss01";
 }
 
-@custom-variant data-checked {
-	&:where([data-state="checked"]),
-	&:where([data-checked]:not([data-checked="false"])) {
-		@slot;
-	}
+hr {
+	height: 0;
+	color: inherit;
+	border-top-width: 1px;
 }
 
-@custom-variant data-unchecked {
-	&:where([data-state="unchecked"]),
-	&:where([data-unchecked]:not([data-unchecked="false"])) {
-		@slot;
-	}
+h1, h2, h3, h4, h5, h6 {
+	font-size: inherit;
+	font-weight: inherit;
 }
 
-@custom-variant data-selected {
-	&:where([data-selected="true"]) {
-		@slot;
-	}
+a {
+	color: inherit;
+	text-decoration: inherit;
 }
 
-@custom-variant data-disabled {
-	&:where([data-disabled="true"]),
-	&:where([data-disabled]:not([data-disabled="false"])) {
-		@slot;
-	}
+b, strong {
+	font-weight: bolder;
 }
 
-@custom-variant data-active {
-	&:where([data-state="active"]),
-	&:where([data-active]:not([data-active="false"])) {
-		@slot;
-	}
+code, kbd, samp, pre {
+	font-family: "JetBrains Mono", "Fira Code", monospace;
+	font-size: 1em;
 }
 
-@custom-variant data-horizontal {
-	&:where([data-orientation="horizontal"]) {
-		@slot;
-	}
+small {
+	font-size: 80%;
 }
 
-@custom-variant data-vertical {
-	&:where([data-orientation="vertical"]) {
-		@slot;
-	}
+button, input, optgroup, select, textarea {
+	font-family: inherit;
+	font-feature-settings: inherit;
+	font-variation-settings: inherit;
+	font-size: 100%;
+	font-weight: inherit;
+	line-height: inherit;
+	letter-spacing: inherit;
+	color: inherit;
+	margin: 0;
+	padding: 0;
 }
 
-@utility no-scrollbar {
-	-ms-overflow-style: none;
-	scrollbar-width: none;
-
-	&::-webkit-scrollbar {
-		display: none;
-	}
+button, select {
+	text-transform: none;
 }
 
-@custom-variant dark (&:is(.dark *));
-@custom-variant light (&:is(.light *));
+button, input[type="button"], input[type="reset"], input[type="submit"] {
+	-webkit-appearance: button;
+	background-color: transparent;
+	background-image: none;
+}
 
-@theme inline {
+:-moz-focusring {
+	outline: auto;
+}
+
+:-moz-ui-invalid {
+	box-shadow: none;
+}
+
+progress {
+	vertical-align: baseline;
+}
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+	height: auto;
+}
+
+[type="search"] {
+	-webkit-appearance: textfield;
+	outline-offset: -2px;
+}
+
+::-webkit-search-decoration {
+	-webkit-appearance: none;
+}
+
+::-webkit-file-upload-button {
+	-webkit-appearance: button;
+	font: inherit;
+}
+
+summary {
+	display: list-item;
+}
+
+blockquote, dl, dd, h1, h2, h3, h4, h5, h6, hr, figure, p, pre {
+	margin: 0;
+}
+
+fieldset {
+	margin: 0;
+	padding: 0;
+}
+
+legend {
+	padding: 0;
+}
+
+ol, ul, menu {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+dialog {
+	padding: 0;
+}
+
+textarea {
+	resize: vertical;
+}
+
+::placeholder {
+	opacity: 1;
+	color: var(--text-faint);
+}
+
+img, svg, video, canvas, audio, iframe, embed, object {
+	display: block;
+	vertical-align: middle;
+}
+
+img, video {
+	max-width: 100%;
+	height: auto;
+}
+
+[hidden]:where(:not([hidden="until-found"])) {
+	display: none;
+}
+
+/* =============================================
+   Design Tokens / Theme Variables
+   ============================================= */
+
+:root {
+	--radius: 0.625rem;
 	--radius-sm: calc(var(--radius) - 4px);
 	--radius-md: calc(var(--radius) - 2px);
 	--radius-lg: var(--radius);
 	--radius-xl: calc(var(--radius) + 4px);
 	--radius-2xl: calc(var(--radius) + 8px);
-	--radius-3xl: calc(var(--radius) + 12px);
-	--radius-4xl: calc(var(--radius) + 16px);
-	--color-background: var(--background);
-	--color-foreground: var(--foreground);
-	--color-card: var(--card);
-	--color-card-foreground: var(--card-foreground);
-	--color-popover: var(--popover);
-	--color-popover-foreground: var(--popover-foreground);
-	--color-primary: var(--primary);
-	--color-primary-foreground: var(--primary-foreground);
-	--color-secondary: var(--secondary);
-	--color-secondary-foreground: var(--secondary-foreground);
-	--color-muted: var(--muted);
-	--color-muted-foreground: var(--muted-foreground);
-	--color-accent: var(--accent);
-	--color-accent-foreground: var(--accent-foreground);
-	--color-destructive: var(--destructive);
-	--color-border: var(--border);
-	--color-input: var(--input);
-	--color-ring: var(--ring);
-	--color-sidebar: var(--sidebar);
-	--color-sidebar-foreground: var(--sidebar-foreground);
-	--color-sidebar-primary: var(--sidebar-primary);
-	--color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-	--color-sidebar-accent: var(--sidebar-accent);
-	--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-	--color-sidebar-border: var(--sidebar-border);
-	--color-sidebar-ring: var(--sidebar-ring);
-}
-
-@theme {
-	--color-surface: var(--surface);
-	--color-surface-raised: var(--surface-raised);
-	--color-surface-light: var(--surface-light);
-	--color-surface-hover: var(--surface-hover);
-	--color-surface-active: var(--surface-active);
-
-	--color-text: var(--text);
-	--color-text-muted: var(--text-muted);
-	--color-text-faint: var(--text-faint);
-
-	--color-border-subtle: var(--border-subtle);
-
-	--color-primary-dark: var(--primary-dark);
-	--color-primary-subtle: var(--primary-subtle);
-	--color-primary-glow: var(--primary-glow);
-
-	--color-warning: var(--warning);
-
-	--color-beginner: var(--beginner);
-	--color-intermediate: var(--intermediate);
-	--color-advanced: var(--advanced);
+	--radius-full: 9999px;
 
 	/* Layout */
 	--spacing-sidebar-expanded: 260px;
@@ -166,11 +189,6 @@
 	--font-display: "Syne", system-ui, sans-serif;
 	--font-sans: "Outfit", system-ui, sans-serif;
 	--font-mono: "JetBrains Mono", "Fira Code", monospace;
-}
-
-/* Theme variables */
-:root {
-	--radius: 0.625rem;
 }
 
 /* Dark theme (default) */
@@ -193,6 +211,11 @@
 	--beginner: #4ade80;
 	--intermediate: #fbbf24;
 	--advanced: #f98181;
+
+	/* Roadmap levels */
+	--level-junior: #5fb0b3;
+	--level-pleno: #d4a043;
+	--level-senior: #a78bfa;
 
 	/* Warm dark palette */
 	--background: #08080a;
@@ -257,6 +280,11 @@
 	--intermediate: #7a3806;
 	--advanced: #941818;
 
+	/* Roadmap levels */
+	--level-junior: #215255;
+	--level-pleno: #5f4714;
+	--level-senior: #5813cf;
+
 	/* Warm clarity — gray canvas with white surfaces */
 	--background: #f3f1ec;
 	--foreground: #1a1714;
@@ -300,52 +328,41 @@
 	--sidebar-ring: #5f4714;
 }
 
-@layer base {
-	* {
-		@apply border-border outline-ring/50;
-	}
-	body {
-		@apply bg-background text-foreground font-sans;
-		-webkit-font-smoothing: antialiased;
-		-moz-osx-font-smoothing: grayscale;
-		font-feature-settings: "cv11", "ss01";
-	}
+/* =============================================
+   Base Styles
+   ============================================= */
 
-	/* Smooth theme transitions */
-	*,
-	*::before,
-	*::after {
-		transition-property: background-color, border-color, color, fill, stroke;
-		transition-duration: 200ms;
-		transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-	}
-
-	/* Disable transitions on elements that should be instant */
-	.no-theme-transition,
-	.no-theme-transition *,
-	.no-theme-transition *::before,
-	.no-theme-transition *::after {
-		transition: none !important;
-	}
+/* Smooth theme transitions */
+*,
+*::before,
+*::after {
+	transition-property: background-color, border-color, color, fill, stroke;
+	transition-duration: 200ms;
+	transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Grain texture overlay */
-body::after {
-	content: "";
-	position: fixed;
-	inset: 0;
-	z-index: 9999;
-	pointer-events: none;
-	opacity: 0.022;
-	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+/* Disable transitions on elements that should be instant */
+.no-theme-transition,
+.no-theme-transition *,
+.no-theme-transition *::before,
+.no-theme-transition *::after {
+	transition: none !important;
 }
 
-/* Light theme: slightly darker grain */
-.light body::after {
-	opacity: 0.015;
+/* =============================================
+   Keyframes
+   ============================================= */
+
+@keyframes accordion-down {
+	from { height: 0; }
+	to { height: var(--radix-accordion-content-height, var(--accordion-panel-height, auto)); }
 }
 
-/* Keyframes */
+@keyframes accordion-up {
+	from { height: var(--radix-accordion-content-height, var(--accordion-panel-height, auto)); }
+	to { height: 0; }
+}
+
 @keyframes fade-in-up {
 	from {
 		opacity: 0;
@@ -377,7 +394,65 @@ body::after {
 	50% { opacity: 1; transform: translateY(4px); }
 }
 
-/* Stagger animation utilities */
+@keyframes sheet-slide-in-from-right {
+	from { transform: translateX(100%); }
+	to { transform: translateX(0); }
+}
+
+@keyframes sheet-slide-out-to-right {
+	from { transform: translateX(0); }
+	to { transform: translateX(100%); }
+}
+
+@keyframes sheet-slide-in-from-left {
+	from { transform: translateX(-100%); }
+	to { transform: translateX(0); }
+}
+
+@keyframes sheet-slide-out-to-left {
+	from { transform: translateX(0); }
+	to { transform: translateX(-100%); }
+}
+
+@keyframes sheet-slide-in-from-top {
+	from { transform: translateY(-100%); }
+	to { transform: translateY(0); }
+}
+
+@keyframes sheet-slide-out-to-top {
+	from { transform: translateY(0); }
+	to { transform: translateY(-100%); }
+}
+
+@keyframes sheet-slide-in-from-bottom {
+	from { transform: translateY(100%); }
+	to { transform: translateY(0); }
+}
+
+@keyframes sheet-slide-out-to-bottom {
+	from { transform: translateY(0); }
+	to { transform: translateY(100%); }
+}
+
+@keyframes overlay-fade-in {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
+
+@keyframes overlay-fade-out {
+	from { opacity: 1; }
+	to { opacity: 0; }
+}
+
+@keyframes tooltip-fade-in {
+	from { opacity: 0; transform: scale(0.95); }
+	to { opacity: 1; transform: scale(1); }
+}
+
+/* =============================================
+   Animation Utilities
+   ============================================= */
+
 .animate-fade-in-up {
 	animation: fade-in-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 	opacity: 0;
@@ -399,7 +474,28 @@ body::after {
 .stagger-9 { animation-delay: 0.45s; }
 .stagger-10 { animation-delay: 0.5s; }
 
-/* Glass effect */
+/* =============================================
+   Grain Texture Overlay
+   ============================================= */
+
+body::after {
+	content: "";
+	position: fixed;
+	inset: 0;
+	z-index: 9999;
+	pointer-events: none;
+	opacity: 0.022;
+	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.light body::after {
+	opacity: 0.015;
+}
+
+/* =============================================
+   Glass Effect
+   ============================================= */
+
 .glass {
 	background: rgba(14, 14, 17, 0.75);
 	backdrop-filter: blur(16px) saturate(180%);
@@ -410,7 +506,10 @@ body::after {
 	background: rgba(255, 255, 255, 0.88);
 }
 
-/* Gradient mesh backgrounds */
+/* =============================================
+   Gradient Mesh Backgrounds
+   ============================================= */
+
 .gradient-mesh-hero {
 	background:
 		radial-gradient(ellipse 60% 50% at 15% 25%, #d4a04310 0%, transparent 70%),
@@ -437,7 +536,6 @@ body::after {
 		radial-gradient(ellipse 40% 40% at 90% 80%, #21525506 0%, transparent 60%);
 }
 
-/* Landing page hero gradient */
 .landing-hero-gradient {
 	background:
 		radial-gradient(ellipse 80% 60% at 20% 30%, #d4a04312 0%, transparent 70%),
@@ -452,7 +550,10 @@ body::after {
 		radial-gradient(ellipse 60% 40% at 50% 90%, #5813cf06 0%, transparent 50%);
 }
 
-/* Card hover glow effect */
+/* =============================================
+   Card Hover Glow Effect
+   ============================================= */
+
 .card-glow {
 	position: relative;
 	transition: border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
@@ -467,7 +568,10 @@ body::after {
 	box-shadow: 0 0 0 1px #5f47140d, 0 4px 24px -4px #5f471412;
 }
 
-/* Room card gradient borders */
+/* =============================================
+   Room Card Gradient Borders
+   ============================================= */
+
 .room-card {
 	position: relative;
 	overflow: hidden;
@@ -491,12 +595,10 @@ body::after {
 	background: linear-gradient(90deg, transparent, #5f471430, transparent);
 }
 
-/* Display font utility */
-.font-display {
-	font-family: "Syne", system-ui, sans-serif;
-}
+/* =============================================
+   Topic Card Left-Accent
+   ============================================= */
 
-/* Topic card left-accent on hover */
 .topic-card {
 	position: relative;
 	transition: all 0.2s ease;
@@ -517,7 +619,10 @@ body::after {
 	height: 60%;
 }
 
-/* Sidebar active indicator */
+/* =============================================
+   Sidebar Active Indicator
+   ============================================= */
+
 .sidebar-active-indicator {
 	position: relative;
 }
@@ -533,7 +638,10 @@ body::after {
 	border-radius: 1px;
 }
 
-/* Custom scrollbar */
+/* =============================================
+   Custom Scrollbar
+   ============================================= */
+
 ::-webkit-scrollbar {
 	width: 5px;
 	height: 5px;
@@ -549,5 +657,5 @@ body::after {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-	background: var(--color-text-faint);
+	background: var(--text-faint);
 }

@@ -31,6 +31,7 @@ export interface Locale {
 		theme: string;
 		darkMode: string;
 		lightMode: string;
+		logout: string;
 	};
 
 	difficulty: {
@@ -118,6 +119,9 @@ export interface Locale {
 		description: string;
 		stages: string;
 		viewTrack: string;
+		levelJunior: string;
+		levelPleno: string;
+		levelSenior: string;
 	};
 
 	roadmapPage: {
@@ -173,6 +177,7 @@ export const ptBR: Locale = {
 		theme: "Tema",
 		darkMode: "Modo escuro",
 		lightMode: "Modo claro",
+		logout: "Sair",
 	},
 
 	difficulty: {
@@ -272,6 +277,9 @@ export const ptBR: Locale = {
 			"Caminhos estruturados para guiar seu aprendizado do zero ao profissional. Cada trilha conecta tópicos na ordem certa para você evoluir sem pular etapas.",
 		stages: "fases",
 		viewTrack: "Ver trilha",
+		levelJunior: "Júnior",
+		levelPleno: "Pleno",
+		levelSenior: "Sênior",
 	},
 
 	roadmapPage: {

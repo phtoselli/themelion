@@ -1,0 +1,185 @@
+/* =============================================
+   Room Page
+   ============================================= */
+
+.room-header {
+	position: relative;
+	margin-bottom: 2rem;
+	animation: fade-in-up 0.6s ease-out;
+}
+@media (min-width: 768px) { .room-header { margin-bottom: 2.5rem; } }
+
+.room-glow {
+	display: none;
+	position: absolute;
+	top: -5rem;
+	left: -5rem;
+	width: 400px;
+	height: 300px;
+	background: color-mix(in srgb, var(--primary) 3%, transparent);
+	border-radius: var(--radius-full);
+	filter: blur(80px);
+	pointer-events: none;
+}
+@media (min-width: 768px) { .room-glow { display: block; } }
+
+.room-title-row {
+	position: relative;
+	display: flex;
+	align-items: flex-start;
+	gap: 0.75rem;
+	margin-bottom: 0.75rem;
+}
+@media (min-width: 768px) { .room-title-row { gap: 1rem; margin-bottom: 1rem; } }
+
+.room-icon {
+	position: relative;
+	padding: 0.625rem;
+	border-radius: var(--radius-xl);
+	background: color-mix(in srgb, var(--primary) 8%, transparent);
+	flex-shrink: 0;
+}
+@media (min-width: 768px) { .room-icon { padding: 0.75rem; } }
+
+.room-icon-svg { color: var(--primary); position: relative; z-index: 10; }
+.room-icon-svg-sm { display: block; }
+.room-icon-svg-md { display: none; }
+@media (min-width: 768px) {
+	.room-icon-svg-sm { display: none; }
+	.room-icon-svg-md { display: block; }
+}
+
+.room-icon-glow {
+	position: absolute;
+	inset: 0;
+	background: color-mix(in srgb, var(--primary) 5%, transparent);
+	border-radius: var(--radius-xl);
+	filter: blur(4px);
+}
+
+.room-title {
+	font-family: "Syne", system-ui, sans-serif;
+	font-size: 1.25rem;
+	font-weight: 700;
+	letter-spacing: -0.025em;
+}
+@media (min-width: 768px) { .room-title { font-size: 1.5rem; } }
+
+.room-meta {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	margin-top: 0.25rem;
+}
+@media (min-width: 768px) { .room-meta { margin-top: 0.375rem; } }
+
+.room-meta-text {
+	font-size: 0.75rem;
+	color: var(--text-faint);
+	font-weight: 500;
+}
+
+.room-meta-dot {
+	width: 0.25rem;
+	height: 0.25rem;
+	border-radius: var(--radius-full);
+	background: color-mix(in srgb, var(--text-faint) 40%, transparent);
+}
+
+.room-desc {
+	color: var(--text-muted);
+	font-size: 0.75rem;
+	line-height: 1.625;
+	max-width: 42rem;
+}
+@media (min-width: 768px) { .room-desc { font-size: 0.875rem; } }
+
+/* Categories */
+.room-categories {
+	display: flex;
+	flex-direction: column;
+	gap: 2rem;
+}
+@media (min-width: 768px) { .room-categories { gap: 2.5rem; } }
+
+.room-category-header {
+	display: flex;
+	align-items: baseline;
+	gap: 0.75rem;
+	margin-bottom: 0.75rem;
+}
+@media (min-width: 768px) { .room-category-header { margin-bottom: 1rem; } }
+
+.room-category-title {
+	font-family: "Syne", system-ui, sans-serif;
+	font-size: 0.875rem;
+	font-weight: 700;
+	letter-spacing: -0.025em;
+}
+@media (min-width: 768px) { .room-category-title { font-size: 1rem; } }
+
+.room-category-count {
+	font-size: 11px;
+	color: var(--text-faint);
+	font-variant-numeric: tabular-nums;
+	font-weight: 500;
+}
+
+.room-category-line {
+	flex: 1;
+	height: 1px;
+	background: var(--border);
+	margin-left: 0.5rem;
+}
+
+/* Topic cards */
+.room-topics-grid {
+	display: grid;
+	gap: 0.5rem;
+}
+
+.room-topic-card {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.75rem;
+	border-radius: var(--radius-lg);
+	border: 1px solid var(--border);
+	transition: all 0.2s;
+	background: color-mix(in srgb, var(--surface-raised) 60%, transparent);
+}
+@media (min-width: 768px) { .room-topic-card { gap: 0.75rem; padding: 1rem; } }
+
+.room-topic-card:hover,
+.room-topic-card:active {
+	background: color-mix(in srgb, var(--surface-light) 80%, transparent);
+}
+
+.room-topic-card[data-planned="true"] {
+	border-color: color-mix(in srgb, var(--border) 50%, transparent);
+	background: color-mix(in srgb, var(--surface-raised) 30%, transparent);
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+.room-topic-card[data-planned="true"]:hover {
+	background: color-mix(in srgb, var(--surface-raised) 30%, transparent);
+}
+
+.room-topic-card[data-completed="true"] {
+	border-color: color-mix(in srgb, var(--emerald-500) 50%, transparent);
+}
+
+.room-topic-title {
+	font-weight: 500;
+	font-size: 0.875rem;
+	flex: 1;
+	color: var(--text);
+}
+.room-topic-card[data-planned="true"] .room-topic-title {
+	color: var(--text-faint);
+}
+
+.room-topic-check {
+	color: var(--emerald-500);
+	flex-shrink: 0;
+}
