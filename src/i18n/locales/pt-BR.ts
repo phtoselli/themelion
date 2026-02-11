@@ -45,6 +45,36 @@ export interface Locale {
 		unregistered: string;
 	};
 
+	landingPage: {
+		cta: string;
+		heroBadge: string;
+		heroHeading: string;
+		heroHighlight: string;
+		heroSubtitle: string;
+		heroAccessNote: string;
+		featuresSectionTitle: string;
+		noAdsTitle: string;
+		noAdsDesc: string;
+		noLoginTitle: string;
+		noLoginDesc: string;
+		freeTitle: string;
+		freeDesc: string;
+		timelessTitle: string;
+		timelessDesc: string;
+		previewSectionTitle: string;
+		previewSectionSubtitle: string;
+		howItWorksTitle: string;
+		step1Title: string;
+		step1Desc: string;
+		step2Title: string;
+		step2Desc: string;
+		step3Title: string;
+		step3Desc: string;
+		finalCtaHeading: string;
+		finalCtaSubtitle: string;
+		footerTagline: string;
+	};
+
 	homePage: {
 		badge: string;
 		heading: string;
@@ -155,6 +185,41 @@ export const ptBR: Locale = {
 		implemented: "Disponível",
 		planned: "Em breve",
 		unregistered: "Não registrado",
+	},
+
+	landingPage: {
+		cta: "Iniciar estudos",
+		heroBadge: "100% gratuita & open source",
+		heroHeading: "Os fundamentos que",
+		heroHighlight: "não mudam.",
+		heroSubtitle:
+			"Aprenda conceitos de programação que transcendem qualquer framework. Sem cadastro, sem anúncios, sem custo — direto ao ponto.",
+		heroAccessNote: "Acesso imediato. Sem criar conta.",
+		featuresSectionTitle: "Feita para quem quer estudar de verdade",
+		noAdsTitle: "Sem anúncios",
+		noAdsDesc: "Zero banners, pop-ups ou rastreadores. O foco aqui é 100% no conteúdo.",
+		noLoginTitle: "Sem cadastro",
+		noLoginDesc: "Chegou, estudou. Sem formulários, sem email, sem senhas. Zero fricção.",
+		freeTitle: "100% gratuita",
+		freeDesc: "Todo o conteúdo é aberto. Sem planos premium, sem paywall, sem surpresas.",
+		timelessTitle: "Conteúdo atemporal",
+		timelessDesc:
+			"Conceitos que não expiram. Arrays, algoritmos, arquitetura — o que você aprende aqui vale para toda a carreira.",
+		previewSectionTitle: "Uma plataforma pensada para programadores",
+		previewSectionSubtitle:
+			"Conteúdo técnico com exemplos em 5 linguagens. Cada tópico vai do conceito à implementação.",
+		howItWorksTitle: "Como funciona",
+		step1Title: "Escolha uma sala",
+		step1Desc:
+			"7 salas de estudo organizadas por área: fundamentos, frontend, backend, banco de dados e mais.",
+		step2Title: "Estude com exemplos reais",
+		step2Desc:
+			"Cada tópico tem explicações diretas com exemplos em Python, TypeScript, C#, Go e Rust.",
+		step3Title: "Acompanhe seu progresso",
+		step3Desc: "Marque tópicos como concluídos e siga trilhas de carreira estruturadas.",
+		finalCtaHeading: "Comece agora.",
+		finalCtaSubtitle: "É grátis. É direto. É para sempre.",
+		footerTagline: "θεμέλιον — fundação",
 	},
 
 	homePage: {
