@@ -1,0 +1,29 @@
+.pill-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.375rem 0.75rem;
+	border-radius: var(--radius-full);
+	background: color-mix(in srgb, var(--primary) 8%, transparent);
+	border: 1px solid color-mix(in srgb, var(--primary) 15%, transparent);
+}
+
+.pill-badge-dot {
+	width: 0.375rem;
+	height: 0.375rem;
+	border-radius: var(--radius-full);
+	background: var(--primary);
+	animation: glow-pulse 2s ease-in-out infinite;
+}
+
+.pill-badge-text {
+	font-size: 10px;
+	color: var(--primary);
+	font-weight: 500;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+}
+
+@media (min-width: 640px) {
+	.pill-badge-text { font-size: 0.75rem; }
+}

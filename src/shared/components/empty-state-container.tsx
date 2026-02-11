@@ -1,3 +1,4 @@
+import "@client/styles/modules/empty-state.css";
 import type { ReactNode } from "react";
 
 interface EmptyStateContainerProps {
@@ -13,9 +14,5 @@ interface EmptyStateContainerProps {
  * @param className - Classes CSS adicionais (opcional)
  */
 export const EmptyStateContainer = ({ children, className = "" }: EmptyStateContainerProps) => {
-	return (
-		<div className={`flex items-center justify-center min-h-[400px] ${className}`.trim()}>
-			{children}
-		</div>
-	);
+	return <div className={`empty-state ${className}`.trim()}>{children}</div>;
 };

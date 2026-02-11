@@ -1,0 +1,11 @@
+roadmap: backend-developer-senior
+name: "Backend Developer — Sênior"
+description: "Em breve: sistemas distribuídos, event-driven architecture, design de APIs em escala, SRE e arquitetura de dados"
+icon: "server"
+
+stages:
+  - slug: "em-breve"
+    name: "Em breve"
+    description: "Conteúdo em desenvolvimento"
+    order: 1
+    topics: []

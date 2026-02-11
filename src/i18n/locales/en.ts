@@ -33,6 +33,7 @@ export const en: Locale = {
 		theme: "Theme",
 		darkMode: "Dark mode",
 		lightMode: "Light mode",
+		logout: "Log out",
 	},
 
 	difficulty: {
@@ -131,6 +132,9 @@ export const en: Locale = {
 			"Structured paths to guide your learning from zero to professional. Each track connects topics in the right order so you progress without skipping steps.",
 		stages: "stages",
 		viewTrack: "View track",
+		levelJunior: "Junior",
+		levelPleno: "Mid-level",
+		levelSenior: "Senior",
 	},
 
 	roadmapPage: {

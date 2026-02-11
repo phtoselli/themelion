@@ -1,6 +1,7 @@
 import type { TopicExample } from "@client/shared/types";
-import type { ReactNode } from "react";
 import { sanitizeUrl } from "@client/shared/utils/security";
+import type { ReactNode } from "react";
+import "@client/styles/modules/topic-content.css";
 import { CodeTabs } from "./code-tabs";
 
 interface TopicContentProps {
@@ -70,10 +71,7 @@ const renderInline = (text: string): ReactNode[] => {
 			const m = closest.match as RegExpMatchArray;
 			if (m[1]) result.push(m[1]);
 			result.push(
-				<code
-					key={key++}
-					className="px-1.5 py-0.5 rounded-md bg-surface-hover text-primary text-[0.9em] font-mono"
-				>
+				<code key={key++} className="topic-inline-code">
 					{m[2]}
 				</code>,
 			);
@@ -82,7 +80,7 @@ const renderInline = (text: string): ReactNode[] => {
 			const m = closest.match as RegExpMatchArray;
 			if (m[1]) result.push(m[1]);
 			result.push(
-				<strong key={key++} className="font-semibold text-text">
+				<strong key={key++} className="topic-bold">
 					{m[2]}
 				</strong>,
 			);
@@ -101,7 +99,7 @@ const renderInline = (text: string): ReactNode[] => {
 						href={validUrl}
 						target="_blank"
 						rel="noopener noreferrer"
-						className="text-primary hover:text-primary-dark underline underline-offset-2 transition-colors duration-200"
+						className="topic-link"
 					>
 						{m[2]}
 					</a>,
@@ -109,7 +107,7 @@ const renderInline = (text: string): ReactNode[] => {
 			} else {
 				// URL inválida: renderizar como texto tachado para alertar o autor do conteúdo
 				result.push(
-					<span key={key++} className="text-text-muted line-through text-sm">
+					<span key={key++} className="topic-invalid-link">
 						[{m[2]}]
 					</span>,
 				);
@@ -146,12 +144,9 @@ const renderBlock = (body: string): ReactNode[] => {
 			}
 			i++; // pula o ``` de fechamento
 			elements.push(
-				<div
-					key={key++}
-					className="rounded-lg border border-border bg-surface-raised/60 overflow-hidden my-4"
-				>
-					<pre className="overflow-x-auto p-4 text-[13px] leading-relaxed">
-						<code className="font-mono text-text-muted">{codeLines.join("\n")}</code>
+				<div key={key++} className="topic-code-block">
+					<pre className="topic-code-pre">
+						<code className="topic-code-text">{codeLines.join("\n")}</code>
 					</pre>
 				</div>,
 			);
@@ -163,14 +158,14 @@ const renderBlock = (body: string): ReactNode[] => {
 			const listItems: ReactNode[] = [];
 			while (i < lines.length && lines[i].startsWith("- ")) {
 				listItems.push(
-					<li key={key++} className="text-text-muted leading-relaxed">
+					<li key={key++} className="topic-list-item">
 						{renderInline(lines[i].slice(2))}
 					</li>,
 				);
 				i++;
 			}
 			elements.push(
-				<ul key={key++} className="list-disc pl-5 space-y-1.5 my-3">
+				<ul key={key++} className="topic-list">
 					{listItems}
 				</ul>,
 			);
@@ -192,7 +187,7 @@ const renderBlock = (body: string): ReactNode[] => {
 
 		if (paragraphLines.length > 0) {
 			elements.push(
-				<p key={key++} className="text-text-muted leading-relaxed my-3">
+				<p key={key++} className="topic-paragraph">
 					{renderInline(paragraphLines.join(" "))}
 				</p>,
 			);
@@ -206,20 +201,17 @@ export const TopicContent = ({ content, examples }: TopicContentProps) => {
 	const sections = parseSections(content);
 
 	return (
-		<div className="space-y-8">
+		<div className="topic-sections">
 			{sections.map((section, idx) => {
 				const isCodeTabs = section.body.includes("<CodeTabs");
 
 				return (
 					<section
 						key={section.heading || idx}
-						className={`animate-fade-in-up stagger-${Math.min(idx + 1, 10)}`}
+						className="animate-fade-in-up"
+						style={{ animationDelay: `${Math.min(idx + 1, 10) * 0.05}s` }}
 					>
-						{section.heading && (
-							<h2 className="font-display text-lg md:text-xl font-bold text-text tracking-tight mb-4 pb-2 border-b border-border/50">
-								{section.heading}
-							</h2>
-						)}
+						{section.heading && <h2 className="topic-section-heading">{section.heading}</h2>}
 						{isCodeTabs ? <CodeTabs examples={examples} /> : renderBlock(section.body)}
 					</section>
 				);

@@ -1,0 +1,81 @@
+/* =============================================
+   Rooms Navigation (sidebar)
+   ============================================= */
+
+.rooms-nav {
+	display: flex;
+	flex-direction: column;
+	gap: 0.125rem;
+	padding-left: 0.5rem;
+}
+
+.rooms-nav-room {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.375rem 0.625rem;
+	font-size: 0.875rem;
+	border-radius: var(--radius-md);
+	transition: all 0.2s;
+	color: var(--text-muted);
+}
+.rooms-nav-room:hover {
+	color: var(--text);
+	background: var(--surface-hover);
+}
+.rooms-nav-room[data-active="true"] {
+	color: var(--primary);
+	font-weight: 500;
+	background: color-mix(in srgb, var(--primary) 5%, transparent);
+}
+.rooms-nav-room > svg {
+	flex-shrink: 0;
+	opacity: 0.7;
+}
+
+.rooms-nav-categories {
+	margin-left: 1rem;
+	margin-top: 0.25rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.125rem;
+	animation: fade-in 0.3s ease-out;
+}
+
+.rooms-nav-topics {
+	display: flex;
+	flex-direction: column;
+	gap: 1px;
+	padding: 0.125rem 0;
+}
+
+.rooms-nav-topic {
+	display: flex;
+	align-items: center;
+	gap: 0.375rem;
+	padding: 0.25rem 0.625rem;
+	font-size: 0.75rem;
+	border-radius: var(--radius-md);
+	transition: all 0.2s;
+	color: var(--text-muted);
+}
+.rooms-nav-topic:hover {
+	color: var(--text);
+	background: var(--surface-hover);
+}
+.rooms-nav-topic[data-active="true"] {
+	background: color-mix(in srgb, var(--primary) 10%, transparent);
+	color: var(--primary);
+	font-weight: 500;
+}
+.rooms-nav-topic[data-planned="true"] {
+	color: color-mix(in srgb, var(--text-faint) 70%, transparent);
+	cursor: not-allowed;
+}
+.rooms-nav-topic[data-planned="true"]:hover {
+	color: color-mix(in srgb, var(--text-faint) 70%, transparent);
+	background: transparent;
+}
+.rooms-nav-topic > svg {
+	flex-shrink: 0;
+}

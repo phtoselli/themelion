@@ -1,0 +1,65 @@
+/* Input */
+
+[data-slot="input"] {
+	height: 2.25rem;
+	width: 100%;
+	min-width: 0;
+	border-radius: var(--radius-md);
+	border: 1px solid var(--input);
+	background-color: transparent;
+	padding: 0.25rem 0.75rem;
+	font-size: 1rem;
+	line-height: 1.5;
+	box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+	transition: color 0.15s, box-shadow 0.15s;
+	outline: none;
+}
+
+@media (min-width: 768px) {
+	[data-slot="input"] {
+		font-size: 0.875rem;
+	}
+}
+
+[data-slot="input"]::placeholder {
+	color: var(--muted-foreground);
+}
+
+[data-slot="input"]::selection {
+	background-color: var(--primary);
+	color: var(--primary-foreground);
+}
+
+[data-slot="input"]:focus-visible {
+	border-color: var(--ring);
+	box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 50%, transparent);
+}
+
+[data-slot="input"]:disabled {
+	pointer-events: none;
+	cursor: not-allowed;
+	opacity: 0.5;
+}
+
+[data-slot="input"][aria-invalid="true"] {
+	border-color: var(--destructive);
+	box-shadow: 0 0 0 3px color-mix(in srgb, var(--destructive) 20%, transparent);
+}
+
+[data-slot="input"]::file-selector-button {
+	display: inline-flex;
+	height: 1.75rem;
+	border: 0;
+	background-color: transparent;
+	font-size: 0.875rem;
+	font-weight: 500;
+	color: var(--foreground);
+}
+
+.dark [data-slot="input"] {
+	background-color: color-mix(in srgb, var(--input) 30%, transparent);
+}
+
+.dark [data-slot="input"][aria-invalid="true"] {
+	box-shadow: 0 0 0 3px color-mix(in srgb, var(--destructive) 40%, transparent);
+}

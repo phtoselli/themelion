@@ -1,0 +1,117 @@
+roadmap: ux-ui-designer-junior
+name: "UX/UI Designer — Júnior"
+description: "O essencial para começar sua carreira em design de produto: fundamentos visuais, tipografia, layout, usabilidade, componentes de UI e prototipagem"
+icon: "palette"
+
+stages:
+
+  - slug: "fundamentos-visuais"
+    name: "Fundamentos Visuais"
+    description: "Hierarquia, contraste, alinhamento e Gestalt"
+    order: 1
+    topics:
+      - "hierarquia-visual"
+      - "contraste"
+      - "alinhamento-e-proximidade"
+      - "repeticao-e-consistencia"
+      - "gestalt-principles"
+
+  - slug: "cores-e-tipografia"
+    name: "Cores e Tipografia"
+    description: "Círculo cromático, harmonia, acessibilidade e hierarquia tipográfica"
+    order: 2
+    topics:
+      - "circulo-cromatico"
+      - "harmonias-de-cores"
+      - "contraste-de-cores"
+      - "acessibilidade-de-cores"
+      - "hierarquia-tipografica"
+      - "legibilidade"
+
+  - slug: "layout"
+    name: "Layout e Grid"
+    description: "Grid systems, espaçamento e breakpoints"
+    order: 3
+    topics:
+      - "grid-system"
+      - "tipos-de-grid"
+      - "espacamento-em-grid"
+      - "container-e-breakpoints"
+
+  - slug: "entendendo-usuario"
+    name: "Entendendo o Usuário"
+    description: "Pesquisa, personas, user stories e journey maps"
+    order: 4
+    topics:
+      - "metodos-de-pesquisa"
+      - "user-personas"
+      - "user-stories"
+      - "journey-maps"
+
+  - slug: "arquitetura-informacao"
+    name: "Arquitetura da Informação"
+    description: "Organizar conteúdo e projetar fluxos"
+    order: 5
+    topics:
+      - "fundamentos-de-ia"
+      - "user-flows"
+      - "sistemas-de-navegacao"
+      - "estados-de-interface"
+
+  - slug: "usabilidade"
+    name: "Usabilidade"
+    description: "Heurísticas de Nielsen, affordances e feedback"
+    order: 6
+    topics:
+      - "heuristicas-de-nielsen"
+      - "affordances-e-signifiers"
+      - "feedback-e-feedforward"
+      - "prevencao-de-erros"
+
+  - slug: "componentes-ui"
+    name: "Componentes de UI"
+    description: "Botões, inputs, modais, cards e estados"
+    order: 7
+    topics:
+      - "botoes"
+      - "inputs-e-formularios"
+      - "modais-e-drawers"
+      - "cards-e-listas"
+      - "estados-de-componentes"
+
+  - slug: "responsividade"
+    name: "Responsividade"
+    description: "Mobile-first, breakpoints e design para toque"
+    order: 8
+    topics:
+      - "responsive-vs-adaptive"
+      - "mobile-first"
+      - "breakpoints-strategy"
+
+  - slug: "acessibilidade"
+    name: "Acessibilidade"
+    description: "WCAG, texto alternativo, contraste e navegação por teclado"
+    order: 9
+    topics:
+      - "wcag"
+      - "texto-alternativo"
+      - "contraste-e-cor-a11y"
+      - "navegacao-por-teclado"
+
+  - slug: "prototipagem"
+    name: "Prototipagem"
+    description: "Protótipos de baixa/alta fidelidade e testes de usabilidade"
+    order: 10
+    topics:
+      - "niveis-de-fidelidade"
+      - "prototipos-interativos"
+      - "testes-de-usabilidade-validacao"
+
+  - slug: "processo"
+    name: "Processo e Colaboração"
+    description: "Design thinking, feedback e handoff"
+    order: 11
+    topics:
+      - "design-thinking"
+      - "critica-e-feedback"
+      - "design-handoff"

@@ -1,0 +1,11 @@
+roadmap: ux-ui-designer-pleno
+name: "UX/UI Designer — Pleno"
+description: "Em breve: design systems, psicologia aplicada, métricas de produto, UX writing e design strategy"
+icon: "palette"
+
+stages:
+  - slug: "em-breve"
+    name: "Em breve"
+    description: "Conteúdo em desenvolvimento"
+    order: 1
+    topics: []

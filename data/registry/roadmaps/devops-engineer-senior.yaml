@@ -1,0 +1,11 @@
+roadmap: devops-engineer-senior
+name: "DevOps Engineer — Sênior"
+description: "Em breve: SRE avançado, chaos engineering, multi-cloud, compliance e automação em escala"
+icon: "cloud"
+
+stages:
+  - slug: "em-breve"
+    name: "Em breve"
+    description: "Conteúdo em desenvolvimento"
+    order: 1
+    topics: []

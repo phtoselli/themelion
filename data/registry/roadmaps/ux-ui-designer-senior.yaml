@@ -1,0 +1,11 @@
+roadmap: ux-ui-designer-senior
+name: "UX/UI Designer — Sênior"
+description: "Em breve: design de serviços, liderança de design, métricas de negócio, ética e design inclusivo em escala"
+icon: "palette"
+
+stages:
+  - slug: "em-breve"
+    name: "Em breve"
+    description: "Conteúdo em desenvolvimento"
+    order: 1
+    topics: []
