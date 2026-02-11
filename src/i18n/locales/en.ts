@@ -19,7 +19,8 @@ export const en: Locale = {
 	nav: {
 		home: "Home",
 		studyRooms: "Modules",
-		roadmaps: "Roadmaps",
+		roadmaps: "Tracks",
+		projects: "Projects",
 	},
 
 	sidebar: {
@@ -102,6 +103,9 @@ export const en: Locale = {
 		careerTracksTitle: "Career Tracks",
 		viewAllTracks: "View all tracks",
 		careerTracksSubtitle: "Structured paths from zero to professional",
+		projectsTitle: "Projects",
+		viewAllProjects: "View all projects",
+		projectsSubtitle: "Practical projects to build your portfolio",
 	},
 
 	roomsPage: {
@@ -141,6 +145,13 @@ export const en: Locale = {
 		notFound: "Roadmap not found",
 		completed: "Completed",
 		completionPercent: (percent: number) => `${percent}% completed`,
+	},
+
+	projectsPage: {
+		title: "Projects",
+		description:
+			"Practical projects organized by career track to help you build a solid portfolio. Each project applies fundamental concepts and can be implemented in multiple languages.",
+		availableProjects: (count: number) => `${count} project${count !== 1 ? "s" : ""} available`,
 	},
 
 	progress: {

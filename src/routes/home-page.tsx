@@ -6,7 +6,7 @@ import { PageSkeleton } from "@client/modules/layout/components/skeletons";
 import { PillBadge } from "@client/shared/components/pill-badge";
 import { getRoomIcon } from "@client/shared/utils/helpers/room-icons";
 import "@client/styles/pages/home.css";
-import { ArrowRight, BookOpen, Code2, Layers, Map as MapIcon, Sparkles } from "lucide-react";
+import { ArrowRight, BookOpen, Code2, FolderKanban, Layers, Map as MapIcon, Sparkles } from "lucide-react";
 import { useEffect, useMemo } from "react";
 import { Link } from "react-router";
 
@@ -166,7 +166,7 @@ export const HomePage = () => {
 			</section>
 
 			{/* Trilhas de Carreira */}
-			<section className="animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
+			<section className="home-section animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
 				<div className="home-section-header" data-accent="true">
 					<MapIcon size={18} />
 					<h2 className="home-section-title">{t.homePage.careerTracksTitle}</h2>
@@ -180,6 +180,26 @@ export const HomePage = () => {
 					<div className="home-tracks-info">
 						<h3 className="home-tracks-title">{t.homePage.viewAllTracks}</h3>
 						<p className="home-tracks-subtitle">{t.homePage.careerTracksSubtitle}</p>
+					</div>
+					<ArrowRight size={16} className="home-tracks-arrow" />
+				</Link>
+			</section>
+
+			{/* Projetos */}
+			<section className="animate-fade-in-up" style={{ animationDelay: "0.5s" }}>
+				<div className="home-section-header" data-accent="true">
+					<FolderKanban size={18} />
+					<h2 className="home-section-title">{t.homePage.projectsTitle}</h2>
+				</div>
+
+				<Link to="/projects" className="home-tracks-card card-glow">
+					<div className="home-tracks-icon">
+						<FolderKanban size={20} className="home-tracks-icon-sm" />
+						<FolderKanban size={22} className="home-tracks-icon-md" />
+					</div>
+					<div className="home-tracks-info">
+						<h3 className="home-tracks-title">{t.homePage.viewAllProjects}</h3>
+						<p className="home-tracks-subtitle">{t.homePage.projectsSubtitle}</p>
 					</div>
 					<ArrowRight size={16} className="home-tracks-arrow" />
 				</Link>

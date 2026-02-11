@@ -362,100 +362,107 @@ categories:
         prerequisites: []
         tags: ["sem-efeito-colateral", "determinismo", "testabilidade"]
 
+      - slug: "callbacks"
+        title: "Callbacks"
+        difficulty: beginner
+        order: 10
+        prerequisites: ["pure-functions"]
+        tags: ["funcao", "continuacao", "assincrono"]
+
       - slug: "first-class-functions"
         title: "First-Class Functions"
         difficulty: intermediate
-        order: 10
-        prerequisites: ["pure-functions"]
-        tags: ["funcao-como-valor", "callback", "passagem"]
+        order: 11
+        prerequisites: ["callbacks"]
+        tags: ["funcao-como-valor", "passagem", "retorno"]
 
       - slug: "higher-order-functions"
         title: "Higher-Order Functions"
         difficulty: intermediate
-        order: 11
+        order: 12
         prerequisites: ["first-class-functions"]
         tags: ["map", "filter", "reduce", "composicao"]
 
       - slug: "closures"
         title: "Closures"
         difficulty: intermediate
-        order: 12
+        order: 13
         prerequisites: ["first-class-functions", "scope"]
         tags: ["captura", "contexto", "funcao-interna"]
 
       - slug: "currying"
         title: "Currying"
         difficulty: advanced
-        order: 13
+        order: 14
         prerequisites: ["closures", "higher-order-functions"]
         tags: ["aplicacao-parcial", "composicao"]
 
       - slug: "lazy-evaluation"
         title: "Lazy Evaluation"
         difficulty: advanced
-        order: 14
+        order: 15
         prerequisites: ["higher-order-functions"]
         tags: ["sob-demanda", "performance", "generators"]
 
       - slug: "eager-evaluation"
         title: "Eager Evaluation"
         difficulty: beginner
-        order: 15
+        order: 16
         prerequisites: []
         tags: ["imediato", "execucao", "padrao"]
 
       - slug: "pass-by-value-vs-reference"
         title: "Pass by Value vs Pass by Reference"
         difficulty: beginner
-        order: 16
+        order: 17
         prerequisites: ["tipos-de-dados-primitivos"]
         tags: ["copia", "referencia", "mutacao"]
 
       - slug: "scope"
         title: "Scope (Léxico, Dinâmico, Global, Local)"
         difficulty: beginner
-        order: 17
+        order: 18
         prerequisites: []
         tags: ["visibilidade", "variavel", "contexto"]
 
       - slug: "hoisting"
         title: "Hoisting"
         difficulty: intermediate
-        order: 18
+        order: 19
         prerequisites: ["scope"]
         tags: ["elevacao", "declaracao", "javascript"]
 
       - slug: "shadowing"
         title: "Shadowing"
         difficulty: intermediate
-        order: 19
+        order: 20
         prerequisites: ["scope"]
         tags: ["sobreposicao", "variavel", "escopo-interno"]
 
       - slug: "memory-management"
         title: "Memory Management"
         difficulty: intermediate
-        order: 20
+        order: 21
         prerequisites: ["tipos-de-dados-primitivos"]
         tags: ["alocacao", "liberacao", "ciclo-de-vida"]
 
       - slug: "garbage-collection"
         title: "Garbage Collection"
         difficulty: intermediate
-        order: 21
+        order: 22
         prerequisites: ["memory-management"]
         tags: ["automatico", "referencia", "gc"]
 
       - slug: "stack-vs-heap"
         title: "Stack vs Heap"
         difficulty: intermediate
-        order: 22
+        order: 23
         prerequisites: ["memory-management"]
         tags: ["alocacao", "velocidade", "tamanho"]
 
       - slug: "pointers-e-references"
         title: "Pointers e References"
         difficulty: intermediate
-        order: 23
+        order: 24
         prerequisites: ["memory-management", "pass-by-value-vs-reference"]
         tags: ["endereco", "indirection", "dereferencia"]

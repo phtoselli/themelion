@@ -533,6 +533,13 @@ categories:
         prerequisites: []
         tags: ["pragmatismo", "overengineering", "foco"]
 
+      - slug: "error-handling"
+        title: "Error Handling"
+        difficulty: beginner
+        order: 26
+        prerequisites: []
+        tags: ["erro", "excecao", "tratamento"]
+
   - slug: "concorrencia-e-paralelismo"
     name: "Concorrência e Paralelismo"
     order: 5

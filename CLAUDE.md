@@ -690,7 +690,11 @@ manter ordenação com inserções O(log n)).
 
 ### Agentes Disponíveis
 
-A plataforma Themelion usa **agentes especializados** para garantir qualidade técnica e didática consistente. Cada sala tem um agente especialista que domina profundamente os tópicos da sua área.
+A plataforma Themelion usa **agentes especializados** para garantir qualidade técnica e didática consistente em três níveis:
+
+1. **Agentes de Escrita:** Cada sala tem um agente especialista que domina profundamente os tópicos da sua área e escreve o conteúdo teórico.
+2. **Agentes de Linguagem:** Cada linguagem de programação tem um agente expert que refina exemplos de código aplicando idioms e melhores práticas específicas.
+3. **Agente Revisor:** Um único agente revisa todo o conteúdo (teórico + exemplos) quanto a qualidade técnica, didática e linguística.
 
 **Agentes de Escrita** (um por sala):
 - **Frontend:** `data/agents/writers/frontend.md`
@@ -700,6 +704,13 @@ A plataforma Themelion usa **agentes especializados** para garantir qualidade t�
 - **Engenharia de Software:** `data/agents/writers/engenharia-de-software.md`
 - **Fundamentos:** `data/agents/writers/fundamentos.md`
 - **Avançados:** `data/agents/writers/avancados.md`
+
+**Agentes de Linguagem** (um por linguagem suportada):
+- **Python:** `data/agents/languages/python.md`
+- **TypeScript:** `data/agents/languages/typescript.md`
+- **C#:** `data/agents/languages/csharp.md`
+- **Go:** `data/agents/languages/go.md`
+- **Rust:** `data/agents/languages/rust.md`
 
 **Agente Revisor** (único, para todas as salas):
 - **Revisor:** `data/agents/reviewer.md`
@@ -735,9 +746,83 @@ Você:
 4. Escrever conteúdo seguindo todas as diretrizes do agente
 ```
 
-#### 2. Revisão (Agente Revisor)
+#### 2. Refinamento de Exemplos de Código (Agentes de Linguagem)
 
-Após a escrita, **SEMPRE** passe o conteúdo pelo agente revisor:
+**IMPORTANTE:** Esta etapa é OPCIONAL e só deve ser executada para tópicos que contêm exemplos de código nas 5 linguagens principais.
+
+Após a escrita do conteúdo teórico, se o tópico incluir exemplos de código em `examples/`, invoque os 5 agentes especialistas em linguagens para refinar os exemplos:
+
+1. **Identifique se há exemplos de código** no tópico (pasta `examples/` existe)
+2. **Se NÃO houver exemplos:** pule esta etapa e vá direto para a Revisão
+3. **Se houver exemplos:** invoque os agentes de linguagem (podem ser em paralelo ou sequencial):
+
+**Ordem de invocação:**
+- `data/agents/languages/python.md`
+- `data/agents/languages/typescript.md`
+- `data/agents/languages/csharp.md`
+- `data/agents/languages/go.md`
+- `data/agents/languages/rust.md`
+
+**Para cada agente:**
+1. **Leia o agente correspondente** (`data/agents/languages/<linguagem>.md`)
+2. **Incorpore a persona do agente:**
+   - Você é um expert sênior na linguagem
+   - Você conhece profundamente idioms, padrões e melhores práticas da linguagem
+   - Você sabe quando e como aplicar recursos específicos da linguagem
+3. **Revise/refine APENAS os exemplos da sua linguagem:**
+   - Verifique correção técnica do código
+   - Aplique idioms e padrões específicos da linguagem
+   - Adicione comentários técnicos relevantes (em português)
+   - Sugira melhorias de clareza e qualidade didática
+   - **NÃO modifique exemplos de outras linguagens**
+   - **NÃO modifique o conteúdo teórico (topic.mdx)**
+4. **Cada agente tem sua própria execução** para revisar e aplicar mudanças
+5. **Compile sugestões** e pergunte ao usuário se devem ser aplicadas
+
+**Exemplo de invocação (em paralelo):**
+```
+Usuário: "Refine os exemplos de código do tópico Arrays"
+
+Claude invoca 5 agentes em paralelo:
+
+→ Agente Python (execução própria):
+  [Lê data/agents/languages/python.md]
+  [Revisa examples/python.py]
+  [Sugere melhorias específicas de Python]
+
+→ Agente TypeScript (execução própria):
+  [Lê data/agents/languages/typescript.md]
+  [Revisa examples/typescript.ts]
+  [Sugere melhorias específicas de TypeScript]
+
+→ Agente C# (execução própria):
+  [Lê data/agents/languages/csharp.md]
+  [Revisa examples/csharp.cs]
+  [Sugere melhorias específicas de C#]
+
+→ Agente Go (execução própria):
+  [Lê data/agents/languages/go.md]
+  [Revisa examples/go.go]
+  [Sugere melhorias específicas de Go]
+
+→ Agente Rust (execução própria):
+  [Lê data/agents/languages/rust.md]
+  [Revisa examples/rust.rs]
+  [Sugere melhorias específicas de Rust]
+
+Cada agente retorna suas sugestões independentemente.
+```
+
+**Importante:**
+- Cada agente foca APENAS na sua linguagem
+- Agentes podem ser invocados **em paralelo** para maior eficiência
+- **Cada agente tem sua própria execução independente** para revisar o código da sua linguagem
+- Esta etapa é **opcional**: só execute se houver exemplos de código
+- Se um tópico não tem exemplo em uma linguagem específica (ex: não tem `rust.rs`), pule o agente dessa linguagem
+
+#### 3. Revisão (Agente Revisor)
+
+Após a escrita (e refinamento de exemplos, se aplicável), **SEMPRE** passe o conteúdo pelo agente revisor:
 
 1. **Leia o agente revisor** (`data/agents/reviewer.md`)
 2. **Incorpore a persona do revisor:**
@@ -763,7 +848,7 @@ Após a escrita, **SEMPRE** passe o conteúdo pelo agente revisor:
 - O **usuário decide** o que mudar
 - Feedback deve ser **específico, construtivo e respeitoso**
 
-#### 3. Iteração
+#### 4. Iteração
 
 Após o feedback do revisor:
 
@@ -778,42 +863,78 @@ Após o feedback do revisor:
 
 2. Claude (Agente de Escrita - Fundamentos):
    [Lê data/agents/writers/fundamentos.md]
-   [Escreve conteúdo profundo sobre arrays]
+   [Escreve conteúdo teórico profundo sobre arrays]
+   [Escreve exemplos iniciais em Python, TypeScript, C#, Go, Rust]
    [Entrega o conteúdo]
 
-3. Claude (Agente Revisor):
+3. Claude (Refinamento de Exemplos - invocados em paralelo):
+
+   → 5 agentes executam simultaneamente, cada um com sua própria execução:
+
+   Agente Python (execução independente):
+   [Lê data/agents/languages/python.md]
+   [Revisa examples/python.py]
+   [Retorna: usar list comprehension, adicionar type hints]
+
+   Agente TypeScript (execução independente):
+   [Lê data/agents/languages/typescript.md]
+   [Revisa examples/typescript.ts]
+   [Retorna: usar tipos genéricos, adicionar readonly]
+
+   Agente C# (execução independente):
+   [Lê data/agents/languages/csharp.md]
+   [Revisa examples/csharp.cs]
+   [Retorna: usar LINQ, aplicar padrões C# 12]
+
+   Agente Go (execução independente):
+   [Lê data/agents/languages/go.md]
+   [Revisa examples/go.go]
+   [Retorna: seguir convenções Go, simplificar error handling]
+
+   Agente Rust (execução independente):
+   [Lê data/agents/languages/rust.md]
+   [Revisa examples/rust.rs]
+   [Retorna: usar iterators, aplicar lifetimes corretos]
+
+   Usuário revisa todas as sugestões e aprova as mudanças.
+
+4. Claude (Agente Revisor):
    [Lê data/agents/reviewer.md]
-   [Revisa o conteúdo linha por linha]
+   [Revisa o conteúdo teórico + exemplos refinados]
    [Compila feedback em Crítico/Importante/Sugestão]
 
    "Encontrei os seguintes pontos:
 
    🔴 Crítico:
-   - Linha 42: Erro factual [...]
+   - topic.mdx linha 42: Erro factual sobre complexidade [...]
 
    🟡 Importante:
-   - Linha 15: Imprecisão técnica [...]
-   - Linha 28: Exemplo fraco [...]
+   - topic.mdx linha 15: Imprecisão técnica [...]
+   - python.py linha 28: Comentário poderia ser mais claro [...]
 
    🟢 Sugestão:
-   - Linha 55: Poderia aprofundar [...]
+   - topic.mdx linha 55: Poderia aprofundar em edge cases [...]
 
    O que você gostaria de mudar?"
 
-4. Usuário: "Corrige o erro crítico e a linha 15"
+5. Usuário: "Corrige o erro crítico e a linha 15"
 
-5. Claude: [Aplica as correções solicitadas]
+6. Claude: [Aplica as correções solicitadas]
 ```
 
 ### Regras Importantes
 
-- ✅ **SEMPRE use o agente especialista** ao escrever conteúdo
-- ✅ **SEMPRE use o agente revisor** após escrever
+- ✅ **SEMPRE use o agente especialista** ao escrever conteúdo teórico
+- ✅ **Use os agentes de linguagem** para refinar exemplos de código (se houver)
+- ✅ **Agentes de linguagem podem ser invocados em paralelo** para maior eficiência
+- ✅ **Cada agente de linguagem tem sua própria execução independente**
+- ✅ **SEMPRE use o agente revisor** após escrever e refinar
 - ✅ **Leia os arquivos dos agentes** antes de começar (não assuma que você sabe o que está neles)
 - ✅ **Siga rigorosamente** as diretrizes dos agentes
 - ✅ **Seja consultivo** na revisão — não force mudanças
+- ✅ **Cada agente de linguagem modifica APENAS sua própria linguagem**
 - ❌ **Nunca pule** o processo de revisão
-- ❌ **Nunca reescreva** sem feedback do revisor
+- ❌ **Nunca reescreva** sem feedback do revisor ou dos agentes de linguagem
 - ❌ **Nunca assuma** que conhece as diretrizes sem ler os agentes
 
 ### Registro de linguagem (data/languages/*.json)

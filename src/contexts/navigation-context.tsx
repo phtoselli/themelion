@@ -2,7 +2,7 @@ import type { Room } from "@client/shared/types";
 import { safeGetItem, safeSetItem } from "@client/shared/utils/storage";
 import { createContext, type ReactNode, useCallback, useContext, useState } from "react";
 
-export type ActiveSection = "home" | "rooms" | "roadmaps";
+export type ActiveSection = "home" | "rooms" | "roadmaps" | "projects";
 
 interface NavigationState {
 	expanded: boolean;

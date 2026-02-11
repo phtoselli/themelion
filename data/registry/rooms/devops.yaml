@@ -298,6 +298,13 @@ categories:
         prerequisites: []
         tags: ["distribuicao", "cache", "borda"]
 
+      - slug: "environment-variables"
+        title: "Environment Variables"
+        difficulty: beginner
+        order: 19
+        prerequisites: []
+        tags: ["configuracao", "ambiente", "segredos"]
+
   - slug: "monitoramento-e-observabilidade"
     name: "Monitoramento e Observabilidade"
     order: 4
