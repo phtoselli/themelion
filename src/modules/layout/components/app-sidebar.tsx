@@ -60,7 +60,7 @@ export const AppSidebar = () => {
 	);
 
 	useEffect(() => {
-		if (pathname === "/") setActiveSection("home");
+		if (pathname === "/home") setActiveSection("home");
 		else if (
 			pathname === "/rooms" ||
 			pathname.startsWith("/room/") ||

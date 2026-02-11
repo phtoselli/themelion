@@ -47,6 +47,41 @@ export const en: Locale = {
 		unregistered: "Unregistered",
 	},
 
+	landingPage: {
+		cta: "Start studying",
+		heroBadge: "100% free & open source",
+		heroHeading: "The fundamentals that",
+		heroHighlight: "never change.",
+		heroSubtitle:
+			"Learn programming concepts that transcend any framework. No signup, no ads, no cost — straight to the point.",
+		heroAccessNote: "Instant access. No account needed.",
+		featuresSectionTitle: "Built for real learners",
+		noAdsTitle: "No ads",
+		noAdsDesc: "Zero banners, pop-ups or trackers. The focus here is 100% on content.",
+		noLoginTitle: "No signup",
+		noLoginDesc: "Show up, start learning. No forms, no email, no passwords. Zero friction.",
+		freeTitle: "100% free",
+		freeDesc: "All content is open. No premium plans, no paywall, no surprises.",
+		timelessTitle: "Timeless content",
+		timelessDesc:
+			"Concepts that don't expire. Arrays, algorithms, architecture — what you learn here lasts your entire career.",
+		previewSectionTitle: "A platform built for programmers",
+		previewSectionSubtitle:
+			"Technical content with examples in 5 languages. Each topic goes from concept to implementation.",
+		howItWorksTitle: "How it works",
+		step1Title: "Choose a room",
+		step1Desc:
+			"7 study rooms organized by area: fundamentals, frontend, backend, databases and more.",
+		step2Title: "Learn with real examples",
+		step2Desc:
+			"Each topic has direct explanations with examples in Python, TypeScript, C#, Go and Rust.",
+		step3Title: "Track your progress",
+		step3Desc: "Mark topics as completed and follow structured career tracks.",
+		finalCtaHeading: "Start now.",
+		finalCtaSubtitle: "It's free. It's direct. It's forever.",
+		footerTagline: "θεμέλιον — foundation",
+	},
+
 	homePage: {
 		badge: "Timeless Fundamentals",
 		heading: "Learn the fundamentals that",

@@ -16,13 +16,13 @@ export const HomePage = () => {
 		clearActiveRoadmap();
 	}, []);
 
-
 	// Memoizar total de tópicos para evitar recalcular em cada render
 	const totalTopics = useMemo(
-		() => rooms.reduce(
-			(sum, room) => sum + room.categories.reduce((catSum, cat) => catSum + cat.topics.length, 0),
-			0,
-		),
+		() =>
+			rooms.reduce(
+				(sum, room) => sum + room.categories.reduce((catSum, cat) => catSum + cat.topics.length, 0),
+				0,
+			),
 		[rooms],
 	);
 
@@ -113,40 +113,40 @@ export const HomePage = () => {
 				</div>
 
 				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
-					                {sortedRooms.map((room, index) => {
-							const Icon = getRoomIcon(room.icon);
-							const topicCount = room.categories.reduce((sum, cat) => sum + cat.topics.length, 0);
+					{sortedRooms.map((room, index) => {
+						const Icon = getRoomIcon(room.icon);
+						const topicCount = room.categories.reduce((sum, cat) => sum + cat.topics.length, 0);
 
-							return (
-								<Link
-									key={room.slug}
-									to={`/room/${room.slug}`}
-									className={`group room-card card-glow flex flex-col gap-3 md:gap-4 p-4 md:p-5 rounded-xl bg-surface-raised/80 border border-border hover:bg-surface-light/80 active:bg-surface-light/80 animate-fade-in-up stagger-${index + 3}`}
-								>
-									<div className="flex items-center gap-3">
-										<div className="relative p-2 md:p-2.5 rounded-lg bg-primary/8">
-											<Icon size={18} className="text-primary relative z-10" />
-											<div className="absolute inset-0 bg-primary/5 rounded-lg blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-										</div>
-										<div className="flex-1 min-w-0">
-											<h3 className="font-semibold text-sm text-text">{room.name}</h3>
-											<span className="text-[11px] text-text-faint">
-												{t.homePage.roomStats(room.categories.length, topicCount)}
-											</span>
-										</div>
+						return (
+							<Link
+								key={room.slug}
+								to={`/room/${room.slug}`}
+								className={`group room-card card-glow flex flex-col gap-3 md:gap-4 p-4 md:p-5 rounded-xl bg-surface-raised/80 border border-border hover:bg-surface-light/80 active:bg-surface-light/80 animate-fade-in-up stagger-${index + 3}`}
+							>
+								<div className="flex items-center gap-3">
+									<div className="relative p-2 md:p-2.5 rounded-lg bg-primary/8">
+										<Icon size={18} className="text-primary relative z-10" />
+										<div className="absolute inset-0 bg-primary/5 rounded-lg blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 									</div>
-
-									<p className="text-xs text-text-muted line-clamp-2 leading-relaxed">
-										{room.description}
-									</p>
-
-									<div className="flex items-center gap-1.5 text-xs text-primary md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 mt-auto translate-x-0 group-hover:translate-x-1">
-										<span className="font-medium">{t.common.explore}</span>
-										<ArrowRight size={12} />
+									<div className="flex-1 min-w-0">
+										<h3 className="font-semibold text-sm text-text">{room.name}</h3>
+										<span className="text-[11px] text-text-faint">
+											{t.homePage.roomStats(room.categories.length, topicCount)}
+										</span>
 									</div>
-								</Link>
-							);
-						})}
+								</div>
+
+								<p className="text-xs text-text-muted line-clamp-2 leading-relaxed">
+									{room.description}
+								</p>
+
+								<div className="flex items-center gap-1.5 text-xs text-primary md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 mt-auto translate-x-0 group-hover:translate-x-1">
+									<span className="font-medium">{t.common.explore}</span>
+									<ArrowRight size={12} />
+								</div>
+							</Link>
+						);
+					})}
 				</div>
 			</section>
 
