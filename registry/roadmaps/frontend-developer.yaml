@@ -110,7 +110,7 @@ stages:
 
   - slug: "acessibilidade"
     name: "Acessibilidade"
-    description: "Web para todos, não só para quem enxerga bem"
+    description: "Web para todos"
     order: 7
     topics:
       - "wcag-guidelines"

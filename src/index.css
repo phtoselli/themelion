@@ -3,6 +3,7 @@
 @import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));
+@custom-variant light (&:is(.light *));
 
 @theme inline {
 	--radius-sm: calc(var(--radius) - 4px);
@@ -46,33 +47,27 @@
 }
 
 @theme {
-	/* Superficies */
-	--color-surface: #08080a;
-	--color-surface-raised: #111114;
-	--color-surface-light: #1a1a1f;
-	--color-surface-hover: #222228;
-	--color-surface-active: #2e2e36;
+	--color-surface: var(--surface);
+	--color-surface-raised: var(--surface-raised);
+	--color-surface-light: var(--surface-light);
+	--color-surface-hover: var(--surface-hover);
+	--color-surface-active: var(--surface-active);
 
-	/* Texto */
-	--color-text: #e8e5e1;
-	--color-text-muted: #8a8780;
-	--color-text-faint: #524f4a;
+	--color-text: var(--text);
+	--color-text-muted: var(--text-muted);
+	--color-text-faint: var(--text-faint);
 
-	/* Bordas */
-	--color-border-subtle: #16161a;
+	--color-border-subtle: var(--border-subtle);
 
-	/* Primary derivados */
-	--color-primary-dark: #b8892f;
-	--color-primary-subtle: #d4a04312;
-	--color-primary-glow: #d4a04320;
+	--color-primary-dark: var(--primary-dark);
+	--color-primary-subtle: var(--primary-subtle);
+	--color-primary-glow: var(--primary-glow);
 
-	/* Warning */
-	--color-warning: #fbbf24;
+	--color-warning: var(--warning);
 
-	/* Dificuldade */
-	--color-beginner: #4ade80;
-	--color-intermediate: #fbbf24;
-	--color-advanced: #f87171;
+	--color-beginner: var(--beginner);
+	--color-intermediate: var(--intermediate);
+	--color-advanced: var(--advanced);
 
 	/* Layout */
 	--spacing-sidebar-expanded: 260px;
@@ -84,9 +79,31 @@
 	--font-mono: "JetBrains Mono", "Fira Code", monospace;
 }
 
-/* Dark-only: todas as variaveis shadcn direto no :root */
+/* Theme variables */
 :root {
 	--radius: 0.625rem;
+}
+
+/* Dark theme (default) */
+:root,
+.dark {
+	/* Custom theme colors */
+	--surface: #08080a;
+	--surface-raised: #111114;
+	--surface-light: #1a1a1f;
+	--surface-hover: #222228;
+	--surface-active: #2e2e36;
+	--text: #e8e5e1;
+	--text-muted: #8a8780;
+	--text-faint: #524f4a;
+	--border-subtle: #16161a;
+	--primary-dark: #b8892f;
+	--primary-subtle: #d4a04312;
+	--primary-glow: #d4a04320;
+	--warning: #fbbf24;
+	--beginner: #4ade80;
+	--intermediate: #fbbf24;
+	--advanced: #f87171;
 
 	/* Warm dark palette */
 	--background: #08080a;
@@ -138,6 +155,76 @@
 	--sidebar-ring: #d4a043;
 }
 
+/* Light theme */
+.light {
+	/* Custom theme colors */
+	--surface: #f3f1ec;
+	--surface-raised: #ffffff;
+	--surface-light: #eae6df;
+	--surface-hover: #e2ddd4;
+	--surface-active: #dad5cb;
+	--text: #1a1714;
+	--text-muted: #5c564e;
+	--text-faint: #7b756c;
+	--border-subtle: #eae6df;
+	--primary-dark: #7d5c14;
+	--primary-subtle: #96701f10;
+	--primary-glow: #96701f1a;
+	--warning: #b45309;
+	--beginner: #15803d;
+	--intermediate: #b45309;
+	--advanced: #dc2626;
+
+	/* Warm clarity — gray canvas with white surfaces */
+	--background: #f3f1ec;
+	--foreground: #1a1714;
+	--card: #ffffff;
+	--card-foreground: #1a1714;
+	--popover: #ffffff;
+	--popover-foreground: #1a1714;
+
+	/* Primary: deep amber (WCAG AA on white) */
+	--primary: #96701f;
+	--primary-foreground: #ffffff;
+
+	/* Secondary */
+	--secondary: #eae6df;
+	--secondary-foreground: #38342e;
+
+	/* Muted */
+	--muted: #eae6df;
+	--muted-foreground: #5c564e;
+
+	/* Accent: deep teal */
+	--accent: #2d7275;
+	--accent-foreground: #ffffff;
+
+	/* Destructive */
+	--destructive: #dc2626;
+
+	/* Borders — visible, warm */
+	--border: #dad5cb;
+	--input: #dad5cb;
+	--ring: #96701f;
+
+	/* Charts */
+	--chart-1: #96701f;
+	--chart-2: #2d7275;
+	--chart-3: #15803d;
+	--chart-4: #7c3aed;
+	--chart-5: #dc2626;
+
+	/* Sidebar — clean white */
+	--sidebar: #ffffff;
+	--sidebar-foreground: #1a1714;
+	--sidebar-primary: #96701f;
+	--sidebar-primary-foreground: #ffffff;
+	--sidebar-accent: #f3f1ec;
+	--sidebar-accent-foreground: #1a1714;
+	--sidebar-border: #e2ddd4;
+	--sidebar-ring: #96701f;
+}
+
 @layer base {
 	* {
 		@apply border-border outline-ring/50;
@@ -147,6 +234,23 @@
 		-webkit-font-smoothing: antialiased;
 		-moz-osx-font-smoothing: grayscale;
 		font-feature-settings: "cv11", "ss01";
+	}
+
+	/* Smooth theme transitions */
+	*,
+	*::before,
+	*::after {
+		transition-property: background-color, border-color, color, fill, stroke;
+		transition-duration: 200ms;
+		transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	/* Disable transitions on elements that should be instant */
+	.no-theme-transition,
+	.no-theme-transition *,
+	.no-theme-transition *::before,
+	.no-theme-transition *::after {
+		transition: none !important;
 	}
 }
 
@@ -159,6 +263,11 @@ body::after {
 	pointer-events: none;
 	opacity: 0.022;
 	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Light theme: slightly darker grain */
+.light body::after {
+	opacity: 0.015;
 }
 
 /* Keyframes */
@@ -227,6 +336,10 @@ body::after {
 	-webkit-backdrop-filter: blur(16px) saturate(180%);
 }
 
+.light .glass {
+	background: rgba(255, 255, 255, 0.88);
+}
+
 /* Gradient mesh backgrounds */
 .gradient-mesh-hero {
 	background:
@@ -235,10 +348,23 @@ body::after {
 		radial-gradient(ellipse 50% 40% at 50% 85%, #a78bfa06 0%, transparent 50%);
 }
 
+.light .gradient-mesh-hero {
+	background:
+		radial-gradient(ellipse 60% 50% at 15% 25%, #96701f0d 0%, transparent 70%),
+		radial-gradient(ellipse 40% 60% at 85% 15%, #2d727508 0%, transparent 60%),
+		radial-gradient(ellipse 50% 40% at 50% 85%, #7c3aed06 0%, transparent 50%);
+}
+
 .gradient-mesh-subtle {
 	background:
 		radial-gradient(ellipse 60% 50% at 10% 20%, #d4a04308 0%, transparent 70%),
 		radial-gradient(ellipse 40% 40% at 90% 80%, #5fb0b305 0%, transparent 60%);
+}
+
+.light .gradient-mesh-subtle {
+	background:
+		radial-gradient(ellipse 60% 50% at 10% 20%, #96701f0a 0%, transparent 70%),
+		radial-gradient(ellipse 40% 40% at 90% 80%, #2d727506 0%, transparent 60%);
 }
 
 /* Card hover glow effect */
@@ -249,6 +375,11 @@ body::after {
 .card-glow:hover {
 	border-color: #d4a04325;
 	box-shadow: 0 0 0 1px #d4a04308, 0 4px 24px -4px #d4a04312;
+}
+
+.light .card-glow:hover {
+	border-color: #96701f28;
+	box-shadow: 0 0 0 1px #96701f0d, 0 4px 24px -4px #96701f12;
 }
 
 /* Room card gradient borders */
@@ -271,6 +402,10 @@ body::after {
 	opacity: 1;
 }
 
+.light .room-card::before {
+	background: linear-gradient(90deg, transparent, #96701f30, transparent);
+}
+
 /* Display font utility */
 .font-display {
 	font-family: "Syne", system-ui, sans-serif;
@@ -288,7 +423,7 @@ body::after {
 	left: 0;
 	width: 2px;
 	height: 0;
-	background: #d4a043;
+	background: var(--primary);
 	border-radius: 1px;
 	transform: translateY(-50%);
 	transition: height 0.2s ease;
@@ -309,28 +444,16 @@ body::after {
 	transform: translateY(-50%);
 	width: 2px;
 	height: 16px;
-	background: #d4a043;
+	background: var(--primary);
 	border-radius: 1px;
 }
 
-/* Stage connector line for roadmaps */
-.stage-connector {
-	position: relative;
-}
-.stage-connector::before {
-	content: "";
-	position: absolute;
-	left: 19px;
-	top: 0;
-	bottom: 0;
-	width: 1px;
-	background: linear-gradient(to bottom, #1c1c22, #d4a04330, #1c1c22);
-}
+
 
 /* Practice page split divider */
 .split-divider {
 	position: relative;
-	background: #111114;
+	background: var(--color-surface-raised);
 }
 .split-divider::after {
 	content: "";
@@ -340,7 +463,7 @@ body::after {
 	transform: translate(-50%, -50%);
 	width: 4px;
 	height: 32px;
-	background: #1c1c22;
+	background: var(--border);
 	border-radius: 2px;
 }
 
@@ -355,12 +478,12 @@ body::after {
 }
 
 ::-webkit-scrollbar-thumb {
-	background: #1c1c22;
+	background: var(--border);
 	border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-	background: #524f4a;
+	background: var(--color-text-faint);
 }
 
 /* Smooth transitions for interactive elements */

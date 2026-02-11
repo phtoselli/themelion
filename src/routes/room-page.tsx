@@ -1,5 +1,6 @@
 import { getRoomBySlug } from "virtual:content";
 import { useNavigation } from "@client/contexts/navigation-context";
+import { useLocale } from "@client/hooks/use-locale";
 import { PageLayout } from "@client/modules/layout/components/page-layout";
 import { DifficultyBadge } from "@client/modules/study/components/difficulty-badge";
 import { StatusBadge } from "@client/modules/study/components/status-badge";
@@ -8,6 +9,7 @@ import { useEffect } from "react";
 import { Link, useParams } from "react-router";
 
 export const RoomPage = () => {
+	const { t } = useLocale();
 	const { roomSlug } = useParams();
 	const { setCurrentRoom } = useNavigation();
 	const room = getRoomBySlug(roomSlug ?? "");
@@ -22,7 +24,7 @@ export const RoomPage = () => {
 		return (
 			<PageLayout>
 				<div className="flex items-center justify-center min-h-[400px]">
-					<p className="text-text-muted">Sala não encontrada</p>
+					<p className="text-text-muted">{t.roomPage.notFound}</p>
 				</div>
 			</PageLayout>
 		);
@@ -32,33 +34,46 @@ export const RoomPage = () => {
 	const totalTopics = room.categories.reduce((sum, cat) => sum + cat.topics.length, 0);
 
 	return (
-		<PageLayout room={room} breadcrumbs={[{ label: "Home", href: "/" }, { label: room.name }]}>
+		<PageLayout
+			breadcrumbs={[
+				{ label: t.common.home, href: "/" },
+				{ label: t.nav.studyRooms, href: "/rooms" },
+				{ label: room.name },
+			]}
+		>
 			{/* Header da sala */}
-			<div className="relative mb-10 animate-fade-in-up">
+			<div className="relative mb-8 md:mb-10 animate-fade-in-up">
 				{/* Background glow */}
-				<div className="absolute -top-20 -left-20 w-[400px] h-[300px] bg-primary/[0.03] rounded-full blur-[80px] pointer-events-none" />
+				<div className="hidden md:block absolute -top-20 -left-20 w-[400px] h-[300px] bg-primary/[0.03] rounded-full blur-[80px] pointer-events-none" />
 
-				<div className="relative flex items-start gap-4 mb-4">
-					<div className="relative p-3 rounded-xl bg-primary/8 shrink-0">
-						<Icon size={24} className="text-primary relative z-10" />
+				<div className="relative flex items-start gap-3 md:gap-4 mb-3 md:mb-4">
+					<div className="relative p-2.5 md:p-3 rounded-xl bg-primary/8 shrink-0">
+						<Icon size={20} className="text-primary relative z-10 md:hidden" />
+						<Icon size={24} className="text-primary relative z-10 hidden md:block" />
 						<div className="absolute inset-0 bg-primary/5 rounded-xl blur-sm" />
 					</div>
 					<div>
-						<h1 className="font-display text-2xl font-bold tracking-tight">{room.name}</h1>
-						<div className="flex items-center gap-2 mt-1.5">
+						<h1 className="font-display text-xl md:text-2xl font-bold tracking-tight">
+							{room.name}
+						</h1>
+						<div className="flex items-center gap-2 mt-1 md:mt-1.5">
 							<span className="text-xs text-text-faint font-medium">
-								{room.categories.length} categorias
+								{room.categories.length} {t.common.categories}
 							</span>
 							<span className="w-1 h-1 rounded-full bg-text-faint/40" />
-							<span className="text-xs text-text-faint font-medium">{totalTopics} tópicos</span>
+							<span className="text-xs text-text-faint font-medium">
+								{totalTopics} {t.common.topics.toLowerCase()}
+							</span>
 						</div>
 					</div>
 				</div>
-				<p className="text-text-muted text-sm leading-relaxed max-w-2xl">{room.description}</p>
+				<p className="text-text-muted text-xs md:text-sm leading-relaxed max-w-2xl">
+					{room.description}
+				</p>
 			</div>
 
 			{/* Categorias */}
-			<div className="space-y-10">
+			<div className="space-y-8 md:space-y-10">
 				{room.categories
 					.sort((a, b) => a.order - b.order)
 					.map((category, catIndex) => {
@@ -71,8 +86,8 @@ export const RoomPage = () => {
 								key={category.slug}
 								className={`animate-fade-in-up stagger-${Math.min(catIndex + 1, 10)}`}
 							>
-								<div className="flex items-baseline gap-3 mb-4">
-									<h2 className="font-display text-base font-bold tracking-tight">
+								<div className="flex items-baseline gap-3 mb-3 md:mb-4">
+									<h2 className="font-display text-sm md:text-base font-bold tracking-tight">
 										{category.name}
 									</h2>
 									<span className="text-[11px] text-text-faint tabular-nums font-medium">
@@ -99,10 +114,10 @@ export const RoomPage = () => {
 												</>
 											);
 
-											const cardClassName = `topic-card flex items-center gap-3 p-4 rounded-lg border transition-all duration-200 ${
+											const cardClassName = `topic-card flex items-center gap-2 md:gap-3 p-3 md:p-4 rounded-lg border transition-all duration-200 ${
 												isPlanned
 													? "border-border/50 bg-surface-raised/30 opacity-60 cursor-not-allowed"
-													: "border-border bg-surface-raised/60 hover:bg-surface-light/80 card-glow"
+													: "border-border bg-surface-raised/60 hover:bg-surface-light/80 active:bg-surface-light/80 card-glow"
 											}`;
 
 											return isPlanned ? (
