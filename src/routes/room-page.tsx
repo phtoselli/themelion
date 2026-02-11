@@ -1,11 +1,14 @@
 import { getRoomBySlug } from "virtual:content";
 import { useNavigation } from "@client/contexts/navigation-context";
 import { useLocale } from "@client/hooks/use-locale";
+import { clearActiveRoadmap } from "@client/lib/active-roadmap";
+import { getAllProgress } from "@client/lib/progress";
 import { PageLayout } from "@client/modules/layout/components/page-layout";
 import { DifficultyBadge } from "@client/modules/study/components/difficulty-badge";
 import { StatusBadge } from "@client/modules/study/components/status-badge";
 import { getRoomIcon } from "@client/shared/utils/helpers/room-icons";
-import { useEffect } from "react";
+import { CircleCheck } from "lucide-react";
+import { useEffect, useMemo } from "react";
 import { Link, useParams } from "react-router";
 
 export const RoomPage = () => {
@@ -15,6 +18,7 @@ export const RoomPage = () => {
 	const room = getRoomBySlug(roomSlug ?? "");
 
 	useEffect(() => {
+		clearActiveRoadmap();
 		if (room) {
 			setCurrentRoom(room);
 		}
@@ -31,7 +35,15 @@ export const RoomPage = () => {
 	}
 
 	const Icon = getRoomIcon(room.icon);
-	const totalTopics = room.categories.reduce((sum, cat) => sum + cat.topics.length, 0);
+
+	// Memoizar cálculos para evitar recalcular em cada render
+	const { totalTopics, sortedCategories } = useMemo(() => {
+		const total = room.categories.reduce((sum, cat) => sum + cat.topics.length, 0);
+		const sorted = [...room.categories].sort((a, b) => a.order - b.order);
+		return { totalTopics: total, sortedCategories: sorted };
+	}, [room.categories]);
+
+	const progress = getAllProgress();
 
 	return (
 		<PageLayout
@@ -74,70 +86,66 @@ export const RoomPage = () => {
 
 			{/* Categorias */}
 			<div className="space-y-8 md:space-y-10">
-				{room.categories
-					.sort((a, b) => a.order - b.order)
-					.map((category, catIndex) => {
-						const implementedCount = category.topics.filter(
-							(t) => t.status === "implemented",
-						).length;
+				{sortedCategories.map((category, catIndex) => {
+					const implementedCount = category.topics.filter((t) => t.status === "implemented").length;
 
-						return (
-							<section
-								key={category.slug}
-								className={`animate-fade-in-up stagger-${Math.min(catIndex + 1, 10)}`}
-							>
-								<div className="flex items-baseline gap-3 mb-3 md:mb-4">
-									<h2 className="font-display text-sm md:text-base font-bold tracking-tight">
-										{category.name}
-									</h2>
-									<span className="text-[11px] text-text-faint tabular-nums font-medium">
-										{implementedCount}/{category.topics.length}
-									</span>
-									<div className="flex-1 h-px bg-border ml-2" />
-								</div>
+					return (
+						<section
+							key={category.slug}
+							className={`animate-fade-in-up stagger-${Math.min(catIndex + 1, 10)}`}
+						>
+							<div className="flex items-baseline gap-3 mb-3 md:mb-4">
+								<h2 className="font-display text-sm md:text-base font-bold tracking-tight">
+									{category.name}
+								</h2>
+								<span className="text-[11px] text-text-faint tabular-nums font-medium">
+									{implementedCount}/{category.topics.length}
+								</span>
+								<div className="flex-1 h-px bg-border ml-2" />
+							</div>
 
-								<div className="grid gap-2">
-									{category.topics
-										.sort((a, b) => a.order - b.order)
-										.map((topic) => {
-											const isPlanned = topic.status !== "implemented";
+							<div className="grid gap-2">
+								{category.topics.map((topic) => {
+									const isPlanned = topic.status !== "implemented";
+									const isCompleted = progress[topic.slug]?.completed === true;
 
-											const cardContent = (
-												<>
-													<span
-														className={`font-medium text-sm flex-1 ${isPlanned ? "text-text-faint" : "text-text"}`}
-													>
-														{topic.title}
-													</span>
-													<DifficultyBadge difficulty={topic.difficulty} />
-													{isPlanned && <StatusBadge status="planned" />}
-												</>
-											);
+									const cardContent = (
+										<>
+											<span
+												className={`font-medium text-sm flex-1 ${isPlanned ? "text-text-faint" : "text-text"}`}
+											>
+												{topic.title}
+											</span>
+											<DifficultyBadge difficulty={topic.difficulty} />
+											{isPlanned && <StatusBadge status="planned" />}
+											{isCompleted && (
+												<CircleCheck size={16} className="text-emerald-500 shrink-0" />
+											)}
+										</>
+									);
 
-											const cardClassName = `topic-card flex items-center gap-2 md:gap-3 p-3 md:p-4 rounded-lg border transition-all duration-200 ${
-												isPlanned
-													? "border-border/50 bg-surface-raised/30 opacity-60 cursor-not-allowed"
-													: "border-border bg-surface-raised/60 hover:bg-surface-light/80 active:bg-surface-light/80 card-glow"
-											}`;
+									const cardClassName = `topic-card flex items-center gap-2 md:gap-3 p-3 md:p-4 rounded-lg border transition-all duration-200 ${
+										isPlanned
+											? "border-border/50 bg-surface-raised/30 opacity-60 cursor-not-allowed"
+											: isCompleted
+												? "border-emerald-500/50 bg-surface-raised/60 hover:bg-surface-light/80 active:bg-surface-light/80 card-glow"
+												: "border-border bg-surface-raised/60 hover:bg-surface-light/80 active:bg-surface-light/80 card-glow"
+									}`;
 
-											return isPlanned ? (
-												<div key={topic.slug} className={cardClassName}>
-													{cardContent}
-												</div>
-											) : (
-												<Link
-													key={topic.slug}
-													to={`/topic/${topic.slug}`}
-													className={cardClassName}
-												>
-													{cardContent}
-												</Link>
-											);
-										})}
-								</div>
-							</section>
-						);
-					})}
+									return isPlanned ? (
+										<div key={topic.slug} className={cardClassName}>
+											{cardContent}
+										</div>
+									) : (
+										<Link key={topic.slug} to={`/topic/${topic.slug}`} className={cardClassName}>
+											{cardContent}
+										</Link>
+									);
+								})}
+							</div>
+						</section>
+					);
+				})}
 			</div>
 		</PageLayout>
 	);

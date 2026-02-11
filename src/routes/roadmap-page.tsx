@@ -1,14 +1,24 @@
-import { getRoadmapBySlug } from "virtual:content";
+import { getRoadmapBySlug, rooms } from "virtual:content";
 import { useLocale } from "@client/hooks/use-locale";
+import { useTopicTitles } from "@client/hooks/use-topic-titles";
+import { setActiveRoadmap } from "@client/lib/active-roadmap";
+import { getAllProgress } from "@client/lib/progress";
 import { CollapsibleSection } from "@client/modules/layout/components/collapsible-section";
 import { PageLayout } from "@client/modules/layout/components/page-layout";
-import { Circle, Map as MapIcon } from "lucide-react";
+import { Check, Circle, Map as MapIcon } from "lucide-react";
+import { useEffect, useMemo } from "react";
 import { Link, useParams } from "react-router";
 
 export const RoadmapPage = () => {
 	const { t } = useLocale();
 	const { roadmapSlug } = useParams();
 	const roadmap = getRoadmapBySlug(roadmapSlug ?? "");
+
+	useEffect(() => {
+		if (roadmap) {
+			setActiveRoadmap(roadmap.slug);
+		}
+	}, [roadmap]);
 
 	if (!roadmap) {
 		return (
@@ -20,7 +30,24 @@ export const RoadmapPage = () => {
 		);
 	}
 
-	const totalTopics = roadmap.stages.reduce((sum, stage) => sum + stage.topics.length, 0);
+	// Memoizar cálculos de progresso para evitar recalcular em cada render
+	const completionStats = useMemo(() => {
+		const progress = getAllProgress();
+		const allTopicSlugs = roadmap.stages.flatMap((stage) => stage.topics);
+		const totalTopics = allTopicSlugs.length;
+		const completedTopics = allTopicSlugs.filter(
+			(slug) => progress[slug]?.completed === true,
+		).length;
+		const completionPercent =
+			totalTopics > 0 ? Math.round((completedTopics / totalTopics) * 100) : 0;
+		const isFullyCompleted = completedTopics === totalTopics && totalTopics > 0;
+		return { totalTopics, completedTopics, completionPercent, isFullyCompleted };
+	}, [roadmap.stages]);
+
+	const { totalTopics, completedTopics, completionPercent, isFullyCompleted } = completionStats;
+
+	// Usar hook memoizado para topic titles (evita O(n³) em cada render)
+	const topicTitles = useTopicTitles(rooms);
 
 	return (
 		<PageLayout
@@ -57,6 +84,37 @@ export const RoadmapPage = () => {
 				<p className="text-text-muted text-xs md:text-sm leading-relaxed max-w-2xl">
 					{roadmap.description}
 				</p>
+
+				{/* Barra de progresso */}
+				<div className="mt-4 md:mt-5 max-w-2xl">
+					<div className="flex items-center justify-between mb-1.5">
+						<span
+							className={`text-xs font-medium flex items-center gap-1.5 ${
+								isFullyCompleted ? "text-emerald-500" : "text-text-muted"
+							}`}
+						>
+							{isFullyCompleted ? (
+								<>
+									<Check size={12} className="text-emerald-500" />
+									{t.roadmapPage.completed}
+								</>
+							) : (
+								t.roadmapPage.completionPercent(completionPercent)
+							)}
+						</span>
+						<span className="text-[10px] text-text-faint">
+							{completedTopics}/{totalTopics}
+						</span>
+					</div>
+					<div className="h-1.5 bg-surface-hover rounded-full overflow-hidden">
+						<div
+							className={`h-full rounded-full transition-all duration-500 ease-out ${
+								isFullyCompleted ? "bg-emerald-500" : "bg-accent"
+							}`}
+							style={{ width: `${completionPercent}%` }}
+						/>
+					</div>
+				</div>
 			</div>
 
 			{/* Stages */}
@@ -79,19 +137,31 @@ export const RoadmapPage = () => {
 									</p>
 								)}
 								<div className="space-y-0.5 pb-2">
-									{stage.topics.map((topicSlug) => (
-										<Link
-											key={topicSlug}
-											to={`/topic/${topicSlug}`}
-											className="flex items-center gap-2.5 px-3 py-2.5 md:py-2 text-sm text-text-muted hover:text-text hover:bg-surface-hover/50 active:bg-surface-hover/50 rounded-md transition-all duration-200 group"
-										>
-											<Circle
-												size={5}
-												className="shrink-0 text-text-faint group-hover:text-primary transition-colors duration-200"
-											/>
-											<span className="text-xs">{topicSlug}</span>
-										</Link>
-									))}
+									{stage.topics.map((topicSlug) => {
+										const isCompleted = progress[topicSlug]?.completed === true;
+
+										return (
+											<Link
+												key={topicSlug}
+												to={`/topic/${topicSlug}`}
+												className={`flex items-center gap-2.5 px-3 py-2.5 md:py-2 text-sm rounded-md transition-all duration-200 group ${
+													isCompleted
+														? "text-emerald-500 hover:text-emerald-400 hover:bg-surface-hover/50 active:bg-surface-hover/50"
+														: "text-text-muted hover:text-text hover:bg-surface-hover/50 active:bg-surface-hover/50"
+												}`}
+											>
+												<Circle
+													size={5}
+													className={`shrink-0 transition-colors duration-200 ${
+														isCompleted
+															? "text-emerald-500"
+															: "text-text-faint group-hover:text-primary"
+													}`}
+												/>
+												<span className="text-xs">{topicTitles.get(topicSlug) ?? topicSlug}</span>
+											</Link>
+										);
+									})}
 								</div>
 							</CollapsibleSection>
 						</div>

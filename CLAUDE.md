@@ -69,53 +69,54 @@ themelion/
 │   ├── assets/                    # Assets estáticos
 │   └── styles/                    # Estilos globais
 │
-├── content/                       # Auto-discovery: qualquer .mdx aqui é detectado automaticamente
-│   ├── fundamentos/
-│   │   ├── estruturas-de-dados/
-│   │   │   ├── arrays/
-│   │   │   │   ├── topic.mdx      # Conteúdo teórico (seções obrigatórias)
-│   │   │   │   └── examples/      # Exemplos de código por linguagem
-│   │   │   │       ├── python.py
-│   │   │   │       ├── typescript.ts
-│   │   │   │       ├── csharp.cs
-│   │   │   │       ├── go.go
-│   │   │   │       └── rust.rs
-│   │   │   ├── linked-lists/
-│   │   │   │   ├── topic.mdx
-│   │   │   │   └── examples/
-│   │   │   │       ├── python.py
-│   │   │   │       └── typescript.ts   # Nem todo tópico precisa de todas as linguagens
-│   │   │   └── ...
-│   │   ├── algoritmos/
-│   │   └── complexidade/
-│   ├── frontend/
-│   ├── backend/
-│   ├── banco-de-dados/
-│   ├── devops/
-│   ├── engenharia-de-software/
-│   └── avancados/
-│
-├── languages/                     # Registro de linguagens suportadas (auto-discovery)
-│   ├── python.json
-│   ├── typescript.json
-│   ├── csharp.json
-│   ├── go.json
-│   └── rust.json
-│
-├── registry/                      # Metadados: o que DEVE existir (planejado vs implementado)
-│   ├── rooms/                     # 1 arquivo por sala de estudo
-│   │   ├── fundamentos.yaml
-│   │   ├── frontend.yaml
-│   │   ├── backend.yaml
-│   │   ├── banco-de-dados.yaml
-│   │   ├── devops.yaml
-│   │   ├── engenharia-de-software.yaml
-│   │   └── avancados.yaml
-│   └── roadmaps/                  # 1 arquivo por trilha de carreira
-│       ├── frontend-developer.yaml
-│       ├── backend-developer.yaml
-│       ├── fullstack-developer.yaml
-│       └── devops-engineer.yaml
+├── data/                          # Dados centralizados: conteúdo, registry e linguagens
+│   ├── content/                   # Auto-discovery: qualquer .mdx aqui é detectado automaticamente
+│   │   ├── fundamentos/
+│   │   │   ├── estruturas-de-dados/
+│   │   │   │   ├── arrays/
+│   │   │   │   │   ├── topic.mdx      # Conteúdo teórico (seções obrigatórias)
+│   │   │   │   │   └── examples/      # Exemplos de código por linguagem
+│   │   │   │   │       ├── python.py
+│   │   │   │   │       ├── typescript.ts
+│   │   │   │   │       ├── csharp.cs
+│   │   │   │   │       ├── go.go
+│   │   │   │   │       └── rust.rs
+│   │   │   │   ├── linked-lists/
+│   │   │   │   │   ├── topic.mdx
+│   │   │   │   │   └── examples/
+│   │   │   │   │       ├── python.py
+│   │   │   │   │       └── typescript.ts   # Nem todo tópico precisa de todas as linguagens
+│   │   │   │   └── ...
+│   │   │   ├── algoritmos/
+│   │   │   └── complexidade/
+│   │   ├── frontend/
+│   │   ├── backend/
+│   │   ├── banco-de-dados/
+│   │   ├── devops/
+│   │   ├── engenharia-de-software/
+│   │   └── avancados/
+│   │
+│   ├── languages/                 # Registro de linguagens suportadas (auto-discovery)
+│   │   ├── python.json
+│   │   ├── typescript.json
+│   │   ├── csharp.json
+│   │   ├── go.json
+│   │   └── rust.json
+│   │
+│   └── registry/                  # Metadados: o que DEVE existir (planejado vs implementado)
+│       ├── rooms/                 # 1 arquivo por sala de estudo
+│       │   ├── fundamentos.yaml
+│       │   ├── frontend.yaml
+│       │   ├── backend.yaml
+│       │   ├── banco-de-dados.yaml
+│       │   ├── devops.yaml
+│       │   ├── engenharia-de-software.yaml
+│       │   └── avancados.yaml
+│       └── roadmaps/              # 1 arquivo por trilha de carreira
+│           ├── frontend-developer.yaml
+│           ├── backend-developer.yaml
+│           ├── fullstack-developer.yaml
+│           └── devops-engineer.yaml
 │
 ├── plugins/                       # Plugins Vite customizados
 ├── biome.json
@@ -129,9 +130,9 @@ themelion/
 
 A aplicação é uma **casca dinâmica** que descobre conteúdo automaticamente pela estrutura de pastas e arquivos. Nunca deve existir um registro manual de tópicos, linguagens ou desafios.
 
-**Para adicionar um novo tópico:** criar uma pasta em `content/` com `topic.mdx` + `examples/`. O sistema descobre sozinho.
+**Para adicionar um novo tópico:** criar uma pasta em `data/content/` com `topic.mdx` + `examples/`. O sistema descobre sozinho.
 
-**Para adicionar uma nova linguagem de programação:** criar um `.json` em `languages/`. O componente `<CodeTabs>` detecta automaticamente quais linguagens existem na pasta `examples/` do tópico e renderiza as tabs disponíveis.
+**Para adicionar uma nova linguagem de programação:** criar um `.json` em `data/languages/`. O componente `<CodeTabs>` detecta automaticamente quais linguagens existem na pasta `examples/` do tópico e renderiza as tabs disponíveis.
 
 **Regra:** se você precisa editar código da aplicação para adicionar conteúdo, a arquitetura está errada.
 
@@ -276,28 +277,28 @@ As traduções são organizadas por contexto:
 
 ## Registry (Planejamento de Conteúdo)
 
-A pasta `registry/` contém metadados YAML que mapeiam **todos** os tópicos planejados, suas categorias e trilhas de carreira (roadmaps). O registry é a fonte de verdade sobre o que DEVE existir — a pasta `content/` mostra o que DE FATO existe.
+A pasta `data/registry/` contém metadados YAML que mapeiam **todos** os tópicos planejados, suas categorias e trilhas de carreira (roadmaps). O registry é a fonte de verdade sobre o que DEVE existir — a pasta `data/content/` mostra o que DE FATO existe.
 
 ### Terminologia
 
 | Conceito | Termo em código | Onde vive |
 |---|---|---|
-| Sala de estudo | Room | `registry/rooms/` |
+| Sala de estudo | Room | `data/registry/rooms/` |
 | Subcategoria | Category | Dentro do room YAML |
 | Tópico | Topic | Dentro da category |
-| Trilha de carreira | Roadmap | `registry/roadmaps/` |
+| Trilha de carreira | Roadmap | `data/registry/roadmaps/` |
 | Fase da trilha | Stage | Dentro do roadmap |
 | Identificador | Slug | Único globalmente |
 
 ### Como o status é detectado
 
 ```
-Topic no registry + pasta em content/ existe       → "implemented"
-Topic no registry + pasta em content/ NÃO existe   → "planned"
-Topic em content/ mas NÃO no registry              → "unregistered" (warning)
+Topic no registry + pasta em data/content/ existe       → "implemented"
+Topic no registry + pasta em data/content/ NÃO existe   → "planned"
+Topic em data/content/ mas NÃO no registry              → "unregistered" (warning)
 ```
 
-O path esperado é derivado do registry: `content/<room>/<category>/<slug>/topic.mdx`
+O path esperado é derivado do registry: `data/content/<room>/<category>/<slug>/topic.mdx`
 
 ### Workflow do autor de conteúdo
 
@@ -305,13 +306,13 @@ O path esperado é derivado do registry: `content/<room>/<category>/<slug>/topic
 → Adicionar entry no room YAML → aparece como "Em breve" na UI
 
 **Implementar um tópico** (criar pasta + arquivos, zero edição no registry):
-→ Criar `content/<room>/<category>/<slug>/topic.mdx` + `examples/`
+→ Criar `data/content/<room>/<category>/<slug>/topic.mdx` + `examples/`
 → Status muda automaticamente de "planned" para "implemented"
 
 **Adicionar a um roadmap** (1 linha em 1 arquivo):
 → Adicionar o slug no stage do roadmap YAML → aparece na trilha
 
-### Schema: Room (`registry/rooms/<room>.yaml`)
+### Schema: Room (`data/registry/rooms/<room>.yaml`)
 
 ```yaml
 room: fundamentos
@@ -333,7 +334,7 @@ categories:
         tags: ["performance", "busca"]
 ```
 
-### Schema: Roadmap (`registry/roadmaps/<career>.yaml`)
+### Schema: Roadmap (`data/registry/roadmaps/<career>.yaml`)
 
 ```yaml
 roadmap: frontend-developer
@@ -388,11 +389,11 @@ stages:
 ```
 Vite Build / Dev Server
        │
-       ├── Scan languages/*.json → registra linguagens disponíveis
-       ├── Scan registry/rooms/*.yaml → monta árvore de salas e tópicos
-       ├── Scan registry/roadmaps/*.yaml → monta trilhas de carreira
-       ├── Scan content/**/topic.mdx → detecta status (implemented vs planned)
-       └── Scan content/**/examples/*.{ext} → associa exemplos ao tópico pela pasta pai
+       ├── Scan data/languages/*.json → registra linguagens disponíveis
+       ├── Scan data/registry/rooms/*.yaml → monta árvore de salas e tópicos
+       ├── Scan data/registry/roadmaps/*.yaml → monta trilhas de carreira
+       ├── Scan data/content/**/topic.mdx → detecta status (implemented vs planned)
+       └── Scan data/content/**/examples/*.{ext} → associa exemplos ao tópico pela pasta pai
        │
        ▼
    Virtual modules (importados pelo frontend via `virtual:content`)
@@ -411,10 +412,70 @@ Browser (React SPA)
 
 **Regra de ouro:** o aluno deve sair sabendo FAZER, não apenas sabendo LER.
 
-- **Sem enrolação.** Cada tópico deve ser curto, direto e prático. Poucos parágrafos, não dezenas.
-- **Linguagem simples e dinâmica.** Escrever como se estivesse explicando para um colega, não escrevendo um paper acadêmico.
-- **Foco no resultado.** O aluno precisa entender o que acontece na prática, não decorar definições.
-- **Exemplos reais.** Todo conceito deve vir com código que o aluno pode rodar e ver funcionando.
+### Princípios Fundamentais
+
+**1. Profundidade progressiva (Pyramid of Understanding)**
+
+Estruture o conteúdo em camadas de profundidade crescente:
+
+- **Camada 1 — Conceito核 (Core):** O que é + por que importa (1-2 parágrafos)
+- **Camada 2 — Mecânica:** Como funciona internamente, com detalhes técnicos relevantes
+- **Camada 3 — Prática:** Implementações reais, casos de uso, trade-offs
+- **Camada 4 — Profundidade:** Detalhes de implementação, complexidade, edge cases
+
+Cada camada aprofunda a anterior. Iniciantes param na camada 2-3, seniores leem tudo.
+
+**2. Densidade de informação (Signal-to-Noise Ratio)**
+
+- **SIM:** "Arrays em Python são dinâmicos. Internamente, usam overallocation (alocam mais memória que o necessário) para evitar realocações constantes. Quando a capacidade esgota, o interpretador aloca ~1.125x o tamanho atual."
+
+- **NÃO:** "Arrays são estruturas de dados muito importantes na programação. Eles são usados em muitos lugares. Vamos aprender sobre arrays. Arrays podem guardar vários valores."
+
+Cada frase deve adicionar informação nova. Se você consegue remover uma frase sem perder conteúdo, ela não deveria estar lá.
+
+**3. Concretude sobre abstração**
+
+- **SIM:** "Busca linear: O(n). Percorre elemento por elemento até encontrar. 1 milhão de elementos = até 1 milhão de comparações."
+
+- **NÃO:** "A busca linear é um algoritmo que pode não ser muito eficiente dependendo do contexto."
+
+Use números, exemplos concretos e implicações reais. Abstrações vêm depois dos exemplos, não antes.
+
+**4. Mental Models > Definições**
+
+Não comece com definições acadêmicas. Comece construindo um modelo mental:
+
+- **SIM:** "Imagine um estacionamento com vagas numeradas (0, 1, 2...). Cada vaga guarda um carro. Array funciona assim: memória contígua onde cada posição tem um endereço fixo."
+
+- **NÃO:** "Um array é uma estrutura de dados que armazena elementos do mesmo tipo em posições contíguas de memória, permitindo acesso aleatório em tempo constante."
+
+Definições técnicas vêm depois, quando o leitor já tem uma imagem mental.
+
+**5. Show, don't just tell**
+
+Para cada afirmação técnica, mostre o que acontece:
+
+```python
+# ❌ "Inserir no meio é lento"
+# ✅ Mostre POR QUE é lento:
+
+lista = [1, 2, 3, 4, 5]
+lista.insert(2, 99)  # Inserir 99 na posição 2
+
+# O que Python faz internamente:
+# 1. Verificar se há espaço (se não, realocar tudo)
+# 2. Mover elementos [3, 4, 5] uma posição à direita
+# 3. Colocar 99 na posição 2
+# Resultado: O(n) operações para n elementos após o índice
+```
+
+**6. Contexto de uso real**
+
+Todo conceito deve responder "quando vou usar isso?":
+
+- **SIM:** "Hash tables são ideais quando você precisa de lookups rápidos por chave (ex: cache de usuários por ID, contagem de frequência de palavras, detecção de duplicatas)."
+
+- **NÃO:** "Hash tables são estruturas de dados eficientes."
 
 ### Frontmatter obrigatório (MDX)
 
@@ -483,21 +544,279 @@ O campo `relatedTools` é renderizado pelo componente `<SeeInPractice>` no final
 | **Rust** | Baixo nível, ownership, sem garbage collector | `examples/rust.rs` |
 
 **Escalabilidade:** para adicionar uma nova linguagem (ex: C++), basta:
-1. Criar `languages/cpp.json` com metadata.
+1. Criar `data/languages/cpp.json` com metadata.
 2. Adicionar `examples/cpp.cpp` nos tópicos desejados.
 
 O sistema detecta automaticamente. Nenhum código da aplicação precisa ser alterado.
 
 **Regra:** nem todo tópico precisa de todas as linguagens. Só adicionar quando fizer sentido. O componente `<CodeTabs>` renderiza apenas as tabs para as quais existem arquivos.
 
-### Regras para escrever conteúdo
-- Máximo ~300 palavras por seção. Se passou disso, está enrolando.
-- Pelo menos 1 exemplo de código executável por tópico (seção "Na prática").
-- Comentários no código em português.
-- Se um conceito é simples, a explicação deve ser simples. Não inflar artificialmente.
-- Usar componentes interativos do MDX quando agregar valor (diagramas, visualizações), não por enfeite.
+### Regras de Escrita
 
-### Registro de linguagem (languages/*.json)
+**Estrutura do conteúdo:**
+
+- **Não há limite de palavras.** Se um conceito precisa de 1000 palavras para ser explicado corretamente, use 1000 palavras. Se precisa de 200, use 200.
+
+- **Teste de corte:** Para cada parágrafo, pergunte "se eu remover isso, o leitor perde informação essencial?" Se não, corte.
+
+- **Seções obrigatórias** (mas expansíveis conforme necessário):
+  - O que é + Por que importa (modelo mental inicial)
+  - Como funciona (mecânica interna, detalhes técnicos)
+  - Na prática (implementações, código executável, casos de uso)
+  - Trade-offs (quando usar, quando não usar, alternativas)
+  - Armadilhas (erros comuns, edge cases, gotchas)
+
+**Profundidade técnica:**
+
+- **Explique implementações reais:** "Arrays em Python (listas) são diferentes de arrays em C. Python usa ponteiros para objetos, C usa valores diretos. Isso significa que `arr[0]` em Python é um ponteiro, em C é o valor em si."
+
+- **Mostre trade-offs com números:** "HashMap: O(1) lookup médio, O(n) pior caso (colisões). Array ordenado + busca binária: O(log n) garantido. Use HashMap quando lookups dominam, array quando range queries são comuns."
+
+- **Cubra edge cases relevantes:** "Strings em Python são imutáveis. `s += 'x'` cria uma nova string. Em um loop de n iterações, isso é O(n²) porque cada concatenação copia tudo de novo."
+
+**Código:**
+
+- **Comentários técnicos, não óbvios:**
+  ```python
+  # ❌ Comentário óbvio
+  x = x + 1  # incrementa x
+
+  # ✅ Comentário que adiciona informação
+  capacity *= 2  # Duplicar tamanho = amortizar custo de realocação para O(1) médio
+  ```
+
+- **Mostre performance real quando relevante:**
+  ```python
+  # Concatenação ingênua: O(n²)
+  result = ""
+  for word in words:
+      result += word  # Cada += cria nova string e copia tudo
+
+  # Correto: O(n)
+  result = "".join(words)  # Aloca tamanho final de uma vez
+  ```
+
+**Linguagem:**
+
+- **Tom conversacional mas preciso:** Escreva como se estivesse explicando para um colega desenvolvedor, não para uma criança nem para um comitê acadêmico.
+
+- **Use termos técnicos corretos:** Não evite jargão, mas explique na primeira vez. "Acesso aleatório (random access) significa pular direto para qualquer posição em O(1), diferente de percorrer sequencialmente."
+
+- **Seja direto:** "Não use linked list para acesso por índice. É O(n) porque precisa percorrer os nós. Use array." Não: "Linked lists podem não ser a melhor escolha em alguns cenários..."
+
+**Progressão de dificuldade:**
+
+Estruture assim:
+
+1. **Introdução:** Modelo mental + exemplo concreto (acessível a todos)
+2. **Mecânica:** Como funciona internamente (intermediário)
+3. **Implementação:** Detalhes de linguagens específicas (intermediário-avançado)
+4. **Edge cases e otimizações:** Armadilhas, complexidade amortizada, etc. (avançado)
+
+Seniores leem tudo, iniciantes param onde precisam.
+
+### Checklist de Qualidade
+
+Antes de publicar um tópico, verifique:
+
+- [ ] **Profundidade:** Um senior conseguiria usar isso como referência técnica?
+- [ ] **Clareza:** Um iniciante consegue entender pelo menos as primeiras seções?
+- [ ] **Concretude:** Todos os conceitos têm exemplos práticos com código executável?
+- [ ] **Densidade:** Todas as frases adicionam informação nova?
+- [ ] **Precisão:** Afirmações técnicas estão corretas? Números de complexidade estão certos?
+- [ ] **Contexto:** Está claro quando/onde usar isso no mundo real?
+- [ ] **Armadilhas:** Erros comuns e edge cases estão cobertos?
+
+### Exemplos de Boa vs. Má Densidade
+
+**❌ Conteúdo raso (baixa densidade):**
+```
+Arrays são estruturas de dados importantes. Eles podem guardar múltiplos valores.
+São muito usados na programação. Vamos aprender sobre arrays.
+```
+
+**✅ Conteúdo denso (alta densidade):**
+```
+Arrays guardam elementos em memória contígua. Isso significa que se arr[0] está
+no endereço 1000 e cada elemento ocupa 4 bytes, arr[1] está em 1004, arr[2] em 1008.
+Essa contiguidade permite acesso O(1): índice × tamanho_do_tipo = offset exato.
+```
+
+**❌ Superficial:**
+```
+Inserir no meio de um array é lento. Evite fazer isso.
+```
+
+**✅ Profundo:**
+```
+Inserir no meio de um array é O(n): todos os elementos após o índice precisam ser
+movidos. Em um array de 1 milhão de elementos, inserir na posição 0 move 1 milhão
+de elementos. Se você precisa de inserções frequentes no meio, use uma estrutura
+diferente (LinkedList para inserções O(1) se você já tem o nó, ou TreeSet para
+manter ordenação com inserções O(log n)).
+```
+
+### Anti-patterns a Evitar
+
+- **Prolixo:** Repetir a mesma ideia com palavras diferentes
+- **Obviedades:** "Arrays são úteis", "É importante entender isso"
+- **Definições sem contexto:** Jogar definição acadêmica sem explicar o que significa
+- **Exemplos triviais:** Código que não demonstra o conceito técnico sendo discutido
+- **Omitir complexidade:** Falar de algoritmos sem mencionar Big O
+- **Generalizar sem dados:** "Geralmente é rápido" → Quanto? O(1)? O(log n)?
+
+### Dicas Adicionais
+
+- **Use diagramas para complexidade espacial/temporal:** Mostre visualmente o que acontece na memória, compare visualmente O(n) vs O(n²)
+
+- **Inclua benchmarks quando relevante:**
+  ```python
+  # Mostrar diferença real de performance
+  # Array de 100k elementos:
+  # - Acesso por índice: 0.00001s
+  # - Busca linear: 0.001s (100x mais lento)
+  ```
+
+- **Links para código de produção:** Exemplo: "Veja como Python implementa list.insert() no CPython: [link para GitHub]"
+
+- **Problemas progressivos:**
+  - Iniciante: "Encontre o maior elemento"
+  - Intermediário: "Encontre o segundo maior sem ordenar"
+  - Avançado: "Encontre os k maiores elementos em O(n log k)"
+
+- **Seção "Aprofundamento" opcional:** Para tópicos complexos, adicione uma seção colapsável "Para curiosos" com detalhes de implementação em baixo nível, teoria dos algoritmos, papers, etc.
+
+## Workflow de Criação de Conteúdo com Agentes Especializados
+
+### Agentes Disponíveis
+
+A plataforma Themelion usa **agentes especializados** para garantir qualidade técnica e didática consistente. Cada sala tem um agente especialista que domina profundamente os tópicos da sua área.
+
+**Agentes de Escrita** (um por sala):
+- **Frontend:** `data/agents/writers/frontend.md`
+- **Backend:** `data/agents/writers/backend.md`
+- **Banco de Dados:** `data/agents/writers/banco-de-dados.md`
+- **DevOps:** `data/agents/writers/devops.md`
+- **Engenharia de Software:** `data/agents/writers/engenharia-de-software.md`
+- **Fundamentos:** `data/agents/writers/fundamentos.md`
+- **Avançados:** `data/agents/writers/avancados.md`
+
+**Agente Revisor** (único, para todas as salas):
+- **Revisor:** `data/agents/reviewer.md`
+
+### Processo de Criação de Conteúdo
+
+**IMPORTANTE:** Sempre que for escrever ou revisar conteúdo técnico, você DEVE seguir este processo:
+
+#### 1. Escrita (Agente Especialista)
+
+Ao criar conteúdo para um tópico:
+
+1. **Identifique a sala** do tópico (fundamentos, frontend, backend, etc.)
+2. **Leia o agente correspondente** (`data/agents/writers/<sala>.md`)
+3. **Incorpore a persona do agente:**
+   - Você é um profissional sênior da área
+   - Você domina todos os tópicos relacionados
+   - Você tem habilidades excepcionais de didática
+4. **Siga rigorosamente:**
+   - Os princípios de escrita do `CLAUDE.md`
+   - As diretrizes específicas do agente da sala
+   - O workflow de criação definido no agente
+   - O checklist de qualidade do agente
+
+**Exemplo:**
+```
+Usuário: "Escreva o conteúdo sobre Flexbox"
+
+Você:
+1. Identificar sala: Frontend
+2. Ler: data/agents/writers/frontend.md
+3. Incorporar persona: Frontend Developer Sênior
+4. Escrever conteúdo seguindo todas as diretrizes do agente
+```
+
+#### 2. Revisão (Agente Revisor)
+
+Após a escrita, **SEMPRE** passe o conteúdo pelo agente revisor:
+
+1. **Leia o agente revisor** (`data/agents/reviewer.md`)
+2. **Incorpore a persona do revisor:**
+   - Você é um Editor Técnico Sênior
+   - Você identifica problemas e sugere melhorias
+   - Você é consultivo, não reescreve
+3. **Revise o conteúdo** seguindo o workflow do revisor:
+   - Gramática e ortografia
+   - Clareza e precisão técnica
+   - Qualidade didática
+   - Densidade de informação
+   - Correção de código
+   - Estrutura e organização
+4. **Compile feedback** em categorias:
+   - 🔴 **Crítico** (deve corrigir)
+   - 🟡 **Importante** (recomendado corrigir)
+   - 🟢 **Sugestão** (opcional)
+5. **Apresente o feedback** de forma consultiva e pergunte ao usuário o que faz sentido mudar
+
+**Importante:**
+- O revisor **NÃO reescreve** o conteúdo
+- O revisor **identifica problemas e sugere soluções**
+- O **usuário decide** o que mudar
+- Feedback deve ser **específico, construtivo e respeitoso**
+
+#### 3. Iteração
+
+Após o feedback do revisor:
+
+1. **Discuta com o usuário** quais mudanças fazem sentido
+2. **Aplique as correções** acordadas
+3. **Revise novamente** se necessário (para mudanças grandes)
+
+### Exemplo de Workflow Completo
+
+```
+1. Usuário: "Escreva conteúdo sobre Arrays"
+
+2. Claude (Agente de Escrita - Fundamentos):
+   [Lê data/agents/writers/fundamentos.md]
+   [Escreve conteúdo profundo sobre arrays]
+   [Entrega o conteúdo]
+
+3. Claude (Agente Revisor):
+   [Lê data/agents/reviewer.md]
+   [Revisa o conteúdo linha por linha]
+   [Compila feedback em Crítico/Importante/Sugestão]
+
+   "Encontrei os seguintes pontos:
+
+   🔴 Crítico:
+   - Linha 42: Erro factual [...]
+
+   🟡 Importante:
+   - Linha 15: Imprecisão técnica [...]
+   - Linha 28: Exemplo fraco [...]
+
+   🟢 Sugestão:
+   - Linha 55: Poderia aprofundar [...]
+
+   O que você gostaria de mudar?"
+
+4. Usuário: "Corrige o erro crítico e a linha 15"
+
+5. Claude: [Aplica as correções solicitadas]
+```
+
+### Regras Importantes
+
+- ✅ **SEMPRE use o agente especialista** ao escrever conteúdo
+- ✅ **SEMPRE use o agente revisor** após escrever
+- ✅ **Leia os arquivos dos agentes** antes de começar (não assuma que você sabe o que está neles)
+- ✅ **Siga rigorosamente** as diretrizes dos agentes
+- ✅ **Seja consultivo** na revisão — não force mudanças
+- ❌ **Nunca pule** o processo de revisão
+- ❌ **Nunca reescreva** sem feedback do revisor
+- ❌ **Nunca assuma** que conhece as diretrizes sem ler os agentes
+
+### Registro de linguagem (data/languages/*.json)
 
 Cada arquivo define uma linguagem suportada:
 

@@ -56,6 +56,7 @@ interface Topic {
 	relatedTools?: { name: string; searchTerm: string; url: string }[];
 	status: string;
 	contentPath: string;
+	content: string;
 	examples: TopicExample[];
 }
 
@@ -83,7 +84,7 @@ function scanContent(rootDir: string) {
 	const roadmaps = new Map<string, Roadmap>();
 
 	// 1. Escanear linguagens
-	const langFiles = globSync("languages/*.json", { cwd: rootDir });
+	const langFiles = globSync("data/languages/*.json", { cwd: rootDir });
 	for (const file of langFiles) {
 		const content = readFileSync(resolve(rootDir, file), "utf-8");
 		const lang = JSON.parse(content);
@@ -93,7 +94,7 @@ function scanContent(rootDir: string) {
 	}
 
 	// 2. Escanear registry (rooms)
-	const roomFiles = globSync("registry/rooms/*.yaml", { cwd: rootDir });
+	const roomFiles = globSync("data/registry/rooms/*.yaml", { cwd: rootDir });
 	for (const file of roomFiles) {
 		const content = readFileSync(resolve(rootDir, file), "utf-8");
 		const data = parseYaml(content);
@@ -115,7 +116,7 @@ function scanContent(rootDir: string) {
 	rooms.sort((a, b) => a.order - b.order);
 
 	// 3. Escanear roadmaps
-	const roadmapFiles = globSync("registry/roadmaps/*.yaml", { cwd: rootDir });
+	const roadmapFiles = globSync("data/registry/roadmaps/*.yaml", { cwd: rootDir });
 	for (const file of roadmapFiles) {
 		const content = readFileSync(resolve(rootDir, file), "utf-8");
 		const data = parseYaml(content);
@@ -129,11 +130,11 @@ function scanContent(rootDir: string) {
 	}
 
 	// 4. Escanear conteúdo MDX
-	const mdxFiles = globSync("content/**/topic.mdx", { cwd: rootDir });
+	const mdxFiles = globSync("data/content/**/topic.mdx", { cwd: rootDir });
 	for (const file of mdxFiles) {
 		const fullPath = resolve(rootDir, file);
 		const raw = readFileSync(fullPath, "utf-8");
-		const { data } = matter(raw);
+		const { data, content: mdxBody } = matter(raw);
 
 		const frontmatter = data as Topic;
 		const exampleDir = file.replace("topic.mdx", "examples");
@@ -154,6 +155,7 @@ function scanContent(rootDir: string) {
 			...frontmatter,
 			status: "implemented",
 			contentPath: file,
+			content: mdxBody.trim(),
 			examples,
 		});
 	}
@@ -174,13 +176,15 @@ function scanContent(rootDir: string) {
 		rooms,
 		topics: Array.from(topics.values()),
 		languages: Array.from(languages.values()),
-		roadmaps: Array.from(roadmaps.values()),
+		roadmaps: Array.from(roadmaps.values()).sort((a, b) => a.name.localeCompare(b.name)),
 	};
 }
 
 export function contentPlugin(): Plugin {
 	const rootDir = resolve(__dirname, "..");
-	const watchDirs = ["content", "registry", "languages"].map((d) => resolve(rootDir, d));
+	const watchDirs = ["data/content", "data/registry", "data/languages"].map((d) =>
+		resolve(rootDir, d),
+	);
 
 	return {
 		name: "vite-plugin-content",
@@ -232,9 +236,9 @@ export function getRoadmapBySlug(slug) {
 			server.watcher.on("change", (filePath) => {
 				const rel = relative(rootDir, filePath);
 				if (
-					rel.startsWith("content/") ||
-					rel.startsWith("registry/") ||
-					rel.startsWith("languages/")
+					rel.startsWith("data/content/") ||
+					rel.startsWith("data/registry/") ||
+					rel.startsWith("data/languages/")
 				) {
 					const mod = server.moduleGraph.getModuleById(RESOLVED_VIRTUAL_MODULE_ID);
 					if (mod) {

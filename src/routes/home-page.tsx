@@ -1,14 +1,36 @@
 import { useLocale } from "@client/hooks/use-locale";
 import { useRooms } from "@client/hooks/use-rooms";
+import { clearActiveRoadmap } from "@client/lib/active-roadmap";
 import { PageLayout } from "@client/modules/layout/components/page-layout";
 import { PageSkeleton } from "@client/modules/layout/components/skeletons";
 import { getRoomIcon } from "@client/shared/utils/helpers/room-icons";
 import { ArrowRight, BookOpen, Code2, Layers, Map as MapIcon, Sparkles } from "lucide-react";
+import { useEffect, useMemo } from "react";
 import { Link } from "react-router";
 
 export const HomePage = () => {
 	const { rooms, loading } = useRooms();
 	const { t } = useLocale();
+
+	useEffect(() => {
+		clearActiveRoadmap();
+	}, []);
+
+
+	// Memoizar total de tópicos para evitar recalcular em cada render
+	const totalTopics = useMemo(
+		() => rooms.reduce(
+			(sum, room) => sum + room.categories.reduce((catSum, cat) => catSum + cat.topics.length, 0),
+			0,
+		),
+		[rooms],
+	);
+
+	// Memoizar ordenação para evitar sort em cada render
+	const sortedRooms = useMemo(
+		() => [...rooms].sort((a, b) => a.name.localeCompare(b.name)),
+		[rooms],
+	);
 
 	if (loading) {
 		return (
@@ -18,14 +40,8 @@ export const HomePage = () => {
 		);
 	}
 
-	const totalTopics = rooms.reduce(
-		(sum, room) => sum + room.categories.reduce((catSum, cat) => catSum + cat.topics.length, 0),
-		0,
-	);
-
 	return (
 		<PageLayout>
-			{/* Hero */}
 			<div className="relative mb-10 md:mb-16 animate-fade-in-up">
 				{/* Background glows - escondido em mobile pra evitar overflow */}
 				<div className="hidden md:block absolute -top-32 -left-32 w-[500px] h-[400px] bg-primary/[0.04] rounded-full blur-[100px] pointer-events-none" />
@@ -97,9 +113,7 @@ export const HomePage = () => {
 				</div>
 
 				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
-					{rooms
-						.sort((a, b) => a.order - b.order)
-						.map((room, index) => {
+					                {sortedRooms.map((room, index) => {
 							const Icon = getRoomIcon(room.icon);
 							const topicCount = room.categories.reduce((sum, cat) => sum + cat.topics.length, 0);
 

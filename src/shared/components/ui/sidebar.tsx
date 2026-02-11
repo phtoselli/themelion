@@ -1,4 +1,4 @@
-import { useIsMobile } from "@client/hooks/use-mobile";
+import { useIsMobile } from "@client/hooks/use-media-query";
 import { Button } from "@client/shared/components/ui/button";
 import { Input } from "@client/shared/components/ui/input";
 import { Separator } from "@client/shared/components/ui/separator";

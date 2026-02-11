@@ -23,10 +23,10 @@ const saveProgressMap = (map: ProgressMap): void => {
 
 export const markTopicVisited = (slug: string): void => {
 	const map = getProgressMap();
+	const existing = map[slug];
 	map[slug] = {
-		...map[slug],
-		completed: map[slug]?.completed ?? false,
-		completedAt: map[slug]?.completedAt ?? null,
+		completed: existing?.completed ?? false,
+		completedAt: existing?.completedAt ?? null,
 		lastVisitedAt: new Date().toISOString(),
 	};
 	saveProgressMap(map);
@@ -132,8 +132,15 @@ export const importProgress = (file: File): Promise<{ imported: number }> => {
 			return;
 		}
 
-		if (file.type && file.type !== "application/json") {
+		// Validar MIME type (rejeitar se vazio ou incorreto)
+		if (!file.type || file.type !== "application/json") {
 			reject(new Error("Tipo de arquivo inválido. Envie um arquivo .json."));
+			return;
+		}
+
+		// Validação adicional: verificar extensão do arquivo (defense-in-depth)
+		if (!file.name.endsWith(".json")) {
+			reject(new Error("Arquivo deve ter extensão .json."));
 			return;
 		}
 
