@@ -1,0 +1,97 @@
+roadmap: qa-senior
+name: "QA Sênior"
+description: "Trilha avançada para QA Sênior: arquitetura de testes, estratégias avançadas, liderança técnica e especialização em domínios complexos"
+icon: "bug"
+
+stages:
+  - slug: "estrategias-avancadas"
+    name: "Estratégias Avançadas"
+    description: "Estratégias sofisticadas de teste e qualidade"
+    order: 1
+    topics:
+      - "shift-left-testing"
+      - "shift-right-testing"
+      - "risk-based-testing"
+      - "test-optimization"
+
+  - slug: "tecnicas-especialistas"
+    name: "Técnicas de Especialista"
+    description: "Técnicas avançadas de design de teste"
+    order: 2
+    topics:
+      - "pairwise-testing"
+      - "path-coverage"
+      - "mutation-testing"
+      - "model-based-testing"
+      - "property-based-testing"
+
+  - slug: "automacao-avancada"
+    name: "Automação Avançada"
+    description: "Arquitetura e otimização de automação"
+    order: 3
+    topics:
+      - "parallel-test-execution"
+      - "test-architecture"
+      - "ai-in-testing"
+
+  - slug: "performance-avancado"
+    name: "Performance Avançado"
+    description: "Análise profunda de performance"
+    order: 4
+    topics:
+      - "spike-testing"
+      - "soak-testing"
+      - "performance-bottleneck"
+      - "performance-monitoring"
+
+  - slug: "security-avancado"
+    name: "Security Avançado"
+    description: "Testes de segurança avançados"
+    order: 5
+    topics:
+      - "csrf-testing"
+      - "authorization-testing"
+      - "sast-dast"
+      - "penetration-testing"
+
+  - slug: "dominios-especializados"
+    name: "Domínios Especializados"
+    description: "Testes em arquiteturas e contextos complexos"
+    order: 6
+    topics:
+      - "graphql-testing"
+      - "contract-testing"
+      - "microservices-testing"
+      - "specialized-domains"
+
+  - slug: "devops-avancado"
+    name: "DevOps Avançado"
+    description: "Práticas avançadas de testes em DevOps"
+    order: 7
+    topics:
+      - "testing-in-production"
+      - "canary-testing"
+      - "chaos-engineering"
+      - "feature-toggle-testing"
+
+  - slug: "testes-especializados-avancados"
+    name: "Testes Especializados Avançados"
+    description: "Testes de acessibilidade, compliance e usabilidade"
+    order: 8
+    topics:
+      - "accessibility-testing"
+      - "localization-testing"
+      - "internationalization-testing"
+      - "usability-testing"
+      - "compliance-testing"
+
+  - slug: "gestao-e-lideranca"
+    name: "Gestão e Liderança"
+    description: "Gerenciamento estratégico de testes e qualidade"
+    order: 9
+    topics:
+      - "test-documentation"
+      - "test-estimation"
+      - "test-optimization"
+      - "stakeholder-communication"
+      - "critical-thinking"

@@ -1,0 +1,12 @@
+roadmap: cybersecurity-analyst-pleno
+name: "Cybersecurity Analyst — Pleno"
+description: "Aprofunde seus conhecimentos em segurança: testes de penetração, análise de malware, resposta a incidentes, forense digital e técnicas avançadas de defesa e ataque"
+icon: "shield"
+
+stages:
+
+  - slug: "em-breve"
+    name: "Em breve"
+    description: "Conteúdo em desenvolvimento"
+    order: 1
+    topics: []

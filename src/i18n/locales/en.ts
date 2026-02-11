@@ -2,7 +2,7 @@ import type { Locale } from "./pt-BR";
 
 export const en: Locale = {
 	common: {
-		rooms: "Rooms",
+		rooms: "Modules",
 		topics: "Topics",
 		languages: "Languages",
 		categories: "categories",
@@ -18,7 +18,7 @@ export const en: Locale = {
 
 	nav: {
 		home: "Home",
-		studyRooms: "Study Rooms",
+		studyRooms: "Modules",
 		roadmaps: "Roadmaps",
 	},
 
@@ -70,9 +70,9 @@ export const en: Locale = {
 		previewSectionSubtitle:
 			"Technical content with examples in 5 languages. Each topic goes from concept to implementation.",
 		howItWorksTitle: "How it works",
-		step1Title: "Choose a room",
+		step1Title: "Choose a module",
 		step1Desc:
-			"7 study rooms organized by area: fundamentals, frontend, backend, databases and more.",
+			"+10 modules organized by area: fundamentals, frontend, backend, databases, Cybersecurity, QA and more.",
 		step2Title: "Learn with real examples",
 		step2Desc:
 			"Each topic has direct explanations with examples in Python, TypeScript, C#, Go and Rust.",
@@ -89,7 +89,7 @@ export const en: Locale = {
 		headingHighlight: "never change",
 		subtitle:
 			'From the Greek \u03B8\u03B5\u03BC\u03AD\u03BB\u03B9\u03BF\u03BD, "foundation" \u2014 like Greek temples that withstand time, learn programming concepts that transcend any framework.',
-		studyRoomsTitle: "Study Rooms",
+		studyRoomsTitle: "Modules",
 		roomStats: (categories: number, topics: number) =>
 			`${categories} categories \u00B7 ${topics} topics`,
 		learningModesTitle: "Two ways to learn",
@@ -105,13 +105,13 @@ export const en: Locale = {
 	},
 
 	roomsPage: {
-		title: "Study Rooms",
+		title: "Modules",
 		description:
-			"Each room groups topics by knowledge area. Choose a room to explore its contents and start learning.",
+			"Each module groups topics by knowledge area. Choose a module to explore its contents and start learning.",
 	},
 
 	roomPage: {
-		notFound: "Room not found",
+		notFound: "Module not found",
 	},
 
 	topicPage: {

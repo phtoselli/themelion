@@ -1,0 +1,109 @@
+roadmap: qa-pleno
+name: "QA Pleno"
+description: "Trilha para evoluir de QA Júnior para Pleno: automação, técnicas avançadas, performance, segurança e testes em ambientes Agile/DevOps"
+icon: "bug"
+
+stages:
+  - slug: "revisao-fundamentos"
+    name: "Revisão de Fundamentos"
+    description: "Consolidar conhecimentos essenciais"
+    order: 1
+    topics:
+      - "testing-principles-istqb"
+      - "shift-left-testing"
+      - "shift-right-testing"
+      - "cost-of-quality"
+
+  - slug: "tipos-avancados-de-teste"
+    name: "Tipos Avançados de Teste"
+    description: "Expandir conhecimento em tipos de teste"
+    order: 2
+    topics:
+      - "non-functional-testing"
+      - "white-box-testing"
+      - "exploratory-testing"
+      - "end-to-end-testing"
+
+  - slug: "tecnicas-avancadas"
+    name: "Técnicas Avançadas"
+    description: "Técnicas de teste mais sofisticadas"
+    order: 3
+    topics:
+      - "decision-table-testing"
+      - "state-transition-testing"
+      - "statement-coverage"
+      - "branch-coverage"
+
+  - slug: "automacao-fundamentos"
+    name: "Automação - Fundamentos"
+    description: "Começar a jornada de automação de testes"
+    order: 4
+    topics:
+      - "test-automation-pyramid"
+      - "test-automation-framework"
+      - "automation-roi"
+      - "what-to-automate"
+
+  - slug: "automacao-padroes"
+    name: "Automação - Padrões"
+    description: "Padrões e boas práticas em automação"
+    order: 5
+    topics:
+      - "page-object-model"
+      - "test-doubles"
+      - "test-fixtures"
+      - "flaky-tests"
+
+  - slug: "testes-especializados"
+    name: "Testes Especializados"
+    description: "Testes para diferentes domínios"
+    order: 6
+    topics:
+      - "cross-browser-testing"
+      - "responsive-testing"
+      - "rest-api-testing"
+      - "mobile-testing"
+      - "database-testing"
+
+  - slug: "performance-introducao"
+    name: "Performance - Introdução"
+    description: "Fundamentos de testes de performance"
+    order: 7
+    topics:
+      - "performance-testing-concepts"
+      - "load-testing"
+      - "stress-testing"
+      - "performance-metrics"
+
+  - slug: "security-introducao"
+    name: "Security - Introdução"
+    description: "Fundamentos de testes de segurança"
+    order: 8
+    topics:
+      - "security-fundamentals"
+      - "owasp-top-10"
+      - "sql-injection"
+      - "xss-testing"
+      - "authentication-testing"
+
+  - slug: "agile-devops-basico"
+    name: "Agile e DevOps - Básico"
+    description: "Testes em ambientes ágeis"
+    order: 9
+    topics:
+      - "agile-testing-quadrants"
+      - "tdd"
+      - "bdd"
+      - "continuous-testing"
+      - "ci-cd-integration"
+
+  - slug: "gestao-intermediaria"
+    name: "Gestão Intermediária"
+    description: "Gerenciamento e otimização de testes"
+    order: 10
+    topics:
+      - "test-planning"
+      - "test-strategy"
+      - "test-coverage"
+      - "test-metrics"
+      - "risk-based-testing"

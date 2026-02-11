@@ -1,0 +1,12 @@
+roadmap: cybersecurity-analyst-junior
+name: "Cybersecurity Analyst — Júnior"
+description: "O essencial para começar sua carreira em segurança da informação: fundamentos de segurança, criptografia básica, redes, segurança web e os princípios que todo analista de segurança precisa dominar"
+icon: "shield"
+
+stages:
+
+  - slug: "em-breve"
+    name: "Em breve"
+    description: "Conteúdo em desenvolvimento"
+    order: 1
+    topics: []

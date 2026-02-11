@@ -556,6 +556,20 @@
 	padding: 0.375rem 0.75rem;
 	font-weight: 500;
 	color: var(--text-faint);
+	cursor: pointer;
+	transition: all 0.2s;
+	border-bottom: 1px solid transparent;
+	border-top: none;
+	border-left: none;
+	border-right: none;
+	background: none;
+	font-family: inherit;
+	font-size: inherit;
+	line-height: inherit;
+}
+.mockup-code-tab:hover:not([data-active="true"]) {
+	color: var(--text-muted);
+	background: color-mix(in srgb, var(--surface-raised) 40%, transparent);
 }
 .mockup-code-tab[data-active="true"] {
 	color: var(--primary);

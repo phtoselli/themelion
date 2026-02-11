@@ -8,6 +8,7 @@ import {
 	Monitor,
 	Rocket,
 	Server,
+	Shield,
 } from "lucide-react";
 
 const iconMap: Record<string, LucideIcon> = {
@@ -18,6 +19,7 @@ const iconMap: Record<string, LucideIcon> = {
 	cloud: Cloud,
 	code: Code,
 	rocket: Rocket,
+	shield: Shield,
 };
 
 export const getRoomIcon = (iconName: string): LucideIcon => {
