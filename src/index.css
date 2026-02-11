@@ -278,6 +278,11 @@ body::after {
 	50% { opacity: 0.7; }
 }
 
+@keyframes scroll-hint {
+	0%, 100% { opacity: 0.4; transform: translateY(0); }
+	50% { opacity: 1; transform: translateY(4px); }
+}
+
 /* Stagger animation utilities */
 .animate-fade-in-up {
 	animation: fade-in-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
@@ -336,6 +341,21 @@ body::after {
 	background:
 		radial-gradient(ellipse 60% 50% at 10% 20%, #5f47140a 0%, transparent 70%),
 		radial-gradient(ellipse 40% 40% at 90% 80%, #21525506 0%, transparent 60%);
+}
+
+/* Landing page hero gradient */
+.landing-hero-gradient {
+	background:
+		radial-gradient(ellipse 80% 60% at 20% 30%, #d4a04312 0%, transparent 70%),
+		radial-gradient(ellipse 50% 70% at 80% 20%, #62b3b50a 0%, transparent 60%),
+		radial-gradient(ellipse 60% 40% at 50% 90%, #a78bfa06 0%, transparent 50%);
+}
+
+.light .landing-hero-gradient {
+	background:
+		radial-gradient(ellipse 80% 60% at 20% 30%, #5f471415 0%, transparent 70%),
+		radial-gradient(ellipse 50% 70% at 80% 20%, #2152550c 0%, transparent 60%),
+		radial-gradient(ellipse 60% 40% at 50% 90%, #5813cf06 0%, transparent 50%);
 }
 
 /* Card hover glow effect */

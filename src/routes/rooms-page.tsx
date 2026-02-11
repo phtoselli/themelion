@@ -16,13 +16,13 @@ export const RoomsPage = () => {
 		clearActiveRoadmap();
 	}, []);
 
-
 	// Memoizar total de tópicos para evitar recalcular em cada render
 	const totalTopics = useMemo(
-		() => rooms.reduce(
-			(sum, room) => sum + room.categories.reduce((catSum, cat) => catSum + cat.topics.length, 0),
-			0,
-		),
+		() =>
+			rooms.reduce(
+				(sum, room) => sum + room.categories.reduce((catSum, cat) => catSum + cat.topics.length, 0),
+				0,
+			),
 		[rooms],
 	);
 
@@ -78,64 +78,63 @@ export const RoomsPage = () => {
 
 			{/* Grid de salas */}
 			<div className="space-y-4 md:space-y-6">
-				{sortedRooms
-					.map((room, index) => {
-						const Icon = getRoomIcon(room.icon);
-						const topicCount = room.categories.reduce((sum, cat) => sum + cat.topics.length, 0);
+				{sortedRooms.map((room, index) => {
+					const Icon = getRoomIcon(room.icon);
+					const topicCount = room.categories.reduce((sum, cat) => sum + cat.topics.length, 0);
 
-						return (
-							<Link
-								key={room.slug}
-								to={`/room/${room.slug}`}
-								className={`group room-card card-glow flex items-start gap-4 md:gap-5 p-4 md:p-6 rounded-xl bg-surface-raised/80 border border-border hover:bg-surface-light/80 active:bg-surface-light/80 animate-fade-in-up stagger-${Math.min(index + 1, 10)}`}
-							>
-								<div className="relative p-2.5 md:p-3 rounded-xl bg-primary/8 shrink-0">
-									<Icon size={20} className="text-primary relative z-10" />
-									<div className="absolute inset-0 bg-primary/5 rounded-xl blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+					return (
+						<Link
+							key={room.slug}
+							to={`/room/${room.slug}`}
+							className={`group room-card card-glow flex items-start gap-4 md:gap-5 p-4 md:p-6 rounded-xl bg-surface-raised/80 border border-border hover:bg-surface-light/80 active:bg-surface-light/80 animate-fade-in-up stagger-${Math.min(index + 1, 10)}`}
+						>
+							<div className="relative p-2.5 md:p-3 rounded-xl bg-primary/8 shrink-0">
+								<Icon size={20} className="text-primary relative z-10" />
+								<div className="absolute inset-0 bg-primary/5 rounded-xl blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+							</div>
+
+							<div className="flex-1 min-w-0">
+								<div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 mb-1.5">
+									<h3 className="font-display font-bold text-sm md:text-base text-text">
+										{room.name}
+									</h3>
+									<span className="text-[11px] text-text-faint font-medium tabular-nums">
+										{room.categories.length} {t.common.categories} · {topicCount}{" "}
+										{t.common.topics.toLowerCase()}
+									</span>
 								</div>
+								<p className="text-xs md:text-sm text-text-muted leading-relaxed mb-3 line-clamp-2 md:line-clamp-none">
+									{room.description}
+								</p>
 
-								<div className="flex-1 min-w-0">
-									<div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 mb-1.5">
-										<h3 className="font-display font-bold text-sm md:text-base text-text">
-											{room.name}
-										</h3>
-										<span className="text-[11px] text-text-faint font-medium tabular-nums">
-											{room.categories.length} {t.common.categories} · {topicCount}{" "}
-											{t.common.topics.toLowerCase()}
-										</span>
-									</div>
-									<p className="text-xs md:text-sm text-text-muted leading-relaxed mb-3 line-clamp-2 md:line-clamp-none">
-										{room.description}
-									</p>
-
-									{/* Categorias preview */}
-									<div className="flex flex-wrap gap-1.5 md:gap-2">
-										{room.categories
-											.sort((a, b) => a.order - b.order)
-											.slice(0, 4)
-											.map((cat) => (
-												<span
-													key={cat.slug}
-													className="text-[10px] md:text-[11px] text-text-faint bg-surface/80 border border-border/50 px-2 md:px-2.5 py-0.5 md:py-1 rounded-md"
-												>
-													{cat.name}
-												</span>
-											))}
-										{room.categories.length > 4 && (
-											<span className="text-[10px] md:text-[11px] text-text-faint px-2 md:px-2.5 py-0.5 md:py-1">
-												+{room.categories.length - 4}
+								{/* Categorias preview */}
+								<div className="flex flex-wrap gap-1.5 md:gap-2">
+									{room.categories
+										.sort((a, b) => a.order - b.order)
+										.slice(0, 4)
+										.map((cat) => (
+											<span
+												key={cat.slug}
+												className="text-[10px] md:text-[11px] text-text-faint bg-surface/80 border border-border/50 px-2 md:px-2.5 py-0.5 md:py-1 rounded-md"
+											>
+												{cat.name}
 											</span>
-										)}
-									</div>
+										))}
+									{room.categories.length > 4 && (
+										<span className="text-[10px] md:text-[11px] text-text-faint px-2 md:px-2.5 py-0.5 md:py-1">
+											+{room.categories.length - 4}
+										</span>
+									)}
 								</div>
+							</div>
 
-								<ArrowRight
-									size={16}
-									className="text-text-faint group-hover:text-primary group-hover:translate-x-1 transition-all duration-300 shrink-0 mt-1"
-								/>
-							</Link>
-						);
-					})}
+							<ArrowRight
+								size={16}
+								className="text-text-faint group-hover:text-primary group-hover:translate-x-1 transition-all duration-300 shrink-0 mt-1"
+							/>
+						</Link>
+					);
+				})}
 			</div>
 		</PageLayout>
 	);
