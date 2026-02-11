@@ -1,0 +1,1436 @@
+room: cybersecurity
+name: "Cybersecurity e Ethical Hacking"
+description: "Aprenda os fundamentos atemporais de segurança da informação: criptografia, segurança de redes e sistemas, OWASP Top 10, testes de penetração, análise de malware, resposta a incidentes, e os princípios que todo profissional de segurança precisa dominar."
+icon: "shield"
+order: 8
+
+categories:
+
+  - slug: "fundamentos-seguranca"
+    name: "Fundamentos de Segurança"
+    order: 1
+    topics:
+      - slug: "cia-triad"
+        title: "CIA Triad: Confidencialidade, Integridade, Disponibilidade"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["fundamentos", "principios", "cia"]
+
+      - slug: "aaa-framework"
+        title: "AAA: Authentication, Authorization, Accounting"
+        difficulty: beginner
+        order: 2
+        prerequisites: ["cia-triad"]
+        tags: ["autenticacao", "autorizacao", "accountability"]
+
+      - slug: "defense-in-depth"
+        title: "Defense in Depth e Layered Security"
+        difficulty: beginner
+        order: 3
+        prerequisites: ["cia-triad"]
+        tags: ["defesa", "camadas", "estrategia"]
+
+      - slug: "security-by-design"
+        title: "Security by Design"
+        difficulty: beginner
+        order: 4
+        prerequisites: ["defense-in-depth"]
+        tags: ["design", "desenvolvimento", "prevencao"]
+
+      - slug: "least-privilege"
+        title: "Principle of Least Privilege"
+        difficulty: beginner
+        order: 5
+        prerequisites: []
+        tags: ["privilegios", "acesso", "minimizacao"]
+
+      - slug: "zero-trust"
+        title: "Zero Trust Architecture"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["least-privilege", "aaa-framework"]
+        tags: ["zero-trust", "arquitetura", "moderna"]
+
+      - slug: "threat-landscape"
+        title: "Threat Landscape: Ameaças, Vulnerabilidades e Riscos"
+        difficulty: beginner
+        order: 7
+        prerequisites: ["cia-triad"]
+        tags: ["ameacas", "vulnerabilidades", "riscos"]
+
+      - slug: "attack-surface"
+        title: "Attack Surface e Threat Surface"
+        difficulty: intermediate
+        order: 8
+        prerequisites: ["threat-landscape"]
+        tags: ["superficie-ataque", "exposicao"]
+
+      - slug: "security-controls"
+        title: "Security Controls: Preventive, Detective, Corrective"
+        difficulty: intermediate
+        order: 9
+        prerequisites: ["defense-in-depth"]
+        tags: ["controles", "prevencao", "deteccao"]
+
+      - slug: "threat-actors"
+        title: "Threat Actors e APTs"
+        difficulty: beginner
+        order: 10
+        prerequisites: ["threat-landscape"]
+        tags: ["atacantes", "apt", "adversarios"]
+
+      - slug: "vulnerability-lifecycle"
+        title: "Vulnerability Lifecycle: Zero-Day, N-Day, Patches"
+        difficulty: intermediate
+        order: 11
+        prerequisites: ["threat-landscape"]
+        tags: ["vulnerabilidades", "zero-day", "patches"]
+
+      - slug: "security-incidents"
+        title: "Security Incidents, Events e Breaches"
+        difficulty: beginner
+        order: 12
+        prerequisites: ["threat-landscape"]
+        tags: ["incidentes", "eventos", "breaches"]
+
+  - slug: "criptografia"
+    name: "Criptografia"
+    order: 2
+    topics:
+      - slug: "cryptography-fundamentals"
+        title: "Fundamentos de Criptografia"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["criptografia", "conceitos", "fundamentos"]
+
+      - slug: "symmetric-encryption"
+        title: "Criptografia Simétrica"
+        difficulty: beginner
+        order: 2
+        prerequisites: ["cryptography-fundamentals"]
+        tags: ["simetrica", "chave-secreta", "cifragem"]
+
+      - slug: "block-cipher-modes"
+        title: "Block Cipher Modes: ECB, CBC, CTR, GCM"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["symmetric-encryption"]
+        tags: ["modos", "blocos", "iv"]
+
+      - slug: "asymmetric-encryption"
+        title: "Criptografia Assimétrica e PKI"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["cryptography-fundamentals"]
+        tags: ["assimetrica", "chave-publica", "pki"]
+
+      - slug: "digital-signatures"
+        title: "Assinaturas Digitais e Certificados"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["asymmetric-encryption"]
+        tags: ["assinatura", "certificados", "ca"]
+
+      - slug: "hashing"
+        title: "Hash Functions e Integridade"
+        difficulty: beginner
+        order: 6
+        prerequisites: ["cryptography-fundamentals"]
+        tags: ["hash", "integridade", "digest"]
+
+      - slug: "password-hashing"
+        title: "Password Hashing: Salt, Pepper, KDF"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["hashing"]
+        tags: ["senhas", "salt", "kdf"]
+
+      - slug: "tls-ssl"
+        title: "TLS/SSL e HTTPS"
+        difficulty: intermediate
+        order: 8
+        prerequisites: ["asymmetric-encryption", "symmetric-encryption"]
+        tags: ["tls", "ssl", "https"]
+
+      - slug: "cryptographic-attacks"
+        title: "Ataques Criptográficos"
+        difficulty: advanced
+        order: 9
+        prerequisites: ["symmetric-encryption", "asymmetric-encryption", "hashing"]
+        tags: ["ataques", "cryptanalysis", "side-channel"]
+
+      - slug: "key-management"
+        title: "Key Management e Key Exchange"
+        difficulty: intermediate
+        order: 10
+        prerequisites: ["symmetric-encryption", "asymmetric-encryption"]
+        tags: ["chaves", "gerenciamento", "troca"]
+
+  - slug: "seguranca-redes"
+    name: "Segurança de Redes"
+    order: 3
+    topics:
+      - slug: "network-fundamentals"
+        title: "Fundamentos de Redes: OSI, TCP/IP"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["redes", "osi", "tcp-ip"]
+
+      - slug: "network-protocols"
+        title: "Protocolos de Rede e Segurança"
+        difficulty: beginner
+        order: 2
+        prerequisites: ["network-fundamentals"]
+        tags: ["protocolos", "tcp", "udp"]
+
+      - slug: "dns-security"
+        title: "DNS e DNS Security"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["network-protocols"]
+        tags: ["dns", "cache-poisoning", "tunneling"]
+
+      - slug: "network-sniffing"
+        title: "Network Sniffing e Packet Capture"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["network-protocols"]
+        tags: ["sniffing", "captura", "wireshark"]
+
+      - slug: "mitm-attacks"
+        title: "Man-in-the-Middle Attacks"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["network-sniffing"]
+        tags: ["mitm", "arp-poisoning", "session-hijacking"]
+
+      - slug: "network-attacks"
+        title: "Network Attacks: DoS, DDoS, Flooding"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["network-protocols"]
+        tags: ["ddos", "flooding", "syn-flood"]
+
+      - slug: "port-scanning"
+        title: "Port Scanning e Network Enumeration"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["network-protocols"]
+        tags: ["scanning", "enumeracao", "portas"]
+
+      - slug: "firewalls"
+        title: "Firewalls e Packet Filtering"
+        difficulty: intermediate
+        order: 8
+        prerequisites: ["network-protocols"]
+        tags: ["firewall", "filtragem", "acl"]
+
+      - slug: "ids-ips"
+        title: "IDS/IPS: Intrusion Detection and Prevention"
+        difficulty: intermediate
+        order: 9
+        prerequisites: ["firewalls"]
+        tags: ["ids", "ips", "deteccao"]
+
+      - slug: "network-segmentation"
+        title: "Network Segmentation e DMZ"
+        difficulty: intermediate
+        order: 10
+        prerequisites: ["firewalls"]
+        tags: ["segmentacao", "dmz", "vlan"]
+
+      - slug: "vpn-security"
+        title: "VPN: Virtual Private Networks"
+        difficulty: intermediate
+        order: 11
+        prerequisites: ["tls-ssl"]
+        tags: ["vpn", "ipsec", "tunneling"]
+
+      - slug: "network-monitoring"
+        title: "Network Monitoring e Traffic Analysis"
+        difficulty: intermediate
+        order: 12
+        prerequisites: ["network-protocols"]
+        tags: ["monitoramento", "analise", "netflow"]
+
+  - slug: "seguranca-web"
+    name: "Segurança Web"
+    order: 4
+    topics:
+      - slug: "http-fundamentals"
+        title: "HTTP Protocol e Web Fundamentals"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["http", "web", "fundamentos"]
+
+      - slug: "web-security-headers"
+        title: "Security Headers: CSP, HSTS, X-Frame-Options"
+        difficulty: intermediate
+        order: 2
+        prerequisites: ["http-fundamentals"]
+        tags: ["headers", "csp", "hsts"]
+
+      - slug: "same-origin-policy"
+        title: "Same-Origin Policy e CORS"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["http-fundamentals"]
+        tags: ["sop", "cors", "origem"]
+
+      - slug: "sql-injection"
+        title: "SQL Injection"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["http-fundamentals"]
+        tags: ["sqli", "injection", "database"]
+
+      - slug: "nosql-injection"
+        title: "NoSQL Injection"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["sql-injection"]
+        tags: ["nosql", "injection", "mongodb"]
+
+      - slug: "command-injection"
+        title: "Command Injection e Code Injection"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["sql-injection"]
+        tags: ["command", "code", "rce"]
+
+      - slug: "xss"
+        title: "Cross-Site Scripting (XSS)"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["http-fundamentals"]
+        tags: ["xss", "javascript", "reflected"]
+
+      - slug: "csrf"
+        title: "Cross-Site Request Forgery (CSRF)"
+        difficulty: intermediate
+        order: 8
+        prerequisites: ["http-fundamentals"]
+        tags: ["csrf", "token", "samesite"]
+
+      - slug: "authentication-web"
+        title: "Authentication Mechanisms"
+        difficulty: intermediate
+        order: 9
+        prerequisites: ["password-hashing"]
+        tags: ["autenticacao", "mfa", "oauth"]
+
+      - slug: "session-management"
+        title: "Session Management e Cookie Security"
+        difficulty: intermediate
+        order: 10
+        prerequisites: ["authentication-web"]
+        tags: ["sessao", "cookies", "session-fixation"]
+
+      - slug: "jwt-security"
+        title: "JWT Security"
+        difficulty: intermediate
+        order: 11
+        prerequisites: ["authentication-web"]
+        tags: ["jwt", "tokens", "bearer"]
+
+      - slug: "authorization-web"
+        title: "Authorization Models: RBAC, ABAC"
+        difficulty: intermediate
+        order: 12
+        prerequisites: ["authentication-web"]
+        tags: ["autorizacao", "rbac", "acesso"]
+
+      - slug: "idor"
+        title: "IDOR: Insecure Direct Object Reference"
+        difficulty: intermediate
+        order: 13
+        prerequisites: ["authorization-web"]
+        tags: ["idor", "acesso", "objetos"]
+
+      - slug: "path-traversal"
+        title: "Path Traversal e File Inclusion"
+        difficulty: intermediate
+        order: 14
+        prerequisites: ["http-fundamentals"]
+        tags: ["path-traversal", "lfi", "rfi"]
+
+      - slug: "file-upload-vulnerabilities"
+        title: "File Upload Vulnerabilities"
+        difficulty: intermediate
+        order: 15
+        prerequisites: ["path-traversal"]
+        tags: ["upload", "webshell", "validation"]
+
+      - slug: "xxe"
+        title: "XML External Entity (XXE)"
+        difficulty: advanced
+        order: 16
+        prerequisites: ["http-fundamentals"]
+        tags: ["xxe", "xml", "entities"]
+
+      - slug: "ssrf"
+        title: "Server-Side Request Forgery (SSRF)"
+        difficulty: advanced
+        order: 17
+        prerequisites: ["http-fundamentals"]
+        tags: ["ssrf", "server-side", "metadata"]
+
+      - slug: "insecure-deserialization"
+        title: "Insecure Deserialization"
+        difficulty: advanced
+        order: 18
+        prerequisites: ["http-fundamentals"]
+        tags: ["deserialization", "rce", "objects"]
+
+      - slug: "client-side-attacks"
+        title: "Client-Side Attacks: Clickjacking, Open Redirect"
+        difficulty: intermediate
+        order: 19
+        prerequisites: ["http-fundamentals"]
+        tags: ["clickjacking", "redirect", "client-side"]
+
+      - slug: "api-security"
+        title: "API Security"
+        difficulty: intermediate
+        order: 20
+        prerequisites: ["authentication-web", "authorization-web"]
+        tags: ["api", "rest", "graphql"]
+
+      - slug: "owasp-top-10"
+        title: "OWASP Top 10"
+        difficulty: intermediate
+        order: 21
+        prerequisites: ["sql-injection", "xss", "csrf", "authentication-web"]
+        tags: ["owasp", "top-10", "vulnerabilidades"]
+
+  - slug: "seguranca-sistemas"
+    name: "Segurança de Sistemas"
+    order: 5
+    topics:
+      - slug: "os-security-fundamentals"
+        title: "Fundamentos de Segurança de SO"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["os", "sistema-operacional", "fundamentos"]
+
+      - slug: "user-privileges"
+        title: "User Accounts e Privilege Separation"
+        difficulty: beginner
+        order: 2
+        prerequisites: ["os-security-fundamentals"]
+        tags: ["usuarios", "privilegios", "separacao"]
+
+      - slug: "file-permissions"
+        title: "File Permissions e Access Control"
+        difficulty: beginner
+        order: 3
+        prerequisites: ["user-privileges"]
+        tags: ["permissoes", "arquivos", "acl"]
+
+      - slug: "process-isolation"
+        title: "Process Isolation e Memory Protection"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["os-security-fundamentals"]
+        tags: ["processos", "memoria", "isolamento"]
+
+      - slug: "memory-protections"
+        title: "Memory Protections: ASLR, DEP, Stack Canaries"
+        difficulty: advanced
+        order: 5
+        prerequisites: ["process-isolation"]
+        tags: ["aslr", "dep", "canaries"]
+
+      - slug: "sandboxing"
+        title: "Sandboxing e Containerization Security"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["process-isolation"]
+        tags: ["sandbox", "containers", "isolamento"]
+
+      - slug: "rootkits-bootkits"
+        title: "Rootkits e Bootkits"
+        difficulty: advanced
+        order: 7
+        prerequisites: ["os-security-fundamentals"]
+        tags: ["rootkit", "bootkit", "kernel"]
+
+      - slug: "firmware-security"
+        title: "Firmware Security: UEFI, Secure Boot, TPM"
+        difficulty: advanced
+        order: 8
+        prerequisites: ["rootkits-bootkits"]
+        tags: ["firmware", "uefi", "tpm"]
+
+      - slug: "disk-encryption"
+        title: "Full Disk Encryption"
+        difficulty: intermediate
+        order: 9
+        prerequisites: ["cryptography-fundamentals"]
+        tags: ["criptografia", "disco", "fde"]
+
+      - slug: "system-hardening"
+        title: "System Hardening"
+        difficulty: intermediate
+        order: 10
+        prerequisites: ["os-security-fundamentals"]
+        tags: ["hardening", "seguranca", "configuracao"]
+
+      - slug: "windows-security"
+        title: "Windows Security"
+        difficulty: intermediate
+        order: 11
+        prerequisites: ["os-security-fundamentals"]
+        tags: ["windows", "ad", "kerberos"]
+
+      - slug: "windows-attacks"
+        title: "Windows Attacks: Pass-the-Hash, Golden Ticket"
+        difficulty: advanced
+        order: 12
+        prerequisites: ["windows-security"]
+        tags: ["windows", "pth", "kerberos"]
+
+      - slug: "linux-security"
+        title: "Linux Security"
+        difficulty: intermediate
+        order: 13
+        prerequisites: ["os-security-fundamentals"]
+        tags: ["linux", "sudo", "selinux"]
+
+      - slug: "privilege-escalation"
+        title: "Privilege Escalation"
+        difficulty: advanced
+        order: 14
+        prerequisites: ["user-privileges"]
+        tags: ["privesc", "escalacao", "root"]
+
+      - slug: "logging-auditing"
+        title: "Logging e Auditing"
+        difficulty: intermediate
+        order: 15
+        prerequisites: ["os-security-fundamentals"]
+        tags: ["logs", "auditoria", "monitoramento"]
+
+  - slug: "seguranca-aplicacoes"
+    name: "Segurança de Aplicações"
+    order: 6
+    topics:
+      - slug: "secure-sdlc"
+        title: "Secure Software Development Lifecycle"
+        difficulty: intermediate
+        order: 1
+        prerequisites: []
+        tags: ["sdlc", "desenvolvimento", "seguro"]
+
+      - slug: "threat-modeling"
+        title: "Threat Modeling: STRIDE, DREAD"
+        difficulty: intermediate
+        order: 2
+        prerequisites: ["secure-sdlc"]
+        tags: ["modelagem", "ameacas", "stride"]
+
+      - slug: "input-validation"
+        title: "Input Validation e Output Encoding"
+        difficulty: beginner
+        order: 3
+        prerequisites: []
+        tags: ["validacao", "entrada", "sanitizacao"]
+
+      - slug: "secure-coding"
+        title: "Secure Coding Practices"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["input-validation"]
+        tags: ["codigo-seguro", "praticas", "owasp"]
+
+      - slug: "buffer-overflow"
+        title: "Buffer Overflow"
+        difficulty: advanced
+        order: 5
+        prerequisites: ["memory-protections"]
+        tags: ["buffer", "overflow", "stack"]
+
+      - slug: "memory-vulnerabilities"
+        title: "Memory Vulnerabilities: Use-After-Free, Double Free"
+        difficulty: advanced
+        order: 6
+        prerequisites: ["buffer-overflow"]
+        tags: ["memoria", "heap", "vulnerabilidades"]
+
+      - slug: "integer-overflow"
+        title: "Integer Overflow e Underflow"
+        difficulty: advanced
+        order: 7
+        prerequisites: ["buffer-overflow"]
+        tags: ["integer", "overflow", "aritmetica"]
+
+      - slug: "race-conditions"
+        title: "Race Conditions e TOCTOU"
+        difficulty: advanced
+        order: 8
+        prerequisites: ["secure-coding"]
+        tags: ["race", "concorrencia", "toctou"]
+
+      - slug: "business-logic-vulnerabilities"
+        title: "Business Logic Vulnerabilities"
+        difficulty: intermediate
+        order: 9
+        prerequisites: ["secure-coding"]
+        tags: ["logica", "negocio", "fluxo"]
+
+      - slug: "hardcoded-secrets"
+        title: "Hardcoded Secrets e Secrets Management"
+        difficulty: intermediate
+        order: 10
+        prerequisites: ["secure-coding"]
+        tags: ["segredos", "credenciais", "vault"]
+
+      - slug: "sast-dast"
+        title: "SAST, DAST e Security Testing"
+        difficulty: intermediate
+        order: 11
+        prerequisites: ["secure-sdlc"]
+        tags: ["sast", "dast", "testes"]
+
+      - slug: "dependency-security"
+        title: "Dependency Security e SCA"
+        difficulty: intermediate
+        order: 12
+        prerequisites: ["secure-sdlc"]
+        tags: ["dependencias", "sca", "vulnerabilidades"]
+
+      - slug: "cwe-cve"
+        title: "CWE, CVE e CVSS"
+        difficulty: beginner
+        order: 13
+        prerequisites: []
+        tags: ["cwe", "cve", "cvss"]
+
+      - slug: "mobile-security"
+        title: "Mobile Application Security"
+        difficulty: intermediate
+        order: 14
+        prerequisites: ["secure-coding"]
+        tags: ["mobile", "android", "ios"]
+
+  - slug: "testes-penetracao"
+    name: "Testes de Penetração"
+    order: 7
+    topics:
+      - slug: "pentest-methodology"
+        title: "Penetration Testing Methodology"
+        difficulty: intermediate
+        order: 1
+        prerequisites: []
+        tags: ["pentest", "metodologia", "fases"]
+
+      - slug: "red-blue-purple-teams"
+        title: "Red Team vs Blue Team vs Purple Team"
+        difficulty: beginner
+        order: 2
+        prerequisites: ["pentest-methodology"]
+        tags: ["red-team", "blue-team", "purple"]
+
+      - slug: "rules-of-engagement"
+        title: "Rules of Engagement e Scope"
+        difficulty: beginner
+        order: 3
+        prerequisites: ["pentest-methodology"]
+        tags: ["roe", "escopo", "autorizacao"]
+
+      - slug: "osint"
+        title: "OSINT: Open Source Intelligence"
+        difficulty: beginner
+        order: 4
+        prerequisites: []
+        tags: ["osint", "reconhecimento", "informacao"]
+
+      - slug: "passive-recon"
+        title: "Passive Reconnaissance"
+        difficulty: beginner
+        order: 5
+        prerequisites: ["osint"]
+        tags: ["recon", "passivo", "google-dorks"]
+
+      - slug: "active-recon"
+        title: "Active Reconnaissance"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["passive-recon"]
+        tags: ["recon", "ativo", "enumeracao"]
+
+      - slug: "subdomain-enumeration"
+        title: "Subdomain Enumeration"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["active-recon"]
+        tags: ["subdominios", "enumeracao", "dns"]
+
+      - slug: "vulnerability-scanning"
+        title: "Vulnerability Scanning"
+        difficulty: intermediate
+        order: 8
+        prerequisites: ["port-scanning"]
+        tags: ["scanning", "vulnerabilidades", "automatizado"]
+
+      - slug: "web-application-scanning"
+        title: "Web Application Scanning"
+        difficulty: intermediate
+        order: 9
+        prerequisites: ["vulnerability-scanning"]
+        tags: ["web", "scanning", "automatizado"]
+
+      - slug: "exploitation-fundamentals"
+        title: "Exploitation Fundamentals"
+        difficulty: advanced
+        order: 10
+        prerequisites: ["vulnerability-scanning"]
+        tags: ["exploitation", "exploracao", "rce"]
+
+      - slug: "post-exploitation"
+        title: "Post-Exploitation"
+        difficulty: advanced
+        order: 11
+        prerequisites: ["exploitation-fundamentals"]
+        tags: ["post-exploitation", "persistencia", "exfiltracao"]
+
+      - slug: "lateral-movement"
+        title: "Lateral Movement e Pivoting"
+        difficulty: advanced
+        order: 12
+        prerequisites: ["post-exploitation"]
+        tags: ["lateral", "pivoting", "movimento"]
+
+      - slug: "credential-harvesting"
+        title: "Credential Harvesting e Dumping"
+        difficulty: advanced
+        order: 13
+        prerequisites: ["post-exploitation"]
+        tags: ["credenciais", "dumping", "mimikatz"]
+
+      - slug: "password-cracking"
+        title: "Password Cracking e Hash Cracking"
+        difficulty: intermediate
+        order: 14
+        prerequisites: ["password-hashing"]
+        tags: ["cracking", "senhas", "hash"]
+
+      - slug: "covering-tracks"
+        title: "Covering Tracks e Anti-Forensics"
+        difficulty: advanced
+        order: 15
+        prerequisites: ["post-exploitation"]
+        tags: ["anti-forense", "logs", "rastros"]
+
+      - slug: "pentest-reporting"
+        title: "Penetration Test Reporting"
+        difficulty: intermediate
+        order: 16
+        prerequisites: ["pentest-methodology"]
+        tags: ["relatorio", "documentacao", "findings"]
+
+      - slug: "bug-bounties"
+        title: "Bug Bounty Programs"
+        difficulty: intermediate
+        order: 17
+        prerequisites: ["pentest-methodology"]
+        tags: ["bug-bounty", "responsible-disclosure", "hackerone"]
+
+  - slug: "engenharia-social"
+    name: "Engenharia Social"
+    order: 8
+    topics:
+      - slug: "social-engineering-fundamentals"
+        title: "Fundamentos de Engenharia Social"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["engenharia-social", "psicologia", "manipulacao"]
+
+      - slug: "social-engineering-techniques"
+        title: "Técnicas de Manipulação: Pretexting, Baiting, Quid Pro Quo"
+        difficulty: intermediate
+        order: 2
+        prerequisites: ["social-engineering-fundamentals"]
+        tags: ["tecnicas", "pretexting", "baiting"]
+
+      - slug: "phishing"
+        title: "Phishing e Spear Phishing"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["social-engineering-fundamentals"]
+        tags: ["phishing", "email", "credential-harvesting"]
+
+      - slug: "vishing-smishing"
+        title: "Vishing e Smishing"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["phishing"]
+        tags: ["vishing", "smishing", "telefone"]
+
+      - slug: "email-spoofing"
+        title: "Email Spoofing e Domain Spoofing"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["phishing"]
+        tags: ["spoofing", "email", "dominio"]
+
+      - slug: "email-security-protocols"
+        title: "Email Security: SPF, DKIM, DMARC"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["email-spoofing"]
+        tags: ["spf", "dkim", "dmarc"]
+
+      - slug: "physical-security"
+        title: "Physical Security e Physical Penetration Testing"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["social-engineering-fundamentals"]
+        tags: ["fisica", "acesso", "tailgating"]
+
+      - slug: "security-awareness"
+        title: "Security Awareness Training"
+        difficulty: beginner
+        order: 8
+        prerequisites: ["social-engineering-fundamentals"]
+        tags: ["conscientizacao", "treinamento", "cultura"]
+
+  - slug: "analise-malware"
+    name: "Análise de Malware"
+    order: 9
+    topics:
+      - slug: "malware-types"
+        title: "Tipos de Malware: Virus, Worms, Trojans, Ransomware"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["malware", "tipos", "virus"]
+
+      - slug: "malware-advanced-types"
+        title: "Malware Avançado: Rootkits, RATs, Botnets"
+        difficulty: intermediate
+        order: 2
+        prerequisites: ["malware-types"]
+        tags: ["rootkit", "rat", "botnet"]
+
+      - slug: "static-analysis"
+        title: "Static Malware Analysis"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["malware-types"]
+        tags: ["analise", "estatica", "strings"]
+
+      - slug: "dynamic-analysis"
+        title: "Dynamic Malware Analysis"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["static-analysis"]
+        tags: ["analise", "dinamica", "sandbox"]
+
+      - slug: "behavioral-analysis"
+        title: "Behavioral Analysis"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["dynamic-analysis"]
+        tags: ["comportamento", "api", "registry"]
+
+      - slug: "reverse-engineering-malware"
+        title: "Reverse Engineering de Malware"
+        difficulty: advanced
+        order: 6
+        prerequisites: ["static-analysis", "dynamic-analysis"]
+        tags: ["reverse", "disassembly", "debugging"]
+
+      - slug: "anti-analysis-techniques"
+        title: "Anti-Analysis Techniques"
+        difficulty: advanced
+        order: 7
+        prerequisites: ["reverse-engineering-malware"]
+        tags: ["anti-debug", "anti-vm", "obfuscation"]
+
+      - slug: "iocs"
+        title: "Indicators of Compromise (IoCs)"
+        difficulty: intermediate
+        order: 8
+        prerequisites: ["malware-types"]
+        tags: ["ioc", "indicadores", "deteccao"]
+
+      - slug: "yara-rules"
+        title: "YARA Rules"
+        difficulty: intermediate
+        order: 9
+        prerequisites: ["iocs"]
+        tags: ["yara", "assinaturas", "deteccao"]
+
+      - slug: "threat-intelligence"
+        title: "Threat Intelligence"
+        difficulty: intermediate
+        order: 10
+        prerequisites: ["iocs"]
+        tags: ["threat-intel", "ttps", "mitre-attack"]
+
+      - slug: "mitre-attack"
+        title: "MITRE ATT&CK Framework"
+        difficulty: intermediate
+        order: 11
+        prerequisites: ["threat-intelligence"]
+        tags: ["mitre", "attack", "framework"]
+
+      - slug: "threat-hunting"
+        title: "Threat Hunting"
+        difficulty: advanced
+        order: 12
+        prerequisites: ["threat-intelligence"]
+        tags: ["hunting", "proativo", "deteccao"]
+
+  - slug: "resposta-incidentes"
+    name: "Resposta a Incidentes e Forense"
+    order: 10
+    topics:
+      - slug: "incident-response-lifecycle"
+        title: "Incident Response Lifecycle"
+        difficulty: intermediate
+        order: 1
+        prerequisites: []
+        tags: ["ir", "resposta", "incidentes"]
+
+      - slug: "incident-detection"
+        title: "Incident Detection e Identification"
+        difficulty: intermediate
+        order: 2
+        prerequisites: ["incident-response-lifecycle"]
+        tags: ["deteccao", "identificacao", "siem"]
+
+      - slug: "incident-containment"
+        title: "Incident Containment e Eradication"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["incident-response-lifecycle"]
+        tags: ["contencao", "erradicacao", "isolamento"]
+
+      - slug: "incident-recovery"
+        title: "Incident Recovery e Lessons Learned"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["incident-containment"]
+        tags: ["recuperacao", "licoes", "post-mortem"]
+
+      - slug: "soc-operations"
+        title: "SOC Operations"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["incident-detection"]
+        tags: ["soc", "operacoes", "monitoramento"]
+
+      - slug: "evidence-collection"
+        title: "Evidence Collection e Chain of Custody"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["incident-response-lifecycle"]
+        tags: ["evidencias", "custodia", "preservacao"]
+
+      - slug: "digital-forensics-fundamentals"
+        title: "Digital Forensics Fundamentals"
+        difficulty: intermediate
+        order: 7
+        prerequisites: []
+        tags: ["forense", "digital", "investigacao"]
+
+      - slug: "disk-forensics"
+        title: "Disk Forensics e Imaging"
+        difficulty: intermediate
+        order: 8
+        prerequisites: ["digital-forensics-fundamentals"]
+        tags: ["disco", "imagem", "aquisicao"]
+
+      - slug: "memory-forensics"
+        title: "Memory Forensics"
+        difficulty: advanced
+        order: 9
+        prerequisites: ["digital-forensics-fundamentals"]
+        tags: ["memoria", "ram", "volatil"]
+
+      - slug: "file-system-forensics"
+        title: "File System Forensics"
+        difficulty: intermediate
+        order: 10
+        prerequisites: ["disk-forensics"]
+        tags: ["filesystem", "mft", "deleted"]
+
+      - slug: "windows-forensics"
+        title: "Windows Forensics"
+        difficulty: intermediate
+        order: 11
+        prerequisites: ["file-system-forensics"]
+        tags: ["windows", "registry", "artifacts"]
+
+      - slug: "network-forensics"
+        title: "Network Forensics"
+        difficulty: intermediate
+        order: 12
+        prerequisites: ["digital-forensics-fundamentals"]
+        tags: ["rede", "pcap", "analise"]
+
+      - slug: "log-analysis"
+        title: "Log Analysis"
+        difficulty: intermediate
+        order: 13
+        prerequisites: ["digital-forensics-fundamentals"]
+        tags: ["logs", "analise", "correlacao"]
+
+      - slug: "timeline-analysis"
+        title: "Timeline Analysis"
+        difficulty: intermediate
+        order: 14
+        prerequisites: ["digital-forensics-fundamentals"]
+        tags: ["timeline", "cronologia", "eventos"]
+
+  - slug: "seguranca-wireless"
+    name: "Segurança Wireless"
+    order: 11
+    topics:
+      - slug: "wireless-fundamentals"
+        title: "Wireless Fundamentals: 802.11, WiFi"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["wireless", "wifi", "802.11"]
+
+      - slug: "wireless-encryption"
+        title: "Wireless Encryption: WEP, WPA, WPA2, WPA3"
+        difficulty: intermediate
+        order: 2
+        prerequisites: ["wireless-fundamentals"]
+        tags: ["wep", "wpa", "criptografia"]
+
+      - slug: "wireless-authentication"
+        title: "Wireless Authentication: 802.1X, RADIUS"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["wireless-encryption"]
+        tags: ["autenticacao", "802.1x", "radius"]
+
+      - slug: "wireless-attacks"
+        title: "Wireless Attacks: Deauth, Evil Twin"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["wireless-fundamentals"]
+        tags: ["ataques", "deauth", "evil-twin"]
+
+      - slug: "wpa-cracking"
+        title: "WPA/WPA2 Cracking"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["wireless-encryption"]
+        tags: ["cracking", "handshake", "pmkid"]
+
+      - slug: "rogue-access-points"
+        title: "Rogue Access Points"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["wireless-attacks"]
+        tags: ["rogue-ap", "evil-twin", "mitm"]
+
+      - slug: "bluetooth-security"
+        title: "Bluetooth Security"
+        difficulty: intermediate
+        order: 7
+        prerequisites: []
+        tags: ["bluetooth", "ble", "pairing"]
+
+      - slug: "rfid-nfc-security"
+        title: "RFID e NFC Security"
+        difficulty: intermediate
+        order: 8
+        prerequisites: []
+        tags: ["rfid", "nfc", "wireless"]
+
+  - slug: "seguranca-cloud"
+    name: "Segurança em Cloud"
+    order: 12
+    topics:
+      - slug: "cloud-fundamentals"
+        title: "Cloud Computing Fundamentals"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["cloud", "iaas", "paas", "saas"]
+
+      - slug: "shared-responsibility-model"
+        title: "Shared Responsibility Model"
+        difficulty: beginner
+        order: 2
+        prerequisites: ["cloud-fundamentals"]
+        tags: ["responsabilidade", "compartilhada", "modelo"]
+
+      - slug: "cloud-iam"
+        title: "Cloud IAM: Identity and Access Management"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["cloud-fundamentals"]
+        tags: ["iam", "identidade", "acesso"]
+
+      - slug: "cloud-storage-security"
+        title: "Cloud Storage Security"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["cloud-fundamentals"]
+        tags: ["armazenamento", "buckets", "s3"]
+
+      - slug: "cloud-network-security"
+        title: "Cloud Network Security: VPC, Security Groups"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["cloud-fundamentals"]
+        tags: ["vpc", "security-groups", "rede"]
+
+      - slug: "cloud-encryption"
+        title: "Cloud Encryption e Key Management"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["cloud-storage-security"]
+        tags: ["criptografia", "kms", "chaves"]
+
+      - slug: "serverless-security"
+        title: "Serverless Security"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["cloud-fundamentals"]
+        tags: ["serverless", "lambda", "funcoes"]
+
+      - slug: "container-security-cloud"
+        title: "Container Security: Docker, Kubernetes"
+        difficulty: intermediate
+        order: 8
+        prerequisites: ["sandboxing"]
+        tags: ["containers", "docker", "kubernetes"]
+
+      - slug: "cloud-misconfigurations"
+        title: "Cloud Misconfigurations"
+        difficulty: intermediate
+        order: 9
+        prerequisites: ["cloud-fundamentals"]
+        tags: ["misconfiguration", "erros", "configuracao"]
+
+      - slug: "cloud-attacks"
+        title: "Cloud Attacks e Account Hijacking"
+        difficulty: intermediate
+        order: 10
+        prerequisites: ["cloud-fundamentals"]
+        tags: ["ataques", "hijacking", "metadata"]
+
+      - slug: "cspm"
+        title: "Cloud Security Posture Management (CSPM)"
+        difficulty: intermediate
+        order: 11
+        prerequisites: ["cloud-misconfigurations"]
+        tags: ["cspm", "postura", "compliance"]
+
+      - slug: "zero-trust-cloud"
+        title: "Zero Trust in Cloud: CASB, ZTNA, SASE"
+        difficulty: advanced
+        order: 12
+        prerequisites: ["zero-trust", "cloud-fundamentals"]
+        tags: ["zero-trust", "casb", "sase"]
+
+  - slug: "compliance-governanca"
+    name: "Compliance e Governança"
+    order: 13
+    topics:
+      - slug: "risk-management"
+        title: "Risk Management"
+        difficulty: intermediate
+        order: 1
+        prerequisites: ["threat-landscape"]
+        tags: ["risco", "gestao", "assessment"]
+
+      - slug: "risk-assessment"
+        title: "Risk Assessment: Qualitative e Quantitative"
+        difficulty: intermediate
+        order: 2
+        prerequisites: ["risk-management"]
+        tags: ["avaliacao", "qualitativa", "quantitativa"]
+
+      - slug: "business-impact-analysis"
+        title: "Business Impact Analysis (BIA)"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["risk-assessment"]
+        tags: ["bia", "impacto", "negocio"]
+
+      - slug: "security-frameworks"
+        title: "Security Frameworks: NIST, ISO 27001, CIS Controls"
+        difficulty: intermediate
+        order: 4
+        prerequisites: []
+        tags: ["frameworks", "nist", "iso"]
+
+      - slug: "regulatory-compliance"
+        title: "Regulatory Compliance: GDPR, HIPAA, PCI DSS"
+        difficulty: intermediate
+        order: 5
+        prerequisites: []
+        tags: ["compliance", "gdpr", "regulatorio"]
+
+      - slug: "security-policies"
+        title: "Security Policies e Procedures"
+        difficulty: intermediate
+        order: 6
+        prerequisites: []
+        tags: ["politicas", "procedimentos", "governanca"]
+
+      - slug: "third-party-risk"
+        title: "Third-Party Risk Management"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["risk-management"]
+        tags: ["terceiros", "fornecedores", "supply-chain"]
+
+      - slug: "security-audits"
+        title: "Security Audits"
+        difficulty: intermediate
+        order: 8
+        prerequisites: ["security-frameworks"]
+        tags: ["auditoria", "compliance", "verificacao"]
+
+      - slug: "vulnerability-management-program"
+        title: "Vulnerability Management Program"
+        difficulty: intermediate
+        order: 9
+        prerequisites: ["risk-management"]
+        tags: ["vulnerabilidades", "programa", "gestao"]
+
+      - slug: "patch-management"
+        title: "Patch Management"
+        difficulty: intermediate
+        order: 10
+        prerequisites: ["vulnerability-management-program"]
+        tags: ["patches", "atualizacoes", "gestao"]
+
+      - slug: "asset-management"
+        title: "Asset Management"
+        difficulty: beginner
+        order: 11
+        prerequisites: []
+        tags: ["ativos", "inventario", "gestao"]
+
+      - slug: "data-classification"
+        title: "Data Classification e Data Lifecycle"
+        difficulty: intermediate
+        order: 12
+        prerequisites: []
+        tags: ["classificacao", "dados", "ciclo-de-vida"]
+
+  - slug: "topicos-avancados"
+    name: "Tópicos Avançados"
+    order: 14
+    topics:
+      - slug: "apt-operations"
+        title: "Advanced Persistent Threats (APT)"
+        difficulty: advanced
+        order: 1
+        prerequisites: ["threat-actors", "post-exploitation"]
+        tags: ["apt", "persistencia", "avancado"]
+
+      - slug: "red-team-operations"
+        title: "Red Team Operations"
+        difficulty: advanced
+        order: 2
+        prerequisites: ["post-exploitation", "lateral-movement"]
+        tags: ["red-team", "operacoes", "adversary-simulation"]
+
+      - slug: "c2-infrastructure"
+        title: "C2 Infrastructure e Covert Channels"
+        difficulty: advanced
+        order: 3
+        prerequisites: ["red-team-operations"]
+        tags: ["c2", "command-control", "covert"]
+
+      - slug: "evasion-techniques"
+        title: "Evasion Techniques: AV, EDR, Sandbox"
+        difficulty: advanced
+        order: 4
+        prerequisites: ["red-team-operations"]
+        tags: ["evasao", "av", "edr"]
+
+      - slug: "blue-team-operations"
+        title: "Blue Team Operations"
+        difficulty: advanced
+        order: 5
+        prerequisites: ["soc-operations", "threat-hunting"]
+        tags: ["blue-team", "defesa", "deteccao"]
+
+      - slug: "detection-engineering"
+        title: "Detection Engineering"
+        difficulty: advanced
+        order: 6
+        prerequisites: ["blue-team-operations"]
+        tags: ["deteccao", "engenharia", "rules"]
+
+      - slug: "soar"
+        title: "SOAR: Security Orchestration and Automation"
+        difficulty: advanced
+        order: 7
+        prerequisites: ["soc-operations"]
+        tags: ["soar", "automacao", "orquestracao"]
+
+      - slug: "purple-teaming"
+        title: "Purple Teaming"
+        difficulty: advanced
+        order: 8
+        prerequisites: ["red-team-operations", "blue-team-operations"]
+        tags: ["purple-team", "colaboracao", "validacao"]
+
+      - slug: "exploit-development"
+        title: "Exploit Development Fundamentals"
+        difficulty: advanced
+        order: 9
+        prerequisites: ["buffer-overflow", "memory-protections"]
+        tags: ["exploit", "desenvolvimento", "shellcode"]
+
+      - slug: "binary-exploitation"
+        title: "Binary Exploitation: ROP, JOP"
+        difficulty: advanced
+        order: 10
+        prerequisites: ["exploit-development"]
+        tags: ["binario", "rop", "exploitacao"]
+
+      - slug: "fuzzing"
+        title: "Fuzzing"
+        difficulty: advanced
+        order: 11
+        prerequisites: ["exploit-development"]
+        tags: ["fuzzing", "discovery", "automacao"]
+
+      - slug: "reverse-engineering"
+        title: "Reverse Engineering"
+        difficulty: advanced
+        order: 12
+        prerequisites: []
+        tags: ["reverse", "assembly", "disassembly"]
+
+      - slug: "iot-security"
+        title: "IoT Security"
+        difficulty: advanced
+        order: 13
+        prerequisites: ["firmware-security"]
+        tags: ["iot", "embedded", "firmware"]
+
+      - slug: "hardware-security"
+        title: "Hardware Security e Side-Channel Attacks"
+        difficulty: advanced
+        order: 14
+        prerequisites: ["iot-security"]
+        tags: ["hardware", "side-channel", "fisico"]
+
+      - slug: "blockchain-security"
+        title: "Blockchain e Smart Contract Security"
+        difficulty: advanced
+        order: 15
+        prerequisites: []
+        tags: ["blockchain", "smart-contracts", "crypto"]
+
+  - slug: "etica-legal"
+    name: "Ética e Legal"
+    order: 15
+    topics:
+      - slug: "ethical-hacking-principles"
+        title: "Ethical Hacking Principles"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["etica", "principios", "responsabilidade"]
+
+      - slug: "responsible-disclosure"
+        title: "Responsible Disclosure"
+        difficulty: beginner
+        order: 2
+        prerequisites: ["ethical-hacking-principles"]
+        tags: ["disclosure", "responsavel", "coordenada"]
+
+      - slug: "cybersecurity-laws"
+        title: "Cybersecurity Laws e Regulations"
+        difficulty: intermediate
+        order: 3
+        prerequisites: []
+        tags: ["leis", "regulacoes", "legal"]
+
+      - slug: "authorization-legal"
+        title: "Authorization e Scope of Work"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["rules-of-engagement"]
+        tags: ["autorizacao", "legal", "escopo"]
+
+      - slug: "evidence-handling-legal"
+        title: "Evidence Handling e Chain of Custody (Legal)"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["evidence-collection"]
+        tags: ["evidencias", "legal", "custodia"]
+
+      - slug: "professional-ethics"
+        title: "Professional Ethics e Code of Conduct"
+        difficulty: beginner
+        order: 6
+        prerequisites: ["ethical-hacking-principles"]
+        tags: ["etica", "profissional", "conduta"]
+
+  - slug: "habilidades-profissionais"
+    name: "Habilidades Profissionais"
+    order: 16
+    topics:
+      - slug: "security-mindset"
+        title: "Security Mindset"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["mindset", "pensamento", "adversarial"]
+
+      - slug: "technical-writing-security"
+        title: "Technical Writing e Security Reporting"
+        difficulty: intermediate
+        order: 2
+        prerequisites: []
+        tags: ["escrita", "relatorios", "documentacao"]
+
+      - slug: "vulnerability-reporting"
+        title: "Vulnerability Reporting"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["technical-writing-security"]
+        tags: ["vulnerabilidades", "relatorios", "findings"]
+
+      - slug: "security-research"
+        title: "Security Research"
+        difficulty: intermediate
+        order: 4
+        prerequisites: []
+        tags: ["pesquisa", "investigacao", "descoberta"]
+
+      - slug: "ctf-wargames"
+        title: "CTF e Wargames"
+        difficulty: beginner
+        order: 5
+        prerequisites: []
+        tags: ["ctf", "pratica", "desafios"]
+
+      - slug: "continuous-learning-security"
+        title: "Continuous Learning in Security"
+        difficulty: beginner
+        order: 6
+        prerequisites: []
+        tags: ["aprendizado", "continuo", "atualizacao"]
+
+      - slug: "security-community"
+        title: "Security Community e Collaboration"
+        difficulty: beginner
+        order: 7
+        prerequisites: []
+        tags: ["comunidade", "colaboracao", "networking"]

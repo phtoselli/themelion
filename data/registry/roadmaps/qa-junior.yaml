@@ -1,0 +1,11 @@
+roadmap: qa-junior
+name: "QA Júnior"
+description: "Trilha completa para se tornar um QA Júnior: fundamentos de qualidade, níveis e tipos de teste, técnicas básicas e processo de teste"
+icon: "bug"
+
+stages:
+  - slug: "em-breve"
+    name: "Em breve"
+    description: "Conteúdo em desenvolvimento"
+    order: 1
+    topics: []

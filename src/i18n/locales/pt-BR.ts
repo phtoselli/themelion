@@ -145,7 +145,7 @@ export interface Locale {
 
 export const ptBR: Locale = {
 	common: {
-		rooms: "Salas",
+		rooms: "Módulos",
 		topics: "Tópicos",
 		languages: "Linguagens",
 		categories: "categorias",
@@ -161,7 +161,7 @@ export const ptBR: Locale = {
 
 	nav: {
 		home: "Início",
-		studyRooms: "Salas de Estudo",
+		studyRooms: "Módulos",
 		roadmaps: "Roadmaps",
 	},
 
@@ -214,9 +214,9 @@ export const ptBR: Locale = {
 		previewSectionSubtitle:
 			"Conteúdo técnico com exemplos em 5 linguagens. Cada tópico vai do conceito à implementação.",
 		howItWorksTitle: "Como funciona",
-		step1Title: "Escolha uma sala",
+		step1Title: "Escolha um módulo",
 		step1Desc:
-			"7 salas de estudo organizadas por área: fundamentos, frontend, backend, banco de dados e mais.",
+			"+10 módulos organizados por área: fundamentos, frontend, backend, banco de dados, Cybersecurity, QA e mais.",
 		step2Title: "Estude com exemplos reais",
 		step2Desc:
 			"Cada tópico tem explicações diretas com exemplos em Python, TypeScript, C#, Go e Rust.",
@@ -233,7 +233,7 @@ export const ptBR: Locale = {
 		headingHighlight: "não mudam",
 		subtitle:
 			'Themelion (do grego θεμέλιον, "alicerce" ou "fundação") — é como os templos gregos que resistem ao tempo, aprenda conceitos de programação que transcendem qualquer framework.',
-		studyRoomsTitle: "Salas de Estudo",
+		studyRoomsTitle: "Módulos",
 		roomStats: (categories: number, topics: number) =>
 			`${categories} categorias · ${topics} tópicos`,
 		learningModesTitle: "Dois modos de aprender",
@@ -249,13 +249,13 @@ export const ptBR: Locale = {
 	},
 
 	roomsPage: {
-		title: "Salas de Estudo",
+		title: "Módulos",
 		description:
-			"Cada sala agrupa tópicos por área de conhecimento. Escolha uma sala para explorar seus conteúdos e começar a aprender.",
+			"Cada módulo agrupa tópicos por área de conhecimento. Escolha um módulo para explorar seus conteúdos e começar a aprender.",
 	},
 
 	roomPage: {
-		notFound: "Sala não encontrada",
+		notFound: "Módulo não encontrado",
 	},
 
 	topicPage: {

@@ -12,6 +12,6 @@ export interface NavItem {
 
 export const getNavItems = (t: Locale): NavItem[] => [
 	{ id: "home", label: t.nav.home, icon: Home, href: "/home" },
-	{ id: "rooms", label: t.nav.studyRooms, icon: BookOpen, href: "/rooms" },
+	{ id: "rooms", label: t.nav.studyRooms, icon: BookOpen, href: "/modules" },
 	{ id: "roadmaps", label: t.nav.roadmaps, icon: MapIcon, href: "/roadmaps" },
 ];

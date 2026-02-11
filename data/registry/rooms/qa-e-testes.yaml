@@ -1,0 +1,800 @@
+room: qa-e-testes
+name: "QA e Testes"
+description: "Domine os fundamentos de Quality Assurance e Testing: desde conceitos básicos de qualidade até técnicas avançadas de automação, performance, segurança e testes em ambientes Agile/DevOps."
+icon: "bug"
+order: 8
+
+categories:
+  - slug: "fundamentos-de-qualidade"
+    name: "Fundamentos de Qualidade"
+    order: 1
+    topics:
+      - slug: "qualidade-de-software"
+        title: "Qualidade de Software"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["qualidade", "fundamentos"]
+
+      - slug: "qa-vs-qc"
+        title: "Quality Assurance vs Quality Control"
+        difficulty: beginner
+        order: 2
+        prerequisites: ["qualidade-de-software"]
+        tags: ["qualidade", "conceitos"]
+
+      - slug: "verificacao-vs-validacao"
+        title: "Verificação vs Validação"
+        difficulty: beginner
+        order: 3
+        prerequisites: ["qa-vs-qc"]
+        tags: ["qualidade", "conceitos"]
+
+      - slug: "defeito-bug-erro-falha"
+        title: "Defeito vs Bug vs Erro vs Falha"
+        difficulty: beginner
+        order: 4
+        prerequisites: []
+        tags: ["qualidade", "terminologia"]
+
+      - slug: "cost-of-quality"
+        title: "Custo da Qualidade (Cost of Quality)"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["qualidade-de-software"]
+        tags: ["qualidade", "gestão"]
+
+      - slug: "shift-left-testing"
+        title: "Shift-Left Testing"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["cost-of-quality"]
+        tags: ["qualidade", "estratégia"]
+
+      - slug: "shift-right-testing"
+        title: "Shift-Right Testing"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["shift-left-testing"]
+        tags: ["qualidade", "estratégia"]
+
+      - slug: "testing-principles-istqb"
+        title: "Princípios de Teste (ISTQB)"
+        difficulty: beginner
+        order: 8
+        prerequisites: []
+        tags: ["fundamentos", "istqb"]
+
+  - slug: "niveis-e-tipos-de-teste"
+    name: "Níveis e Tipos de Teste"
+    order: 2
+    topics:
+      - slug: "unit-testing"
+        title: "Unit Testing (Teste Unitário)"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["níveis", "testes"]
+
+      - slug: "integration-testing"
+        title: "Integration Testing (Teste de Integração)"
+        difficulty: beginner
+        order: 2
+        prerequisites: ["unit-testing"]
+        tags: ["níveis", "testes"]
+
+      - slug: "system-testing"
+        title: "System Testing (Teste de Sistema)"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["integration-testing"]
+        tags: ["níveis", "testes"]
+
+      - slug: "acceptance-testing"
+        title: "Acceptance Testing (Teste de Aceitação)"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["system-testing"]
+        tags: ["níveis", "testes"]
+
+      - slug: "functional-testing"
+        title: "Functional Testing (Teste Funcional)"
+        difficulty: beginner
+        order: 5
+        prerequisites: []
+        tags: ["tipos", "testes"]
+
+      - slug: "non-functional-testing"
+        title: "Non-Functional Testing (Teste Não-Funcional)"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["functional-testing"]
+        tags: ["tipos", "testes"]
+
+      - slug: "black-box-testing"
+        title: "Black Box Testing"
+        difficulty: beginner
+        order: 7
+        prerequisites: []
+        tags: ["tipos", "técnicas"]
+
+      - slug: "white-box-testing"
+        title: "White Box Testing"
+        difficulty: intermediate
+        order: 8
+        prerequisites: ["black-box-testing"]
+        tags: ["tipos", "técnicas"]
+
+      - slug: "exploratory-testing"
+        title: "Exploratory Testing"
+        difficulty: intermediate
+        order: 9
+        prerequisites: []
+        tags: ["tipos", "testes"]
+
+      - slug: "smoke-testing"
+        title: "Smoke Testing"
+        difficulty: beginner
+        order: 10
+        prerequisites: []
+        tags: ["tipos", "testes"]
+
+      - slug: "regression-testing"
+        title: "Regression Testing"
+        difficulty: intermediate
+        order: 11
+        prerequisites: ["smoke-testing"]
+        tags: ["tipos", "testes"]
+
+      - slug: "end-to-end-testing"
+        title: "End-to-End Testing (E2E)"
+        difficulty: intermediate
+        order: 12
+        prerequisites: ["system-testing"]
+        tags: ["tipos", "testes"]
+
+  - slug: "tecnicas-de-teste"
+    name: "Técnicas de Teste"
+    order: 3
+    topics:
+      - slug: "equivalence-partitioning"
+        title: "Equivalence Partitioning (Particionamento de Equivalência)"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["técnicas", "caixa-preta"]
+
+      - slug: "boundary-value-analysis"
+        title: "Boundary Value Analysis (Análise de Valor Limite)"
+        difficulty: beginner
+        order: 2
+        prerequisites: ["equivalence-partitioning"]
+        tags: ["técnicas", "caixa-preta"]
+
+      - slug: "decision-table-testing"
+        title: "Decision Table Testing (Teste de Tabela de Decisão)"
+        difficulty: intermediate
+        order: 3
+        prerequisites: []
+        tags: ["técnicas", "caixa-preta"]
+
+      - slug: "state-transition-testing"
+        title: "State Transition Testing (Teste de Transição de Estado)"
+        difficulty: intermediate
+        order: 4
+        prerequisites: []
+        tags: ["técnicas", "caixa-preta"]
+
+      - slug: "use-case-testing"
+        title: "Use Case Testing"
+        difficulty: beginner
+        order: 5
+        prerequisites: []
+        tags: ["técnicas", "caixa-preta"]
+
+      - slug: "pairwise-testing"
+        title: "Pairwise Testing (All-Pairs Testing)"
+        difficulty: advanced
+        order: 6
+        prerequisites: ["equivalence-partitioning"]
+        tags: ["técnicas", "combinatorial"]
+
+      - slug: "statement-coverage"
+        title: "Statement Coverage (Cobertura de Instruções)"
+        difficulty: intermediate
+        order: 7
+        prerequisites: []
+        tags: ["técnicas", "caixa-branca"]
+
+      - slug: "branch-coverage"
+        title: "Branch Coverage (Cobertura de Branches)"
+        difficulty: intermediate
+        order: 8
+        prerequisites: ["statement-coverage"]
+        tags: ["técnicas", "caixa-branca"]
+
+      - slug: "path-coverage"
+        title: "Path Coverage (Cobertura de Caminhos)"
+        difficulty: advanced
+        order: 9
+        prerequisites: ["branch-coverage"]
+        tags: ["técnicas", "caixa-branca"]
+
+      - slug: "mutation-testing"
+        title: "Mutation Testing"
+        difficulty: advanced
+        order: 10
+        prerequisites: ["statement-coverage"]
+        tags: ["técnicas", "caixa-branca"]
+
+  - slug: "processo-de-teste"
+    name: "Processo de Teste"
+    order: 4
+    topics:
+      - slug: "test-planning"
+        title: "Test Planning (Planejamento de Teste)"
+        difficulty: intermediate
+        order: 1
+        prerequisites: []
+        tags: ["processo", "planejamento"]
+
+      - slug: "test-strategy"
+        title: "Test Strategy (Estratégia de Teste)"
+        difficulty: intermediate
+        order: 2
+        prerequisites: ["test-planning"]
+        tags: ["processo", "planejamento"]
+
+      - slug: "test-case-design"
+        title: "Test Case Design (Design de Casos de Teste)"
+        difficulty: beginner
+        order: 3
+        prerequisites: []
+        tags: ["processo", "design"]
+
+      - slug: "test-execution"
+        title: "Test Execution (Execução de Teste)"
+        difficulty: beginner
+        order: 4
+        prerequisites: ["test-case-design"]
+        tags: ["processo", "execução"]
+
+      - slug: "defect-life-cycle"
+        title: "Defect Life Cycle (Ciclo de Vida de Defeitos)"
+        difficulty: beginner
+        order: 5
+        prerequisites: []
+        tags: ["processo", "defeitos"]
+
+      - slug: "defect-severity-vs-priority"
+        title: "Defect Severity vs Priority"
+        difficulty: beginner
+        order: 6
+        prerequisites: ["defect-life-cycle"]
+        tags: ["processo", "defeitos"]
+
+      - slug: "root-cause-analysis"
+        title: "Root Cause Analysis (RCA)"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["defect-life-cycle"]
+        tags: ["processo", "análise"]
+
+      - slug: "traceability-matrix"
+        title: "Traceability Matrix (Matriz de Rastreabilidade)"
+        difficulty: intermediate
+        order: 8
+        prerequisites: ["test-case-design"]
+        tags: ["processo", "documentação"]
+
+      - slug: "test-coverage"
+        title: "Test Coverage (Cobertura de Teste)"
+        difficulty: intermediate
+        order: 9
+        prerequisites: ["test-execution"]
+        tags: ["processo", "métricas"]
+
+      - slug: "entry-exit-criteria"
+        title: "Entry and Exit Criteria"
+        difficulty: intermediate
+        order: 10
+        prerequisites: ["test-planning"]
+        tags: ["processo", "planejamento"]
+
+  - slug: "automacao-de-testes"
+    name: "Automação de Testes"
+    order: 5
+    topics:
+      - slug: "test-automation-pyramid"
+        title: "Test Automation Pyramid"
+        difficulty: intermediate
+        order: 1
+        prerequisites: []
+        tags: ["automação", "estratégia"]
+
+      - slug: "test-automation-framework"
+        title: "Test Automation Framework"
+        difficulty: intermediate
+        order: 2
+        prerequisites: ["test-automation-pyramid"]
+        tags: ["automação", "arquitetura"]
+
+      - slug: "automation-roi"
+        title: "ROI de Automação"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["test-automation-pyramid"]
+        tags: ["automação", "gestão"]
+
+      - slug: "what-to-automate"
+        title: "What to Automate vs What Not to Automate"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["automation-roi"]
+        tags: ["automação", "estratégia"]
+
+      - slug: "flaky-tests"
+        title: "Flaky Tests"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["test-automation-framework"]
+        tags: ["automação", "problemas"]
+
+      - slug: "page-object-model"
+        title: "Page Object Model (POM)"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["test-automation-framework"]
+        tags: ["automação", "padrões"]
+
+      - slug: "test-doubles"
+        title: "Test Doubles (Mocks, Stubs, Fakes, Spies)"
+        difficulty: intermediate
+        order: 7
+        prerequisites: []
+        tags: ["automação", "padrões"]
+
+      - slug: "test-fixtures"
+        title: "Test Fixtures e Setup/Teardown"
+        difficulty: beginner
+        order: 8
+        prerequisites: []
+        tags: ["automação", "padrões"]
+
+      - slug: "parallel-test-execution"
+        title: "Parallel Test Execution"
+        difficulty: advanced
+        order: 9
+        prerequisites: ["test-automation-framework"]
+        tags: ["automação", "otimização"]
+
+      - slug: "ci-cd-integration"
+        title: "CI/CD Integration"
+        difficulty: intermediate
+        order: 10
+        prerequisites: ["test-automation-framework"]
+        tags: ["automação", "devops"]
+
+  - slug: "testes-especificos-por-dominio"
+    name: "Testes Específicos por Domínio"
+    order: 6
+    topics:
+      - slug: "web-testing"
+        title: "Web Testing"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["domínio", "web"]
+
+      - slug: "cross-browser-testing"
+        title: "Cross-Browser Testing"
+        difficulty: intermediate
+        order: 2
+        prerequisites: ["web-testing"]
+        tags: ["domínio", "web"]
+
+      - slug: "responsive-testing"
+        title: "Responsive Design Testing"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["web-testing"]
+        tags: ["domínio", "web"]
+
+      - slug: "api-testing"
+        title: "API Testing"
+        difficulty: intermediate
+        order: 4
+        prerequisites: []
+        tags: ["domínio", "api"]
+
+      - slug: "rest-api-testing"
+        title: "REST API Testing"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["api-testing"]
+        tags: ["domínio", "api"]
+
+      - slug: "graphql-testing"
+        title: "GraphQL Testing"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["api-testing"]
+        tags: ["domínio", "api"]
+
+      - slug: "contract-testing"
+        title: "Contract Testing"
+        difficulty: advanced
+        order: 7
+        prerequisites: ["api-testing"]
+        tags: ["domínio", "api"]
+
+      - slug: "mobile-testing"
+        title: "Mobile Testing"
+        difficulty: intermediate
+        order: 8
+        prerequisites: []
+        tags: ["domínio", "mobile"]
+
+      - slug: "database-testing"
+        title: "Database Testing"
+        difficulty: intermediate
+        order: 9
+        prerequisites: []
+        tags: ["domínio", "database"]
+
+      - slug: "microservices-testing"
+        title: "Microservices Testing"
+        difficulty: advanced
+        order: 10
+        prerequisites: ["api-testing", "integration-testing"]
+        tags: ["domínio", "arquitetura"]
+
+  - slug: "performance-testing"
+    name: "Performance Testing"
+    order: 7
+    topics:
+      - slug: "performance-testing-concepts"
+        title: "Conceitos de Performance Testing"
+        difficulty: intermediate
+        order: 1
+        prerequisites: []
+        tags: ["performance", "fundamentos"]
+
+      - slug: "load-testing"
+        title: "Load Testing"
+        difficulty: intermediate
+        order: 2
+        prerequisites: ["performance-testing-concepts"]
+        tags: ["performance", "tipos"]
+
+      - slug: "stress-testing"
+        title: "Stress Testing"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["load-testing"]
+        tags: ["performance", "tipos"]
+
+      - slug: "spike-testing"
+        title: "Spike Testing"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["load-testing"]
+        tags: ["performance", "tipos"]
+
+      - slug: "soak-testing"
+        title: "Soak Testing (Endurance Testing)"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["load-testing"]
+        tags: ["performance", "tipos"]
+
+      - slug: "performance-metrics"
+        title: "Performance Metrics (Response Time, Throughput, etc.)"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["performance-testing-concepts"]
+        tags: ["performance", "métricas"]
+
+      - slug: "performance-bottleneck"
+        title: "Performance Bottleneck Identification"
+        difficulty: advanced
+        order: 7
+        prerequisites: ["performance-metrics"]
+        tags: ["performance", "análise"]
+
+      - slug: "performance-monitoring"
+        title: "Performance Monitoring (APM, RUM)"
+        difficulty: advanced
+        order: 8
+        prerequisites: ["performance-metrics"]
+        tags: ["performance", "monitoramento"]
+
+  - slug: "security-testing"
+    name: "Security Testing"
+    order: 8
+    topics:
+      - slug: "security-fundamentals"
+        title: "Fundamentos de Segurança (CIA Triad)"
+        difficulty: intermediate
+        order: 1
+        prerequisites: []
+        tags: ["segurança", "fundamentos"]
+
+      - slug: "owasp-top-10"
+        title: "OWASP Top 10"
+        difficulty: intermediate
+        order: 2
+        prerequisites: ["security-fundamentals"]
+        tags: ["segurança", "vulnerabilidades"]
+
+      - slug: "sql-injection"
+        title: "SQL Injection Testing"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["owasp-top-10"]
+        tags: ["segurança", "vulnerabilidades"]
+
+      - slug: "xss-testing"
+        title: "Cross-Site Scripting (XSS) Testing"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["owasp-top-10"]
+        tags: ["segurança", "vulnerabilidades"]
+
+      - slug: "csrf-testing"
+        title: "Cross-Site Request Forgery (CSRF) Testing"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["owasp-top-10"]
+        tags: ["segurança", "vulnerabilidades"]
+
+      - slug: "authentication-testing"
+        title: "Authentication Testing"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["security-fundamentals"]
+        tags: ["segurança", "autenticação"]
+
+      - slug: "authorization-testing"
+        title: "Authorization Testing"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["authentication-testing"]
+        tags: ["segurança", "autorização"]
+
+      - slug: "sast-dast"
+        title: "SAST vs DAST (Static vs Dynamic Security Testing)"
+        difficulty: advanced
+        order: 8
+        prerequisites: ["security-fundamentals"]
+        tags: ["segurança", "ferramentas"]
+
+      - slug: "penetration-testing"
+        title: "Penetration Testing (Pentest)"
+        difficulty: advanced
+        order: 9
+        prerequisites: ["owasp-top-10"]
+        tags: ["segurança", "tipos"]
+
+  - slug: "test-management"
+    name: "Test Management"
+    order: 9
+    topics:
+      - slug: "test-documentation"
+        title: "Test Documentation (Plan, Strategy, Cases)"
+        difficulty: intermediate
+        order: 1
+        prerequisites: []
+        tags: ["gestão", "documentação"]
+
+      - slug: "test-estimation"
+        title: "Test Estimation Techniques"
+        difficulty: intermediate
+        order: 2
+        prerequisites: []
+        tags: ["gestão", "estimativa"]
+
+      - slug: "test-metrics"
+        title: "Test Metrics (Coverage, Defect Density, DRE)"
+        difficulty: intermediate
+        order: 3
+        prerequisites: []
+        tags: ["gestão", "métricas"]
+
+      - slug: "test-reporting"
+        title: "Test Reporting"
+        difficulty: beginner
+        order: 4
+        prerequisites: []
+        tags: ["gestão", "comunicação"]
+
+      - slug: "test-optimization"
+        title: "Test Optimization (Prioritization, Minimization)"
+        difficulty: advanced
+        order: 5
+        prerequisites: ["test-metrics"]
+        tags: ["gestão", "otimização"]
+
+      - slug: "risk-based-testing"
+        title: "Risk-Based Testing"
+        difficulty: intermediate
+        order: 6
+        prerequisites: []
+        tags: ["gestão", "estratégia"]
+
+  - slug: "specialized-testing"
+    name: "Specialized Testing"
+    order: 10
+    topics:
+      - slug: "accessibility-testing"
+        title: "Accessibility Testing (A11y / WCAG)"
+        difficulty: intermediate
+        order: 1
+        prerequisites: []
+        tags: ["especializado", "acessibilidade"]
+
+      - slug: "localization-testing"
+        title: "Localization Testing (L10n)"
+        difficulty: intermediate
+        order: 2
+        prerequisites: []
+        tags: ["especializado", "localização"]
+
+      - slug: "internationalization-testing"
+        title: "Internationalization Testing (i18n)"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["localization-testing"]
+        tags: ["especializado", "internacionalização"]
+
+      - slug: "usability-testing"
+        title: "Usability Testing"
+        difficulty: intermediate
+        order: 4
+        prerequisites: []
+        tags: ["especializado", "usabilidade"]
+
+      - slug: "compliance-testing"
+        title: "Compliance Testing (GDPR, HIPAA, PCI DSS)"
+        difficulty: advanced
+        order: 5
+        prerequisites: []
+        tags: ["especializado", "compliance"]
+
+  - slug: "agile-devops-testing"
+    name: "Agile e DevOps Testing"
+    order: 11
+    topics:
+      - slug: "agile-testing-quadrants"
+        title: "Agile Testing Quadrants"
+        difficulty: intermediate
+        order: 1
+        prerequisites: []
+        tags: ["agile", "estratégia"]
+
+      - slug: "tdd"
+        title: "Test-Driven Development (TDD)"
+        difficulty: intermediate
+        order: 2
+        prerequisites: []
+        tags: ["agile", "desenvolvimento"]
+
+      - slug: "bdd"
+        title: "Behavior-Driven Development (BDD)"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["tdd"]
+        tags: ["agile", "desenvolvimento"]
+
+      - slug: "atdd"
+        title: "Acceptance Test-Driven Development (ATDD)"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["tdd"]
+        tags: ["agile", "desenvolvimento"]
+
+      - slug: "continuous-testing"
+        title: "Continuous Testing"
+        difficulty: intermediate
+        order: 5
+        prerequisites: []
+        tags: ["devops", "ci-cd"]
+
+      - slug: "testing-in-production"
+        title: "Testing in Production"
+        difficulty: advanced
+        order: 6
+        prerequisites: ["continuous-testing"]
+        tags: ["devops", "estratégia"]
+
+      - slug: "canary-testing"
+        title: "Canary Testing"
+        difficulty: advanced
+        order: 7
+        prerequisites: ["testing-in-production"]
+        tags: ["devops", "deployment"]
+
+      - slug: "chaos-engineering"
+        title: "Chaos Engineering"
+        difficulty: advanced
+        order: 8
+        prerequisites: ["testing-in-production"]
+        tags: ["devops", "resiliência"]
+
+      - slug: "feature-toggle-testing"
+        title: "Feature Toggle Testing"
+        difficulty: intermediate
+        order: 9
+        prerequisites: []
+        tags: ["devops", "deployment"]
+
+  - slug: "soft-skills-competencias"
+    name: "Soft Skills e Competências"
+    order: 12
+    topics:
+      - slug: "bug-report-writing"
+        title: "Bug Report Writing"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["soft-skills", "comunicação"]
+
+      - slug: "testing-mindset"
+        title: "Testing Mindset (Curiosidade, Ceticismo, Persistência)"
+        difficulty: beginner
+        order: 2
+        prerequisites: []
+        tags: ["soft-skills", "mindset"]
+
+      - slug: "critical-thinking"
+        title: "Critical Thinking e Problem Solving"
+        difficulty: intermediate
+        order: 3
+        prerequisites: []
+        tags: ["soft-skills", "análise"]
+
+      - slug: "stakeholder-communication"
+        title: "Stakeholder Communication"
+        difficulty: intermediate
+        order: 4
+        prerequisites: []
+        tags: ["soft-skills", "comunicação"]
+
+  - slug: "advanced-concepts"
+    name: "Advanced Concepts"
+    order: 13
+    topics:
+      - slug: "model-based-testing"
+        title: "Model-Based Testing"
+        difficulty: advanced
+        order: 1
+        prerequisites: []
+        tags: ["avançado", "técnicas"]
+
+      - slug: "property-based-testing"
+        title: "Property-Based Testing"
+        difficulty: advanced
+        order: 2
+        prerequisites: []
+        tags: ["avançado", "técnicas"]
+
+      - slug: "ai-in-testing"
+        title: "AI in Testing (ML, Visual AI, Self-Healing)"
+        difficulty: advanced
+        order: 3
+        prerequisites: []
+        tags: ["avançado", "ia"]
+
+      - slug: "test-architecture"
+        title: "Test Architecture (Framework, Infrastructure)"
+        difficulty: advanced
+        order: 4
+        prerequisites: []
+        tags: ["avançado", "arquitetura"]
+
+      - slug: "specialized-domains"
+        title: "Specialized Domains (IoT, Blockchain, Embedded)"
+        difficulty: advanced
+        order: 5
+        prerequisites: []
+        tags: ["avançado", "domínios"]

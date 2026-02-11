@@ -1,0 +1,12 @@
+roadmap: cybersecurity-analyst-senior
+name: "Cybersecurity Analyst — Sênior"
+description: "Domine os tópicos mais avançados de segurança: APTs, exploit development, red/blue team operations, arquitetura de segurança, compliance, governança e liderança técnica em cibersegurança"
+icon: "shield"
+
+stages:
+
+  - slug: "em-breve"
+    name: "Em breve"
+    description: "Conteúdo em desenvolvimento"
+    order: 1
+    topics: []

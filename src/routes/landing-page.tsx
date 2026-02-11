@@ -41,133 +41,422 @@ const useReveal = (threshold = 0.12) => {
 	return { ref, visible };
 };
 
+// Conteúdo de código para cada linguagem
+const codeExamples = {
+	python: [
+		{ type: "comment", content: "# Criando e manipulando arrays" },
+		{
+			type: "code",
+			parts: [
+				{ type: "text", content: "nums" },
+				{ type: "op", content: " = " },
+				{ type: "val", content: "[1, 2, 3, 4, 5]" },
+			],
+		},
+		{ type: "spacer" },
+		{ type: "comment", content: "# Acesso O(1) por índice" },
+		{
+			type: "code",
+			parts: [
+				{ type: "text", content: "primeiro" },
+				{ type: "op", content: " = " },
+				{ type: "text", content: "nums" },
+				{ type: "val", content: "[0]" },
+				{ type: "text", content: "    " },
+				{ type: "comment", content: "# 1" },
+			],
+		},
+		{
+			type: "code",
+			parts: [
+				{ type: "text", content: "ultimo" },
+				{ type: "op", content: "  = " },
+				{ type: "text", content: "nums" },
+				{ type: "val", content: "[-1]" },
+				{ type: "text", content: "   " },
+				{ type: "comment", content: "# 5" },
+			],
+		},
+		{ type: "spacer" },
+		{ type: "comment", content: "# Inserção: O(1) amortizado" },
+		{
+			type: "code",
+			parts: [
+				{ type: "text", content: "nums" },
+				{ type: "op", content: "." },
+				{ type: "text", content: "append" },
+				{ type: "val", content: "(6)" },
+			],
+		},
+	],
+	typescript: [
+		{ type: "comment", content: "// Criando e manipulando arrays" },
+		{
+			type: "code",
+			parts: [
+				{ type: "text", content: "const" },
+				{ type: "text", content: " nums" },
+				{ type: "op", content: ": " },
+				{ type: "text", content: "number" },
+				{ type: "val", content: "[]" },
+				{ type: "op", content: " = " },
+				{ type: "val", content: "[1, 2, 3, 4, 5]" },
+			],
+		},
+		{ type: "spacer" },
+		{ type: "comment", content: "// Acesso O(1) por índice" },
+		{
+			type: "code",
+			parts: [
+				{ type: "text", content: "const" },
+				{ type: "text", content: " primeiro" },
+				{ type: "op", content: " = " },
+				{ type: "text", content: "nums" },
+				{ type: "val", content: "[0]" },
+				{ type: "text", content: "         " },
+				{ type: "comment", content: "// 1" },
+			],
+		},
+		{
+			type: "code",
+			parts: [
+				{ type: "text", content: "const" },
+				{ type: "text", content: " ultimo" },
+				{ type: "op", content: "   = " },
+				{ type: "text", content: "nums" },
+				{ type: "val", content: "[nums.length - 1]" },
+				{ type: "text", content: " " },
+				{ type: "comment", content: "// 5" },
+			],
+		},
+		{ type: "spacer" },
+		{ type: "comment", content: "// Inserção: O(1) amortizado" },
+		{
+			type: "code",
+			parts: [
+				{ type: "text", content: "nums" },
+				{ type: "op", content: "." },
+				{ type: "text", content: "push" },
+				{ type: "val", content: "(6)" },
+			],
+		},
+	],
+	csharp: [
+		{ type: "comment", content: "// Criando e manipulando arrays" },
+		{
+			type: "code",
+			parts: [
+				{ type: "text", content: "List" },
+				{ type: "op", content: "<" },
+				{ type: "text", content: "int" },
+				{ type: "op", content: "> " },
+				{ type: "text", content: "nums" },
+				{ type: "op", content: " = " },
+				{ type: "text", content: "new" },
+				{ type: "val", content: " { 1, 2, 3, 4, 5 }" },
+			],
+		},
+		{ type: "spacer" },
+		{ type: "comment", content: "// Acesso O(1) por índice" },
+		{
+			type: "code",
+			parts: [
+				{ type: "text", content: "int" },
+				{ type: "text", content: " primeiro" },
+				{ type: "op", content: " = " },
+				{ type: "text", content: "nums" },
+				{ type: "val", content: "[0]" },
+				{ type: "text", content: "            " },
+				{ type: "comment", content: "// 1" },
+			],
+		},
+		{
+			type: "code",
+			parts: [
+				{ type: "text", content: "int" },
+				{ type: "text", content: " ultimo" },
+				{ type: "op", content: "   = " },
+				{ type: "text", content: "nums" },
+				{ type: "val", content: "[nums.Count - 1]" },
+				{ type: "text", content: "  " },
+				{ type: "comment", content: "// 5" },
+			],
+		},
+		{ type: "spacer" },
+		{ type: "comment", content: "// Inserção: O(1) amortizado" },
+		{
+			type: "code",
+			parts: [
+				{ type: "text", content: "nums" },
+				{ type: "op", content: "." },
+				{ type: "text", content: "Add" },
+				{ type: "val", content: "(6)" },
+			],
+		},
+	],
+	go: [
+		{ type: "comment", content: "// Criando e manipulando slices" },
+		{
+			type: "code",
+			parts: [
+				{ type: "text", content: "nums" },
+				{ type: "op", content: " := " },
+				{ type: "val", content: "[]int{1, 2, 3, 4, 5}" },
+			],
+		},
+		{ type: "spacer" },
+		{ type: "comment", content: "// Acesso O(1) por índice" },
+		{
+			type: "code",
+			parts: [
+				{ type: "text", content: "primeiro" },
+				{ type: "op", content: " := " },
+				{ type: "text", content: "nums" },
+				{ type: "val", content: "[0]" },
+				{ type: "text", content: "              " },
+				{ type: "comment", content: "// 1" },
+			],
+		},
+		{
+			type: "code",
+			parts: [
+				{ type: "text", content: "ultimo" },
+				{ type: "op", content: "   := " },
+				{ type: "text", content: "nums" },
+				{ type: "val", content: "[len(nums) - 1]" },
+				{ type: "text", content: "  " },
+				{ type: "comment", content: "// 5" },
+			],
+		},
+		{ type: "spacer" },
+		{ type: "comment", content: "// Inserção: O(1) amortizado" },
+		{
+			type: "code",
+			parts: [
+				{ type: "text", content: "nums" },
+				{ type: "op", content: " = " },
+				{ type: "text", content: "append" },
+				{ type: "val", content: "(nums, 6)" },
+			],
+		},
+	],
+	rust: [
+		{ type: "comment", content: "// Criando e manipulando vectors" },
+		{
+			type: "code",
+			parts: [
+				{ type: "text", content: "let" },
+				{ type: "text", content: " mut" },
+				{ type: "text", content: " nums" },
+				{ type: "op", content: " = " },
+				{ type: "text", content: "vec!" },
+				{ type: "val", content: "[1, 2, 3, 4, 5]" },
+			],
+		},
+		{ type: "spacer" },
+		{ type: "comment", content: "// Acesso O(1) por índice" },
+		{
+			type: "code",
+			parts: [
+				{ type: "text", content: "let" },
+				{ type: "text", content: " primeiro" },
+				{ type: "op", content: " = " },
+				{ type: "text", content: "nums" },
+				{ type: "val", content: "[0]" },
+				{ type: "text", content: "              " },
+				{ type: "comment", content: "// 1" },
+			],
+		},
+		{
+			type: "code",
+			parts: [
+				{ type: "text", content: "let" },
+				{ type: "text", content: " ultimo" },
+				{ type: "op", content: "   = " },
+				{ type: "text", content: "nums" },
+				{ type: "val", content: "[nums.len() - 1]" },
+				{ type: "text", content: "  " },
+				{ type: "comment", content: "// 5" },
+			],
+		},
+		{ type: "spacer" },
+		{ type: "comment", content: "// Inserção: O(1) amortizado" },
+		{
+			type: "code",
+			parts: [
+				{ type: "text", content: "nums" },
+				{ type: "op", content: "." },
+				{ type: "text", content: "push" },
+				{ type: "val", content: "(6)" },
+			],
+		},
+	],
+};
+
+type Language = keyof typeof codeExamples;
+
 // Mockup do produto renderizado em CSS
-const ProductMockup = () => (
-	<div className="mockup-wrapper">
-		{/* Glow atrás do mockup */}
-		<div className="mockup-glow" />
+const ProductMockup = () => {
+	const [activeLang, setActiveLang] = useState<Language>("python");
 
-		<div className="mockup-frame">
-			{/* Barra do navegador */}
-			<div className="mockup-titlebar">
-				<div className="mockup-dots">
-					<div className="mockup-dot mockup-dot-red" />
-					<div className="mockup-dot mockup-dot-yellow" />
-					<div className="mockup-dot mockup-dot-green" />
-				</div>
-				<div className="mockup-urlbar">
-					<div className="mockup-url">themelion.dev/topic/arrays</div>
-				</div>
-				<div style={{ width: "3rem" }} />
-			</div>
+	const languages: { id: Language; label: string; hideOn?: "sm" | "md" }[] = [
+		{ id: "python", label: "Python" },
+		{ id: "typescript", label: "TypeScript" },
+		{ id: "csharp", label: "C#", hideOn: "sm" },
+		{ id: "go", label: "Go", hideOn: "md" },
+		{ id: "rust", label: "Rust", hideOn: "md" },
+	];
 
-			{/* Conteúdo do app */}
-			<div className="mockup-body">
-				{/* Sidebar mockup */}
-				<div className="mockup-sidebar">
-					<div className="mockup-sidebar-logo">
-						<Landmark size={16} />
+	const currentCode = codeExamples[activeLang];
+
+	return (
+		<div className="mockup-wrapper">
+			{/* Glow atrás do mockup */}
+			<div className="mockup-glow" />
+
+			<div className="mockup-frame">
+				{/* Barra do navegador */}
+				<div className="mockup-titlebar">
+					<div className="mockup-dots">
+						<div className="mockup-dot mockup-dot-red" />
+						<div className="mockup-dot mockup-dot-yellow" />
+						<div className="mockup-dot mockup-dot-green" />
 					</div>
-					<div className="mockup-sidebar-icon">
-						<svg
-							width="14"
-							height="14"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							strokeWidth="2"
-							strokeLinecap="round"
-							strokeLinejoin="round"
-						>
-							<title>Home</title>
-							<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-							<polyline points="9 22 9 12 15 12 15 22" />
-						</svg>
+					<div className="mockup-urlbar">
+						<div className="mockup-url">themelion.dev/topic/arrays</div>
 					</div>
-					<div className="mockup-sidebar-icon" data-active="true">
-						<BookOpen size={14} />
-					</div>
-					<div className="mockup-sidebar-icon">
-						<MapIcon size={14} />
-					</div>
+					<div style={{ width: "3rem" }} />
 				</div>
 
-				{/* Área de conteúdo */}
-				<div className="mockup-content">
-					{/* Breadcrumb */}
-					<div className="mockup-breadcrumb">
-						<span>Fundamentos</span>
-						<span className="mockup-breadcrumb-sep">/</span>
-						<span>Estruturas de Dados</span>
-						<span className="mockup-breadcrumb-sep">/</span>
-						<span className="mockup-breadcrumb-current">Arrays</span>
+				{/* Conteúdo do app */}
+				<div className="mockup-body">
+					{/* Sidebar mockup */}
+					<div className="mockup-sidebar">
+						<div className="mockup-sidebar-logo">
+							<Landmark size={16} />
+						</div>
+						<div className="mockup-sidebar-icon">
+							<svg
+								width="14"
+								height="14"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								strokeWidth="2"
+								strokeLinecap="round"
+								strokeLinejoin="round"
+							>
+								<title>Home</title>
+								<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+								<polyline points="9 22 9 12 15 12 15 22" />
+							</svg>
+						</div>
+						<div className="mockup-sidebar-icon" data-active="true">
+							<BookOpen size={14} />
+						</div>
+						<div className="mockup-sidebar-icon">
+							<MapIcon size={14} />
+						</div>
 					</div>
 
-					{/* Título + badge */}
-					<div className="mockup-title-row">
-						<span className="mockup-title">Arrays e Strings</span>
-						<span className="mockup-badge">Iniciante</span>
-					</div>
-
-					{/* Code tabs */}
-					<div className="mockup-code-block">
-						<div className="mockup-code-tabs">
-							<div className="mockup-code-tab" data-active="true">
-								Python
-							</div>
-							<div className="mockup-code-tab">TypeScript</div>
-							<div className="mockup-code-tab mockup-code-tab-hidden-sm">C#</div>
-							<div className="mockup-code-tab mockup-code-tab-hidden-md">Go</div>
-							<div className="mockup-code-tab mockup-code-tab-hidden-md">Rust</div>
+					{/* Área de conteúdo */}
+					<div className="mockup-content">
+						{/* Breadcrumb */}
+						<div className="mockup-breadcrumb">
+							<span>Fundamentos</span>
+							<span className="mockup-breadcrumb-sep">/</span>
+							<span>Estruturas de Dados</span>
+							<span className="mockup-breadcrumb-sep">/</span>
+							<span className="mockup-breadcrumb-current">Arrays</span>
 						</div>
 
-						<div className="mockup-code-body">
-							<div>
-								<span className="mockup-code-comment"># Criando e manipulando arrays</span>
+						{/* Título + badge */}
+						<div className="mockup-title-row">
+							<span className="mockup-title">Arrays e Strings</span>
+							<span className="mockup-badge">Iniciante</span>
+						</div>
+
+						{/* Code tabs */}
+						<div className="mockup-code-block">
+							<div className="mockup-code-tabs">
+								{languages.map((lang) => (
+									<button
+										key={lang.id}
+										type="button"
+										onClick={() => setActiveLang(lang.id)}
+										className={`mockup-code-tab ${
+											lang.hideOn === "sm"
+												? "mockup-code-tab-hidden-sm"
+												: lang.hideOn === "md"
+													? "mockup-code-tab-hidden-md"
+													: ""
+										}`}
+										data-active={activeLang === lang.id}
+									>
+										{lang.label}
+									</button>
+								))}
 							</div>
-							<div>
-								<span className="mockup-code-text">nums</span>{" "}
-								<span className="mockup-code-op">=</span>{" "}
-								<span className="mockup-code-val">[1, 2, 3, 4, 5]</span>
-							</div>
-							<div className="mockup-code-spacer" />
-							<div>
-								<span className="mockup-code-comment"># Acesso O(1) por índice</span>
-							</div>
-							<div>
-								<span className="mockup-code-text">primeiro</span>{" "}
-								<span className="mockup-code-op">=</span>{" "}
-								<span className="mockup-code-text">nums</span>
-								<span className="mockup-code-val">[0]</span>
-								{"    "}
-								<span className="mockup-code-comment"># 1</span>
-							</div>
-							<div>
-								<span className="mockup-code-text">ultimo</span>
-								{"  "}
-								<span className="mockup-code-op">=</span>{" "}
-								<span className="mockup-code-text">nums</span>
-								<span className="mockup-code-val">[-1]</span>
-								{"   "}
-								<span className="mockup-code-comment"># 5</span>
-							</div>
-							<div className="mockup-code-spacer" />
-							<div>
-								<span className="mockup-code-comment"># Inserção: O(1) amortizado</span>
-							</div>
-							<div>
-								<span className="mockup-code-text">nums</span>
-								<span className="mockup-code-op">.</span>
-								<span className="mockup-code-text">append</span>
-								<span className="mockup-code-val">(6)</span>
+
+							<div className="mockup-code-body">
+								{currentCode.map((line, idx) => {
+									if (line.type === "spacer") {
+										return <div key={`spacer-${idx}`} className="mockup-code-spacer" />;
+									}
+
+									if (line.type === "comment") {
+										return (
+											<div key={idx}>
+												<span className="mockup-code-comment">{line.content}</span>
+											</div>
+										);
+									}
+
+									if (line.type === "code") {
+										return (
+											<div key={idx}>
+												{line.parts.map((part, partIdx) => {
+													if (part.type === "comment") {
+														return (
+															<span key={partIdx} className="mockup-code-comment">
+																{part.content}
+															</span>
+														);
+													}
+													if (part.type === "op") {
+														return (
+															<span key={partIdx} className="mockup-code-op">
+																{part.content}
+															</span>
+														);
+													}
+													if (part.type === "val") {
+														return (
+															<span key={partIdx} className="mockup-code-val">
+																{part.content}
+															</span>
+														);
+													}
+													return (
+														<span key={partIdx} className="mockup-code-text">
+															{part.content}
+														</span>
+													);
+												})}
+											</div>
+										);
+									}
+
+									return null;
+								})}
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-);
+	);
+};
 
 export const LandingPage = () => {
 	const { t } = useLocale();
