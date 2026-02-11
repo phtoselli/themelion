@@ -1,5 +1,6 @@
 import { HomePage } from "@client/routes/home-page";
 import { LandingPage } from "@client/routes/landing-page";
+import { ProjectsPage } from "@client/routes/projects-page";
 import { RoadmapPage } from "@client/routes/roadmap-page";
 import { RoadmapsPage } from "@client/routes/roadmaps-page";
 import { RoomPage } from "@client/routes/room-page";
@@ -17,6 +18,7 @@ export const AppRoutes = () => {
 			<Route path="/topic/:topicSlug" element={<TopicPage />} />
 			<Route path="/roadmaps" element={<RoadmapsPage />} />
 			<Route path="/roadmap/:roadmapSlug" element={<RoadmapPage />} />
+			<Route path="/projects" element={<ProjectsPage />} />
 		</Routes>
 	);
 };

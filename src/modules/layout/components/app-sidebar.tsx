@@ -70,6 +70,7 @@ export const AppSidebar = () => {
 		)
 			setActiveSection("rooms");
 		else if (pathname.startsWith("/roadmap")) setActiveSection("roadmaps");
+		else if (pathname.startsWith("/projects")) setActiveSection("projects");
 	}, [pathname, setActiveSection]);
 
 	// Callback para fechar o drawer mobile ao navegar
