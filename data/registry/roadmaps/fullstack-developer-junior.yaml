@@ -1,29 +1,32 @@
 roadmap: fullstack-developer-junior
 name: "Fullstack Developer — Júnior"
-description: "O essencial para começar como fullstack: HTML, CSS, JavaScript, APIs REST, banco de dados e Git"
+description: "Caminho enxuto e assertivo para se tornar fullstack, focado em conceitos fundamentais e atemporais"
 icon: "code"
 
 stages:
 
-  - slug: "base-computacional"
-    name: "Base Computacional"
-    description: "Fundamentos de algoritmos e estruturas de dados"
+  - slug: "fundamentos-essenciais"
+    name: "Fundamentos Essenciais"
+    description: "Base sólida de algoritmos e estruturas de dados"
     order: 1
     topics:
       - "big-o-notation"
       - "arrays"
       - "hash-tables"
-
-  - slug: "linguagem-e-tipos"
-    name: "Linguagem e Tipos"
-    description: "JavaScript fundamental: tipos, funções e como a linguagem funciona"
-    order: 2
-    topics:
       - "tipos-de-dados-primitivos"
       - "tipos-compostos"
       - "scope"
-      - "closures"
-      - "first-class-functions"
+      - "pure-functions"
+      - "callbacks"
+
+  - slug: "git-e-versionamento"
+    name: "Git e Versionamento"
+    description: "Controle de versão e colaboração em equipe"
+    order: 2
+    topics:
+      - "git-fundamentals"
+      - "branching-strategies"
+      - "pull-request-workflow"
 
   - slug: "como-a-web-funciona"
     name: "Como a Web Funciona"
@@ -37,75 +40,71 @@ stages:
       - "cookies"
       - "local-storage"
 
-  - slug: "html-css"
-    name: "HTML e CSS"
-    description: "HTML semântico e CSS para layout responsivo"
+  - slug: "frontend-essencial"
+    name: "Frontend Essencial"
+    description: "HTML semântico, CSS para layout responsivo e manipulação do DOM"
     order: 4
     topics:
       - "semantic-html"
       - "box-model"
       - "flexbox"
-      - "grid"
       - "positioning"
       - "media-queries"
-
-  - slug: "dom-e-browser"
-    name: "DOM e JavaScript"
-    description: "Manipular o DOM e entender o event loop"
-    order: 5
-    topics:
       - "dom-manipulation"
       - "event-loop"
       - "event-delegation"
 
-  - slug: "apis-rest"
-    name: "APIs REST"
-    description: "Construir e consumir APIs RESTful"
-    order: 6
+  - slug: "backend-essencial"
+    name: "Backend Essencial"
+    description: "APIs REST, programação assíncrona e tratamento de erros"
+    order: 5
     topics:
       - "rest"
       - "restful-principles"
+      - "asynchronous-programming"
+      - "promises-futures"
+      - "async-await"
+      - "error-handling"
       - "pagination"
       - "api-documentation"
 
   - slug: "autenticacao"
     name: "Autenticação"
-    description: "Sessions, tokens e JWT"
-    order: 7
+    description: "Sessions, tokens e segurança de senhas"
+    order: 6
     topics:
       - "authentication-vs-authorization"
       - "session-based-auth"
       - "token-based-auth"
-      - "jwt"
       - "password-hashing"
 
   - slug: "banco-de-dados"
     name: "Banco de Dados"
-    description: "SQL básico, transações e ORMs"
-    order: 8
+    description: "SQL básico, transações e conceitos de ORM"
+    order: 7
     topics:
       - "acid-properties"
       - "primary-keys"
       - "foreign-keys"
       - "joins"
+      - "one-to-many"
       - "orm-concepts"
 
-  - slug: "qualidade"
+  - slug: "qualidade-e-testes"
     name: "Qualidade e Testes"
-    description: "Testes unitários e integração"
-    order: 9
+    description: "Testes automatizados e padronização de código"
+    order: 8
     topics:
       - "unit-testing"
       - "integration-testing"
       - "linting"
-      - "code-formatting"
+      - "debugging-sistematico"
 
-  - slug: "colaboracao"
-    name: "Colaboração e Git"
-    description: "Git, PRs e code review"
-    order: 10
+  - slug: "devops-basico"
+    name: "DevOps Básico"
+    description: "Containerização, variáveis de ambiente e deploy"
+    order: 9
     topics:
-      - "git-fundamentals"
-      - "branching-strategies"
-      - "pull-request-workflow"
-      - "code-review-practices"
+      - "containers-vs-vms"
+      - "environment-variables"
+      - "deployment-strategies"

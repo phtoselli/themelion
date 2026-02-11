@@ -18,6 +18,7 @@ export interface Locale {
 		home: string;
 		studyRooms: string;
 		roadmaps: string;
+		projects: string;
 	};
 
 	sidebar: {
@@ -91,6 +92,9 @@ export interface Locale {
 		careerTracksTitle: string;
 		viewAllTracks: string;
 		careerTracksSubtitle: string;
+		projectsTitle: string;
+		viewAllProjects: string;
+		projectsSubtitle: string;
 	};
 
 	roomsPage: {
@@ -130,6 +134,12 @@ export interface Locale {
 		completionPercent: (percent: number) => string;
 	};
 
+	projectsPage: {
+		title: string;
+		description: string;
+		availableProjects: (count: number) => string;
+	};
+
 	progress: {
 		invalidFormat: string;
 		tooManyEntries: (count: number, max: number) => string;
@@ -162,7 +172,8 @@ export const ptBR: Locale = {
 	nav: {
 		home: "Início",
 		studyRooms: "Módulos",
-		roadmaps: "Roadmaps",
+		roadmaps: "Trilhas",
+		projects: "Projetos",
 	},
 
 	sidebar: {
@@ -246,6 +257,9 @@ export const ptBR: Locale = {
 		careerTracksTitle: "Trilhas de Carreira",
 		viewAllTracks: "Ver todas as trilhas",
 		careerTracksSubtitle: "Caminhos estruturados do zero ao profissional",
+		projectsTitle: "Projetos",
+		viewAllProjects: "Ver todos os projetos",
+		projectsSubtitle: "Projetos práticos para construir seu portfólio",
 	},
 
 	roomsPage: {
@@ -286,6 +300,14 @@ export const ptBR: Locale = {
 		notFound: "Roadmap não encontrado",
 		completed: "Concluído",
 		completionPercent: (percent: number) => `${percent}% concluído`,
+	},
+
+	projectsPage: {
+		title: "Projetos",
+		description:
+			"Projetos práticos organizados por trilha de carreira para você construir um portfólio sólido. Cada projeto aplica conceitos fundamentais e pode ser implementado em múltiplas linguagens.",
+		availableProjects: (count: number) =>
+			`${count} ${count === 1 ? "projeto" : "projetos"} disponíveis`,
 	},
 
 	progress: {
