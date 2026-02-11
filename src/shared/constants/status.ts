@@ -8,7 +8,7 @@ export const getStatusLabels = (t: Locale): Record<TopicStatus, string> => ({
 });
 
 export const statusStyles: Record<TopicStatus, string> = {
-	implemented: "bg-accent/15 text-accent",
-	planned: "bg-muted text-muted-foreground",
-	unregistered: "bg-warning/15 text-warning",
+	implemented: "status-implemented",
+	planned: "status-planned",
+	unregistered: "status-unregistered",
 };

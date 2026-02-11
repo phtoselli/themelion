@@ -1,0 +1,16 @@
+/* Separator */
+
+[data-slot="separator"] {
+	background-color: var(--border);
+	flex-shrink: 0;
+}
+
+[data-slot="separator"][data-orientation="horizontal"] {
+	height: 1px;
+	width: 100%;
+}
+
+[data-slot="separator"][data-orientation="vertical"] {
+	height: 100%;
+	width: 1px;
+}

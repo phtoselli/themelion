@@ -1,0 +1,11 @@
+roadmap: fullstack-developer-pleno
+name: "Fullstack Developer — Pleno"
+description: "Em breve: state management, GraphQL, mensageria, performance full-stack e arquitetura de aplicações"
+icon: "code"
+
+stages:
+  - slug: "em-breve"
+    name: "Em breve"
+    description: "Conteúdo em desenvolvimento"
+    order: 1
+    topics: []

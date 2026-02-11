@@ -1,0 +1,66 @@
+/* =============================================
+   Utility Classes
+   ============================================= */
+
+/* Typography */
+.font-display {
+	font-family: "Syne", system-ui, sans-serif;
+}
+
+.font-mono {
+	font-family: "JetBrains Mono", "Fira Code", monospace;
+}
+
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border-width: 0;
+}
+
+.truncate {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.line-clamp-2 {
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+.line-clamp-3 {
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+.tabular-nums {
+	font-variant-numeric: tabular-nums;
+}
+
+.italic {
+	font-style: italic;
+}
+
+/* Scrollbar */
+.no-scrollbar {
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+	display: none;
+}
+
+/* Difficulty dot colors */
+.dot-beginner { color: var(--beginner); }
+.dot-intermediate { color: var(--intermediate); }
+.dot-advanced { color: var(--advanced); }

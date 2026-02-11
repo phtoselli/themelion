@@ -2,6 +2,7 @@ import { languages as allLanguages } from "virtual:content";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@client/shared/components/ui/tabs";
 import { COPY_FEEDBACK_DURATION } from "@client/shared/constants/timing";
 import type { TopicExample } from "@client/shared/types";
+import "@client/styles/modules/code-tabs.css";
 import { Check, Copy } from "lucide-react";
 import { useCallback, useState } from "react";
 
@@ -29,15 +30,15 @@ export const CodeTabs = ({ examples }: CodeTabsProps) => {
 	if (sorted.length === 0) return null;
 
 	return (
-		<Tabs defaultValue={sorted[0].languageId} className="w-full">
-			<TabsList className="bg-surface-raised/80 border border-border rounded-lg p-1 h-auto flex-wrap gap-0.5">
+		<Tabs defaultValue={sorted[0].languageId} style={{ width: "100%" }}>
+			<TabsList className="code-tabs-list">
 				{sorted.map((example) => {
 					const lang = allLanguages.find((l: { id: string }) => l.id === example.languageId);
 					return (
 						<TabsTrigger
 							key={example.languageId}
 							value={example.languageId}
-							className="rounded-md px-3 py-1.5 text-xs font-medium data-[state=active]:bg-primary/12 data-[state=active]:text-primary data-[state=inactive]:text-text-muted hover:text-text transition-colors duration-200"
+							className="code-tabs-trigger"
 						>
 							{lang?.name ?? example.languageId}
 						</TabsTrigger>
@@ -47,11 +48,11 @@ export const CodeTabs = ({ examples }: CodeTabsProps) => {
 
 			{sorted.map((example) => (
 				<TabsContent key={example.languageId} value={example.languageId}>
-					<div className="relative group rounded-lg border border-border bg-surface-raised/60 overflow-hidden">
+					<div className="code-block">
 						<button
 							type="button"
 							onClick={() => handleCopy(example.code, example.languageId)}
-							className="absolute top-3 right-3 z-10 flex items-center gap-1.5 px-2 py-1 rounded-md text-xs text-text-faint bg-surface-hover/80 opacity-0 group-hover:opacity-100 hover:text-text hover:bg-surface-active transition-all duration-200"
+							className="code-block-copy"
 						>
 							{copiedId === example.languageId ? (
 								<>
@@ -65,8 +66,8 @@ export const CodeTabs = ({ examples }: CodeTabsProps) => {
 								</>
 							)}
 						</button>
-						<pre className="overflow-x-auto p-4 text-[13px] leading-relaxed">
-							<code className="font-mono text-text-muted">{example.code}</code>
+						<pre className="code-block-pre">
+							<code className="code-block-code">{example.code}</code>
 						</pre>
 					</div>
 				</TabsContent>

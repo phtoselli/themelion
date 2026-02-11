@@ -1,0 +1,11 @@
+roadmap: frontend-developer-pleno
+name: "Frontend Developer — Pleno"
+description: "Em breve: arquitetura de componentes, state management, performance avançada, testes e design systems"
+icon: "monitor"
+
+stages:
+  - slug: "em-breve"
+    name: "Em breve"
+    description: "Conteúdo em desenvolvimento"
+    order: 1
+    topics: []

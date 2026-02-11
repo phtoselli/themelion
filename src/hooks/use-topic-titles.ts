@@ -1,5 +1,5 @@
-import { useMemo } from "react";
 import type { Room } from "@client/shared/types";
+import { useMemo } from "react";
 
 /**
  * Hook que constrói um Map de slugs para títulos de tópicos de forma memoizada.

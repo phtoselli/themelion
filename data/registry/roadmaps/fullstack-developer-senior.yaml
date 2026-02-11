@@ -1,0 +1,11 @@
+roadmap: fullstack-developer-senior
+name: "Fullstack Developer — Sênior"
+description: "Em breve: arquitetura distribuída, micro-frontends, sistemas em escala, observabilidade e liderança técnica"
+icon: "code"
+
+stages:
+  - slug: "em-breve"
+    name: "Em breve"
+    description: "Conteúdo em desenvolvimento"
+    order: 1
+    topics: []

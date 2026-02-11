@@ -1,5 +1,7 @@
 import { useLocale } from "@client/hooks/use-locale";
 import { useTheme } from "@client/hooks/use-theme";
+import { PillBadge } from "@client/shared/components/pill-badge";
+import "@client/styles/pages/landing.css";
 import {
 	ArrowRight,
 	BookOpen,
@@ -39,40 +41,34 @@ const useReveal = (threshold = 0.12) => {
 	return { ref, visible };
 };
 
-// Classe de transição reutilizável
-const revealClass = (visible: boolean) =>
-	`transition-all duration-700 ease-out ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`;
-
 // Mockup do produto renderizado em CSS
 const ProductMockup = () => (
-	<div className="relative w-full max-w-4xl mx-auto">
+	<div className="mockup-wrapper">
 		{/* Glow atrás do mockup */}
-		<div className="absolute -inset-8 bg-primary/[0.04] blur-[60px] rounded-full pointer-events-none" />
+		<div className="mockup-glow" />
 
-		<div className="relative rounded-xl border border-border overflow-hidden bg-surface shadow-2xl shadow-black/30">
+		<div className="mockup-frame">
 			{/* Barra do navegador */}
-			<div className="flex items-center gap-2 px-4 py-3 bg-surface-raised/80 border-b border-border">
-				<div className="flex gap-1.5">
-					<div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]/80" />
-					<div className="w-2.5 h-2.5 rounded-full bg-[#febc2e]/80" />
-					<div className="w-2.5 h-2.5 rounded-full bg-[#28c840]/80" />
+			<div className="mockup-titlebar">
+				<div className="mockup-dots">
+					<div className="mockup-dot mockup-dot-red" />
+					<div className="mockup-dot mockup-dot-yellow" />
+					<div className="mockup-dot mockup-dot-green" />
 				</div>
-				<div className="flex-1 flex justify-center">
-					<div className="px-4 py-1 rounded-md bg-surface-light/60 text-[10px] text-text-faint font-mono">
-						themelion.dev/topic/arrays
-					</div>
+				<div className="mockup-urlbar">
+					<div className="mockup-url">themelion.dev/topic/arrays</div>
 				</div>
-				<div className="w-12" />
+				<div style={{ width: "3rem" }} />
 			</div>
 
 			{/* Conteúdo do app */}
-			<div className="flex min-h-[300px] md:min-h-[360px]">
+			<div className="mockup-body">
 				{/* Sidebar mockup */}
-				<div className="hidden sm:flex flex-col w-14 bg-surface-raised/60 border-r border-border py-4 gap-1 items-center shrink-0">
-					<div className="p-2 mb-3">
-						<Landmark size={16} className="text-primary" />
+				<div className="mockup-sidebar">
+					<div className="mockup-sidebar-logo">
+						<Landmark size={16} />
 					</div>
-					<div className="p-2 rounded-lg text-text-faint">
+					<div className="mockup-sidebar-icon">
 						<svg
 							width="14"
 							height="14"
@@ -88,83 +84,82 @@ const ProductMockup = () => (
 							<polyline points="9 22 9 12 15 12 15 22" />
 						</svg>
 					</div>
-					<div className="p-2 rounded-lg bg-primary/10 text-primary">
+					<div className="mockup-sidebar-icon" data-active="true">
 						<BookOpen size={14} />
 					</div>
-					<div className="p-2 rounded-lg text-text-faint">
+					<div className="mockup-sidebar-icon">
 						<MapIcon size={14} />
 					</div>
 				</div>
 
 				{/* Área de conteúdo */}
-				<div className="flex-1 p-4 md:p-6 overflow-hidden">
+				<div className="mockup-content">
 					{/* Breadcrumb */}
-					<div className="flex items-center gap-1.5 text-[9px] md:text-[10px] text-text-faint mb-3 md:mb-4">
+					<div className="mockup-breadcrumb">
 						<span>Fundamentos</span>
-						<span className="opacity-40">/</span>
+						<span className="mockup-breadcrumb-sep">/</span>
 						<span>Estruturas de Dados</span>
-						<span className="opacity-40">/</span>
-						<span className="text-text-muted">Arrays</span>
+						<span className="mockup-breadcrumb-sep">/</span>
+						<span className="mockup-breadcrumb-current">Arrays</span>
 					</div>
 
 					{/* Título + badge */}
-					<div className="flex items-center gap-2.5 mb-4 md:mb-5">
-						<span className="font-display font-bold text-sm md:text-base text-text">
-							Arrays e Strings
-						</span>
-						<span className="text-[8px] md:text-[9px] font-medium px-1.5 py-0.5 rounded-full bg-beginner/10 text-beginner border border-beginner/20">
-							Iniciante
-						</span>
+					<div className="mockup-title-row">
+						<span className="mockup-title">Arrays e Strings</span>
+						<span className="mockup-badge">Iniciante</span>
 					</div>
 
 					{/* Code tabs */}
-					<div className="rounded-lg border border-border overflow-hidden bg-surface-raised/40">
-						<div className="flex border-b border-border text-[10px] md:text-[11px]">
-							<div className="px-3 py-1.5 font-medium text-primary border-b border-primary bg-primary/5">
+					<div className="mockup-code-block">
+						<div className="mockup-code-tabs">
+							<div className="mockup-code-tab" data-active="true">
 								Python
 							</div>
-							<div className="px-3 py-1.5 font-medium text-text-faint">TypeScript</div>
-							<div className="px-3 py-1.5 font-medium text-text-faint hidden sm:block">C#</div>
-							<div className="px-3 py-1.5 font-medium text-text-faint hidden md:block">Go</div>
-							<div className="px-3 py-1.5 font-medium text-text-faint hidden md:block">Rust</div>
+							<div className="mockup-code-tab">TypeScript</div>
+							<div className="mockup-code-tab mockup-code-tab-hidden-sm">C#</div>
+							<div className="mockup-code-tab mockup-code-tab-hidden-md">Go</div>
+							<div className="mockup-code-tab mockup-code-tab-hidden-md">Rust</div>
 						</div>
 
-						<div className="p-3 md:p-4 font-mono text-[10px] md:text-[11px] leading-[1.7] select-none">
+						<div className="mockup-code-body">
 							<div>
-								<span className="text-text-faint"># Criando e manipulando arrays</span>
+								<span className="mockup-code-comment"># Criando e manipulando arrays</span>
 							</div>
 							<div>
-								<span className="text-text">nums</span> <span className="text-primary">=</span>{" "}
-								<span className="text-accent">[1, 2, 3, 4, 5]</span>
+								<span className="mockup-code-text">nums</span>{" "}
+								<span className="mockup-code-op">=</span>{" "}
+								<span className="mockup-code-val">[1, 2, 3, 4, 5]</span>
 							</div>
-							<div className="h-2.5" />
+							<div className="mockup-code-spacer" />
 							<div>
-								<span className="text-text-faint"># Acesso O(1) por índice</span>
+								<span className="mockup-code-comment"># Acesso O(1) por índice</span>
 							</div>
 							<div>
-								<span className="text-text">primeiro</span> <span className="text-primary">=</span>{" "}
-								<span className="text-text">nums</span>
-								<span className="text-accent">[0]</span>
+								<span className="mockup-code-text">primeiro</span>{" "}
+								<span className="mockup-code-op">=</span>{" "}
+								<span className="mockup-code-text">nums</span>
+								<span className="mockup-code-val">[0]</span>
 								{"    "}
-								<span className="text-text-faint"># 1</span>
+								<span className="mockup-code-comment"># 1</span>
 							</div>
 							<div>
-								<span className="text-text">ultimo</span>
+								<span className="mockup-code-text">ultimo</span>
 								{"  "}
-								<span className="text-primary">=</span> <span className="text-text">nums</span>
-								<span className="text-accent">[-1]</span>
+								<span className="mockup-code-op">=</span>{" "}
+								<span className="mockup-code-text">nums</span>
+								<span className="mockup-code-val">[-1]</span>
 								{"   "}
-								<span className="text-text-faint"># 5</span>
+								<span className="mockup-code-comment"># 5</span>
 							</div>
-							<div className="h-2.5" />
+							<div className="mockup-code-spacer" />
 							<div>
-								<span className="text-text-faint"># Inserção: O(1) amortizado</span>
+								<span className="mockup-code-comment"># Inserção: O(1) amortizado</span>
 							</div>
 							<div>
-								<span className="text-text">nums</span>
-								<span className="text-primary">.</span>
-								<span className="text-text">append</span>
-								<span className="text-accent">(6)</span>
+								<span className="mockup-code-text">nums</span>
+								<span className="mockup-code-op">.</span>
+								<span className="mockup-code-text">append</span>
+								<span className="mockup-code-val">(6)</span>
 							</div>
 						</div>
 					</div>
@@ -222,35 +217,28 @@ export const LandingPage = () => {
 	];
 
 	return (
-		<div className="min-h-screen bg-surface text-text overflow-x-hidden">
+		<div className="landing">
 			{/* ── Nav ── */}
-			<nav
-				className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
-					scrolled ? "glass border-b border-border" : ""
-				}`}
-			>
-				<div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-					<div className="flex items-center gap-2.5">
-						<div className="relative">
-							<Landmark size={20} className="text-primary relative z-10" />
-							<div className="absolute -inset-1 bg-primary/10 rounded-lg blur-sm" />
+			<nav className="landing-nav" data-scrolled={scrolled}>
+				<div className="landing-nav-inner">
+					<div className="landing-nav-logo">
+						<div className="landing-nav-logo-icon">
+							<Landmark size={20} />
+							<div className="landing-nav-logo-glow" />
 						</div>
-						<span className="font-display font-bold text-sm tracking-tight">Themelion</span>
+						<span className="landing-nav-logo-text">Themelion</span>
 					</div>
 
-					<div className="flex items-center gap-3">
+					<div className="landing-nav-actions">
 						<button
 							type="button"
 							onClick={toggleTheme}
-							className="p-2 rounded-lg text-text-faint hover:text-text hover:bg-surface-hover transition-all duration-200"
+							className="landing-theme-toggle"
 							aria-label={theme === "dark" ? t.sidebar.lightMode : t.sidebar.darkMode}
 						>
 							{theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
 						</button>
-						<Link
-							to="/home"
-							className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary-dark transition-all duration-200 shadow-md shadow-primary/15"
-						>
+						<Link to="/home" className="landing-cta-btn">
 							{t.landingPage.cta}
 							<ArrowRight size={14} />
 						</Link>
@@ -259,55 +247,41 @@ export const LandingPage = () => {
 			</nav>
 
 			{/* ── Hero ── */}
-			<section className="relative min-h-[100svh] flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 pt-16 landing-hero-gradient">
+			<section className="landing-hero landing-hero-gradient">
 				{/* Theta decorativo */}
-				<div
-					className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[20rem] sm:text-[28rem] md:text-[36rem] font-serif text-primary/[0.025] select-none pointer-events-none leading-none"
-					aria-hidden="true"
-				>
+				<div className="landing-hero-theta" aria-hidden="true">
 					θ
 				</div>
 
-				<div className="relative max-w-3xl mx-auto text-center animate-fade-in-up">
+				<div className="landing-hero-content">
 					{/* Pill badge */}
-					<div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/8 border border-primary/15 mb-8">
-						<span
-							className="w-1.5 h-1.5 rounded-full bg-primary"
-							style={{ animation: "glow-pulse 2s ease-in-out infinite" }}
-						/>
-						<span className="text-[10px] sm:text-xs text-primary font-medium tracking-widest uppercase">
-							{t.landingPage.heroBadge}
-						</span>
+					<div style={{ marginBottom: "2rem" }}>
+						<PillBadge>{t.landingPage.heroBadge}</PillBadge>
 					</div>
 
 					{/* Heading */}
-					<h1 className="font-display text-[2rem] sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.05] mb-6">
+					<h1 className="landing-heading">
 						{t.landingPage.heroHeading}{" "}
-						<span className="text-primary">{t.landingPage.heroHighlight}</span>
+						<span className="landing-heading-highlight">{t.landingPage.heroHighlight}</span>
 					</h1>
 
 					{/* Subtitle */}
-					<p className="text-text-muted text-base sm:text-lg md:text-xl max-w-2xl mx-auto leading-relaxed font-light mb-10">
-						{t.landingPage.heroSubtitle}
-					</p>
+					<p className="landing-subtitle">{t.landingPage.heroSubtitle}</p>
 
 					{/* CTA */}
-					<Link
-						to="/home"
-						className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-xl bg-primary text-primary-foreground text-base font-bold hover:bg-primary-dark transition-all duration-200 shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/25 hover:-translate-y-0.5"
-					>
+					<Link to="/home" className="landing-cta-btn-hero">
 						{t.landingPage.cta}
 						<ArrowRight size={18} />
 					</Link>
 
-					<p className="mt-4 text-xs text-text-faint">{t.landingPage.heroAccessNote}</p>
+					<p className="landing-access-note">{t.landingPage.heroAccessNote}</p>
 				</div>
 
 				{/* Scroll indicator */}
-				<div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-fade-in stagger-6">
-					<div className="w-5 h-8 rounded-full border border-border flex justify-center pt-1.5">
+				<div className="landing-scroll-indicator">
+					<div className="landing-scroll-pill">
 						<div
-							className="w-1 h-2 rounded-full bg-text-faint"
+							className="landing-scroll-dot"
 							style={{
 								animation: "scroll-hint 2s ease-in-out infinite",
 							}}
@@ -317,35 +291,35 @@ export const LandingPage = () => {
 			</section>
 
 			{/* ── Features / Value Props ── */}
-			<section className="py-20 md:py-28 px-4 sm:px-6 lg:px-8">
-				<div ref={features.ref} className={`max-w-5xl mx-auto ${revealClass(features.visible)}`}>
-					<h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-center mb-4">
-						{t.landingPage.featuresSectionTitle}
-					</h2>
-					<div className="w-12 h-0.5 bg-primary/40 mx-auto mb-12 md:mb-16 rounded-full" />
+			<section className="landing-section">
+				<div
+					ref={features.ref}
+					className="landing-section-inner landing-reveal"
+					data-visible={features.visible}
+				>
+					<h2 className="landing-section-title">{t.landingPage.featuresSectionTitle}</h2>
+					<div className="landing-section-divider" />
 
-					<div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5">
+					<div className="landing-features-grid">
 						{featureCards.map((card, i) => {
 							const Icon = card.icon;
 							return (
 								<div
 									key={card.title}
-									className="group p-5 md:p-6 rounded-xl bg-surface-raised/60 border border-border hover:border-primary/20 transition-all duration-300"
+									className="landing-feature-card"
 									style={{
 										transitionDelay: features.visible ? `${i * 80}ms` : "0ms",
 										opacity: features.visible ? 1 : 0,
 										transform: features.visible ? "translateY(0)" : "translateY(12px)",
 									}}
 								>
-									<div className="flex items-start gap-4">
-										<div className="p-2.5 rounded-lg bg-primary/8 shrink-0">
-											<Icon size={18} className="text-primary" />
+									<div className="landing-feature-card-inner">
+										<div className="landing-feature-icon">
+											<Icon size={18} />
 										</div>
 										<div>
-											<h3 className="font-display font-bold text-sm md:text-base mb-1.5">
-												{card.title}
-											</h3>
-											<p className="text-sm text-text-muted leading-relaxed">{card.desc}</p>
+											<h3 className="landing-feature-title">{card.title}</h3>
+											<p className="landing-feature-desc">{card.desc}</p>
 										</div>
 									</div>
 								</div>
@@ -356,15 +330,17 @@ export const LandingPage = () => {
 			</section>
 
 			{/* ── Product Preview ── */}
-			<section className="py-16 md:py-24 px-4 sm:px-6 lg:px-8 landing-hero-gradient">
-				<div ref={preview.ref} className={`max-w-5xl mx-auto ${revealClass(preview.visible)}`}>
-					<div className="text-center mb-10 md:mb-14">
-						<h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-3">
+			<section className="landing-section landing-hero-gradient">
+				<div
+					ref={preview.ref}
+					className="landing-section-inner landing-reveal"
+					data-visible={preview.visible}
+				>
+					<div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
+						<h2 className="landing-section-title" style={{ marginBottom: "0.75rem" }}>
 							{t.landingPage.previewSectionTitle}
 						</h2>
-						<p className="text-text-muted text-sm md:text-base max-w-xl mx-auto">
-							{t.landingPage.previewSectionSubtitle}
-						</p>
+						<p className="landing-section-subtitle">{t.landingPage.previewSectionSubtitle}</p>
 					</div>
 
 					<ProductMockup />
@@ -372,22 +348,21 @@ export const LandingPage = () => {
 			</section>
 
 			{/* ── How It Works ── */}
-			<section className="py-20 md:py-28 px-4 sm:px-6 lg:px-8">
+			<section className="landing-section">
 				<div
 					ref={howItWorks.ref}
-					className={`max-w-4xl mx-auto ${revealClass(howItWorks.visible)}`}
+					className="landing-section-inner-narrow landing-reveal"
+					data-visible={howItWorks.visible}
 				>
-					<h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-center mb-4">
-						{t.landingPage.howItWorksTitle}
-					</h2>
-					<div className="w-12 h-0.5 bg-primary/40 mx-auto mb-12 md:mb-16 rounded-full" />
+					<h2 className="landing-section-title">{t.landingPage.howItWorksTitle}</h2>
+					<div className="landing-section-divider" />
 
-					<div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+					<div className="landing-steps-grid">
 						{steps.map((step, i) => {
 							return (
 								<div
 									key={step.num}
-									className="relative text-center md:text-left"
+									className="landing-step"
 									style={{
 										transitionDelay: howItWorks.visible ? `${i * 120}ms` : "0ms",
 										opacity: howItWorks.visible ? 1 : 0,
@@ -395,11 +370,11 @@ export const LandingPage = () => {
 										transition: "all 0.6s ease-out",
 									}}
 								>
-									<div className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-primary/8 border border-primary/15 mb-4">
-										<span className="font-mono text-xs font-bold text-primary">{step.num}</span>
+									<div className="landing-step-num">
+										<span>{step.num}</span>
 									</div>
-									<h3 className="font-display font-bold text-base md:text-lg mb-2">{step.title}</h3>
-									<p className="text-sm text-text-muted leading-relaxed">{step.desc}</p>
+									<h3 className="landing-step-title">{step.title}</h3>
+									<p className="landing-step-desc">{step.desc}</p>
 								</div>
 							);
 						})}
@@ -408,38 +383,30 @@ export const LandingPage = () => {
 			</section>
 
 			{/* ── Final CTA ── */}
-			<section className="py-20 md:py-28 px-4 sm:px-6 lg:px-8">
+			<section className="landing-section">
 				<div
 					ref={finalCta.ref}
-					className={`max-w-2xl mx-auto text-center ${revealClass(finalCta.visible)}`}
+					className="landing-section-inner-cta landing-reveal"
+					data-visible={finalCta.visible}
 				>
-					<h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-3">
-						{t.landingPage.finalCtaHeading}
-					</h2>
-					<p className="text-text-muted text-base md:text-lg mb-8">
-						{t.landingPage.finalCtaSubtitle}
-					</p>
+					<h2 className="landing-section-title-big">{t.landingPage.finalCtaHeading}</h2>
+					<p className="landing-final-subtitle">{t.landingPage.finalCtaSubtitle}</p>
 
-					<Link
-						to="/home"
-						className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-xl bg-primary text-primary-foreground text-base font-bold hover:bg-primary-dark transition-all duration-200 shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/25 hover:-translate-y-0.5"
-					>
+					<Link to="/home" className="landing-cta-btn-hero">
 						{t.landingPage.cta}
 						<ArrowRight size={18} />
 					</Link>
 
-					<p className="mt-4 text-xs text-text-faint">{t.landingPage.heroAccessNote}</p>
+					<p className="landing-access-note">{t.landingPage.heroAccessNote}</p>
 				</div>
 			</section>
 
 			{/* ── Footer ── */}
-			<footer className="border-t border-border py-6 px-4 sm:px-6 lg:px-8">
-				<div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-text-faint">
-					<div className="flex items-center gap-2">
-						<Landmark size={14} className="text-primary" />
-						<span className="font-display font-bold text-sm tracking-tight text-text">
-							Themelion
-						</span>
+			<footer className="landing-footer">
+				<div className="landing-footer-inner">
+					<div className="landing-footer-logo">
+						<Landmark size={14} />
+						<span>Themelion</span>
 					</div>
 					<p>
 						Feito com 💛 por{" "}
@@ -447,12 +414,12 @@ export const LandingPage = () => {
 							href="https://pedrotoselli.com"
 							target="_blank"
 							rel="noopener noreferrer"
-							className="text-primary hover:text-primary-dark transition-colors duration-200 underline underline-offset-2"
+							className="landing-footer-link"
 						>
 							Pedro Toselli
 						</a>
 					</p>
-					<p className="italic">© 2026 θεμέλιον — Todos os direitos reservados</p>
+					<p style={{ fontStyle: "italic" }}>© 2026 θεμέλιον — Todos os direitos reservados</p>
 				</div>
 			</footer>
 		</div>
