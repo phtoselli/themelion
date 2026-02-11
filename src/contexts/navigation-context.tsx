@@ -1,4 +1,5 @@
 import type { Room } from "@client/shared/types";
+import { safeGetItem, safeSetItem } from "@client/shared/utils/storage";
 import { createContext, type ReactNode, useCallback, useContext, useState } from "react";
 
 export type ActiveSection = "home" | "rooms" | "roadmaps";
@@ -22,7 +23,7 @@ const NavigationContext = createContext<NavigationState | null>(null);
 
 export const NavigationProvider = ({ children }: { children: ReactNode }) => {
 	const [expanded, setExpandedState] = useState(() => {
-		const stored = localStorage.getItem("dp:sidebar-expanded");
+		const stored = safeGetItem("themelion:sidebar-expanded");
 		return stored !== null ? stored === "true" : true;
 	});
 	const [activeSection, setActiveSection] = useState<ActiveSection>("home");
@@ -32,7 +33,7 @@ export const NavigationProvider = ({ children }: { children: ReactNode }) => {
 
 	const setExpanded = useCallback((value: boolean) => {
 		setExpandedState(value);
-		localStorage.setItem("dp:sidebar-expanded", String(value));
+		safeSetItem("themelion:sidebar-expanded", String(value));
 	}, []);
 
 	const toggleExpanded = useCallback(() => {

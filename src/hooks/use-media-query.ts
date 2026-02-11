@@ -20,4 +20,3 @@ export const useMediaQuery = (query: string): boolean => {
 };
 
 export const useIsMobile = () => useMediaQuery("(max-width: 767px)");
-export const useIsDesktop = () => useMediaQuery("(min-width: 1024px)");

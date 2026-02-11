@@ -1,0 +1,483 @@
+---
+title: "Arrays e Strings"
+slug: "arrays"
+room: "fundamentos"
+category: "estruturas-de-dados"
+difficulty: "beginner"
+order: 1
+prerequisites: []
+tags: ["performance", "busca", "indice"]
+---
+
+## O que é
+
+Imagine um estacionamento com vagas numeradas (0, 1, 2, 3...). Cada vaga guarda um carro, e você pode ir direto para a vaga 47 sem passar pelas 46 anteriores. **Array** funciona exatamente assim: um bloco contíguo de memória onde cada elemento tem um endereço calculável instantaneamente a partir do seu índice.
+
+Formalmente: um array é uma estrutura de dados que armazena elementos em **posições contíguas** de memória, permitindo **acesso aleatório** (random access) em tempo constante O(1) através de um índice numérico inteiro começando em 0.
+
+**Strings** são, na maioria das linguagens modernas, arrays de caracteres (ou bytes) com operações especializadas. Tudo que você aprender sobre arrays se aplica a strings: acesso por índice, slicing, iteração.
+
+## Por que importa
+
+Arrays resolvem o problema da **agregação e acesso eficiente** a coleções de dados.
+
+**Antes dos arrays (ou sem eles):**
+```python
+nota1 = 8.5
+nota2 = 7.0
+nota3 = 9.2
+# ...
+nota100 = 6.8
+
+# Calcular média? Escrever 100 linhas de soma manual?
+# Impossível de escalar, código repetitivo, manutenção inviável.
+```
+
+**Com arrays:**
+```python
+notas = [8.5, 7.0, 9.2, ..., 6.8]
+media = sum(notas) / len(notas)  # 2 linhas para qualquer quantidade de notas
+```
+
+Arrays são a estrutura de dados **mais fundamental** da computação. Quase toda estrutura de dados avançada (stacks, queues, heaps, hash tables) é construída usando arrays como base. Se você dominar arrays, você:
+
+1. Entende como a memória funciona (endereçamento, cache, localidade espacial)
+2. Compreende complexidade de algoritmos (O(1) vs O(n) na prática)
+3. Sabe escolher a estrutura certa para cada problema
+4. Tem a base para entender todas as estruturas de dados que virão depois
+
+## Como funciona
+
+### Representação em memória
+
+Arrays alocam um **bloco contíguo de memória**. Se você criar um array de 5 inteiros em uma linguagem onde int ocupa 4 bytes, o sistema operacional reserva 20 bytes consecutivos na RAM.
+
+Exemplo concreto:
+```
+arr = [10, 20, 30, 40, 50]
+
+Memória:
+Endereço    Valor
+0x1000  →   10    # arr[0]
+0x1004  →   20    # arr[1]
+0x1008  →   30    # arr[2]
+0x100C  →   40    # arr[3]
+0x1010  →   50    # arr[4]
+```
+
+O endereço de qualquer elemento é calculado com uma **fórmula matemática simples**:
+
+```
+endereço(arr[i]) = endereço_base + (i × tamanho_do_elemento)
+```
+
+Para acessar `arr[3]`:
+```
+endereço(arr[3]) = 0x1000 + (3 × 4) = 0x100C
+```
+
+Essa conta leva **1 operação aritmética** (multiplicação + soma), independente do tamanho do array. É isso que significa **O(1)**: acessar `arr[0]` ou `arr[1000000]` leva o mesmo tempo.
+
+### Arrays estáticos vs dinâmicos
+
+**Arrays estáticos (C, C++, Rust, Go):**
+- Tamanho fixo definido na criação
+- Memória alocada na stack (se local) ou heap (se global)
+- Sem overhead de memória extra
+- Não podem crescer ou encolher
+
+**Arrays dinâmicos (Python `list`, JavaScript `Array`, C# `List<T>`, Go `slice`):**
+- Tamanho variável, crescem conforme necessário
+- Internamente, alocam **mais memória do que precisam** (overallocation)
+- Quando a capacidade esgota, realo cam um bloco maior e copiam tudo
+- Estratégia comum: duplicar o tamanho (capacidade × 2) quando encher
+
+Exemplo em Python:
+```python
+lista = []           # capacidade inicial: 0
+lista.append(1)      # capacidade cresce para 4
+lista.append(2)      # capacidade ainda 4
+lista.append(3)      # capacidade ainda 4
+lista.append(4)      # capacidade ainda 4
+lista.append(5)      # capacidade cresce para 8 (copia tudo)
+```
+
+Essa estratégia de duplicação amortiza o custo: se você adicionar n elementos, terá ~log₂(n) realocações. Custo amortizado: **O(1) por inserção**.
+
+### Complexidade das operações
+
+| Operação | Complexidade | Por quê |
+|---|---|---|
+| **Acesso por índice** `arr[i]` | O(1) | Cálculo direto do endereço |
+| **Modificação** `arr[i] = x` | O(1) | Cálculo direto do endereço |
+| **Busca por valor** `x in arr` | O(n) | Precisa comparar com cada elemento até encontrar |
+| **Append (final)** `arr.append(x)` | O(1) amortizado | Só incrementa ponteiro (ou realoca ocasionalmente) |
+| **Pop (final)** `arr.pop()` | O(1) | Só decrementa ponteiro |
+| **Insert (meio)** `arr.insert(i, x)` | O(n) | Precisa mover todos os elementos após o índice i |
+| **Remove (meio)** `arr.remove(x)` | O(n) | Busca O(n) + mover elementos O(n) |
+| **Slicing** `arr[i:j]` | O(k) | k = tamanho do slice, copia k elementos |
+
+**Por que inserir no meio é O(n)?**
+
+```python
+arr = [1, 2, 3, 4, 5]
+arr.insert(1, 99)  # Inserir 99 na posição 1
+
+# O que acontece internamente:
+# 1. Verificar capacidade (se não houver espaço, realocar tudo)
+# 2. Mover [2, 3, 4, 5] uma posição à direita
+#    - arr[5] = arr[4]  # 5
+#    - arr[4] = arr[3]  # 4
+#    - arr[3] = arr[2]  # 3
+#    - arr[2] = arr[1]  # 2
+# 3. Colocar 99 na posição 1
+# Resultado: [1, 99, 2, 3, 4, 5]
+
+# Mover n elementos = O(n)
+```
+
+### Arrays vs Ponteiros (diferença crucial)
+
+**Linguagens de baixo nível (C, C++, Rust):**
+- Array guarda **valores diretos** na memória
+- `int arr[3] = {10, 20, 30}` → memória contém os inteiros diretamente
+
+**Linguagens de alto nível (Python, JavaScript, Java):**
+- Array guarda **referências (ponteiros)** para objetos
+- `arr = [10, 20, 30]` → memória contém ponteiros para objetos inteiros
+
+Isso afeta performance:
+- Em C: `arr[i]` acessa o valor diretamente (1 acesso à memória)
+- Em Python: `arr[i]` acessa o ponteiro, depois segue o ponteiro para o objeto (2 acessos à memória)
+
+### Strings como arrays especiais
+
+Strings são arrays de caracteres com propriedades extras:
+
+**Imutabilidade (Python, Java, C#, Go, Rust):**
+```python
+s = "hello"
+s[0] = "H"  # ERRO! Strings são imutáveis
+```
+
+Por quê imutáveis? Otimizações como:
+- **String interning:** strings iguais compartilham memória
+- **Thread-safety:** múltiplas threads podem ler sem locks
+- **Hashing:** hash calculado uma vez e cacheado
+
+**Concatenação ingênua = O(n²):**
+```python
+# ❌ O(n²) - cada += cria nova string e copia tudo
+result = ""
+for word in words:  # n palavras
+    result += word  # O(comprimento atual) a cada iteração
+
+# ✅ O(n) - aloca tamanho final de uma vez
+result = "".join(words)  # Calcula tamanho total, aloca, copia cada palavra uma vez
+```
+
+**Encoding (UTF-8, UTF-16):**
+- Strings modernas usam Unicode, não ASCII
+- UTF-8: caracteres variáveis (1-4 bytes)
+- UTF-16: caracteres variáveis (2 ou 4 bytes)
+- Isso **quebra** o acesso O(1) em algumas linguagens:
+  - Python3 usa representação interna otimizada (Latin-1, UCS-2 ou UCS-4 dependendo dos caracteres)
+  - Rust `String` não permite `s[i]` diretamente, só iteração (evita bugs com caracteres multi-byte)
+
+## Na prática
+
+<CodeTabs />
+
+## Quando usar (e quando não usar)
+
+### Use arrays quando:
+
+**1. Acesso por índice é a operação principal**
+```python
+# Processar pixels de uma imagem (milhões de acessos aleatórios)
+pixels = image.get_pixels()
+for y in range(height):
+    for x in range(width):
+        pixel = pixels[y * width + x]  # O(1) acesso direto
+        process(pixel)
+```
+Alternativa (linked list): O(n) para cada acesso = O(n²) total. Inviável.
+
+**2. Iteração sequencial sobre todos os elementos**
+```python
+# Somar todos os valores
+total = sum(arr)  # CPU processa isso em ~10 ciclos por elemento (cache friendly)
+```
+Memória contígua = **cache locality**: CPU carrega blocos de 64 bytes (cache line) de uma vez. Array aproveita, linked list desperdiça.
+
+**3. Tamanho conhecido ou cresce previsívelmente**
+- Lendo arquivo CSV de 1 milhão de linhas → você sabe quantos elementos terá
+- Processamento batch → tamanho fixo por lote
+- Arrays dinâmicos crescem bem se você fizer append no final
+
+**4. Algoritmos que dependem de acesso aleatório**
+- **Busca binária** em array ordenado: O(log n)
+- **Quick sort** (pivoting requer acesso direto)
+- **Heap** (acessar pai/filhos via índices: `pai = i // 2`, `filho = 2*i`)
+
+**5. Memory-mapped files e buffers de I/O**
+Sistemas operacionais usam arrays para:
+- Buffers de rede
+- Frames de vídeo
+- Dados de sensores (IoT, embedded systems)
+
+### Não use arrays quando:
+
+**1. Inserções/remoções frequentes no meio**
+```python
+# ❌ Array: O(n) por inserção
+for i in range(1000):
+    arr.insert(random_index, value)  # Move metade do array em média
+# Total: O(n²) = 1 milhão de operações
+
+# ✅ Linked list: O(1) inserção se você já tem o nó
+```
+**Exceção:** se você pode fazer inserções em batch e depois ordenar, pode valer a pena.
+
+**2. Busca por chave (não por índice)**
+```python
+# ❌ Array: buscar usuário por email = O(n)
+users = [user1, user2, ..., user1000000]
+user = next(u for u in users if u.email == "john@example.com")  # Percorre tudo
+
+# ✅ Hash table: O(1) lookup
+users = {"john@example.com": user1, ...}
+user = users["john@example.com"]  # Direto
+```
+
+**3. Precisa garantir unicidade (sem duplicatas)**
+```python
+# ❌ Array: verificar duplicata = O(n) antes de cada inserção
+if value not in arr:  # O(n)
+    arr.append(value)
+
+# ✅ Set: O(1) inserção + garante unicidade automaticamente
+my_set.add(value)
+```
+
+**4. Tamanho extremamente variável e imprevisível**
+Se o tamanho varia de 10 a 10 milhões de forma imprevisível:
+- Array dinâmico desperdiça memória (overallocation)
+- Realocações constantes matam performance
+- Considere estruturas fragmentadas (chunked arrays, rope para strings)
+
+**5. Precisa de ordenação mantida automaticamente**
+```python
+# ❌ Array: inserir mantendo ordem = O(n)
+# Busca binária para achar posição: O(log n)
+# Inserir na posição: O(n) - mover elementos
+index = bisect.bisect_left(arr, value)
+arr.insert(index, value)
+
+# ✅ Árvore balanceada (TreeSet): O(log n) inserção + mantém ordem
+tree.insert(value)
+```
+
+### Comparação de performance (1 milhão de elementos)
+
+| Operação | Array | Linked List | Hash Table | Tree Set |
+|---|---|---|---|---|
+| Acesso por índice | **0.00001s** | 0.5s (O(n)) | N/A | N/A |
+| Busca por valor | 0.001s (O(n)) | 0.001s (O(n)) | **0.00001s** | 0.00002s |
+| Insert no meio | 0.01s (move 500k) | **0.00001s** | N/A | 0.00002s |
+| Insert no final | **0.00001s** | 0.00001s | 0.00001s | 0.00002s |
+| Iterar tudo | **0.005s** | 0.02s (cache miss) | 0.01s | 0.015s |
+
+**Conclusão:** Arrays dominam quando você precisa de acesso direto ou iteração sequencial. Para busca por chave ou inserções frequentes no meio, outras estruturas vencem.
+
+## Erros comuns
+
+### 1. Off-by-one (índice fora do limite)
+
+**O bug mais clássico da programação:**
+```python
+arr = [10, 20, 30]  # Índices válidos: 0, 1, 2
+
+# ❌ Acessar arr[3] (ou arr[len(arr)])
+last = arr[len(arr)]  # IndexError! O último é arr[len(arr) - 1]
+
+# ✅ Correto
+last = arr[len(arr) - 1]  # ou arr[-1] em Python
+```
+
+**Por que acontece tanto?**
+- Humanos contam de 1, arrays começam em 0
+- "10 elementos" significa índices de 0 a 9, não 1 a 10
+- Loops com `i <= len(arr)` ao invés de `i < len(arr)`
+
+**Em linguagens sem bounds checking (C, C++):**
+```c
+int arr[5] = {1, 2, 3, 4, 5};
+int x = arr[100];  // Sem erro! Lê memória aleatória (undefined behavior)
+arr[100] = 99;     // Corrompe memória de outra variável = bug impossível de debugar
+```
+
+### 2. Modificar array durante iteração
+
+```python
+# ❌ Bug sutil: índices ficam inconsistentes
+arr = [1, 2, 3, 4, 5]
+for i, value in enumerate(arr):
+    if value % 2 == 0:
+        arr.remove(value)  # Remove 2, mas pula o 4!
+
+# O que acontece:
+# i=0: value=1 (nada)
+# i=1: value=2 → remove 2 → arr = [1, 3, 4, 5]
+# i=2: value=4 → mas deveria ser 3! (pulou porque os índices mudaram)
+
+# ✅ Opção 1: Criar novo array
+arr = [value for value in arr if value % 2 != 0]
+
+# ✅ Opção 2: Iterar de trás pra frente
+for i in range(len(arr) - 1, -1, -1):
+    if arr[i] % 2 == 0:
+        arr.pop(i)
+```
+
+### 3. Confundir referência com cópia
+
+```python
+# ❌ Não é cópia, é referência!
+a = [1, 2, 3]
+b = a          # b aponta para o MESMO array
+b[0] = 999
+print(a)       # [999, 2, 3] - a foi modificado também!
+
+# ✅ Cópia superficial (shallow copy)
+b = a.copy()   # ou a[:] ou list(a)
+b[0] = 999
+print(a)       # [1, 2, 3] - a não mudou
+
+# ⚠️ Cuidado com arrays 2D:
+matrix = [[1, 2], [3, 4]]
+copy = matrix.copy()  # Shallow copy
+copy[0][0] = 999
+print(matrix)  # [[999, 2], [3, 4]] - as sublistas são referências!
+
+# ✅ Cópia profunda (deep copy)
+import copy
+matrix_copy = copy.deepcopy(matrix)
+```
+
+**Regra:** em linguagens com tipos de referência (Python, JavaScript, Java, C#):
+- Tipos primitivos (int, float, bool) são copiados por valor
+- Objetos complexos (arrays, objetos) são copiados por referência
+
+### 4. Busca linear em array grande (quando há alternativas)
+
+```python
+# ❌ O(n) lookup repetido = O(n²) total
+users = [user1, user2, ..., user100000]
+for email in emails_to_find:  # 1000 emails
+    user = next(u for u in users if u.email == email)  # O(n) cada
+# Total: 1000 × 100000 = 100 milhões de comparações
+
+# ✅ O(n) para construir hash table + O(1) lookup = O(n) total
+users_by_email = {u.email: u for u in users}  # O(n)
+for email in emails_to_find:
+    user = users_by_email[email]  # O(1) cada
+# Total: 100000 + 1000 = 101 mil operações (1000x mais rápido)
+```
+
+### 5. Concatenação de strings em loop (O(n²) silencioso)
+
+```python
+# ❌ O(n²) - cada += cria nova string e copia tudo
+result = ""
+for word in words:  # 10000 palavras
+    result += word + " "
+# Iteração 1: copia 1 palavra
+# Iteração 2: copia 2 palavras
+# ...
+# Iteração 10000: copia 10000 palavras
+# Total: 1+2+3+...+10000 = 50 milhões de cópias
+
+# ✅ O(n) - join calcula tamanho total, aloca de uma vez, copia cada palavra 1x
+result = " ".join(words)  # 10000 cópias
+```
+
+**Por que?** Strings são imutáveis. `s += x` não modifica `s`, cria uma **nova** string com o conteúdo de `s` + `x`.
+
+### 6. Usar array quando precisa de fila ou pilha (e vice-versa)
+
+```python
+# ❌ Array como fila: remover do início é O(n)
+queue = [1, 2, 3, 4, 5]
+first = queue.pop(0)  # Remove do início, move [2,3,4,5] uma posição à esquerda
+
+# ✅ Use collections.deque: O(1) em ambas pontas
+from collections import deque
+queue = deque([1, 2, 3, 4, 5])
+first = queue.popleft()  # O(1)
+
+# ✅ Array como pilha (remover do final): perfeito!
+stack = [1, 2, 3, 4, 5]
+top = stack.pop()  # O(1)
+```
+
+### 7. Esquecer que slicing cria cópia (impacto de memória)
+
+```python
+# ❌ Criar 1000 cópias de um array gigante
+data = list(range(10_000_000))  # 10 milhões de elementos
+chunks = [data[i:i+10000] for i in range(0, len(data), 10000)]
+# Cada slice cria uma CÓPIA. Memória: 10M elementos × 2 = 20M (dobrou!)
+
+# ✅ Se só precisa ler: use views/iteradores (quando possível)
+# Ou processe em streaming sem carregar tudo na memória
+```
+
+### 8. Comparar arrays com `==` sem entender semântica
+
+```python
+# Python: compara valores (deep equality)
+a = [1, 2, 3]
+b = [1, 2, 3]
+print(a == b)  # True
+
+# JavaScript: compara referências!
+let a = [1, 2, 3];
+let b = [1, 2, 3];
+console.log(a === b);  // False! (são objetos diferentes)
+console.log(JSON.stringify(a) === JSON.stringify(b));  // True
+
+# Java: Arrays.equals(a, b) para comparar valores
+```
+
+### 9. Acessar array multidimensional com notação errada
+
+```python
+# Python: matriz é lista de listas
+matrix = [[1, 2], [3, 4]]
+x = matrix[0][1]  # Correto: linha 0, coluna 1 = 2
+
+# ❌ Criar matriz 3x3 (armadilha de referências)
+matrix = [[0] * 3] * 3  # Cria 3 referências à MESMA lista!
+matrix[0][0] = 1
+print(matrix)  # [[1, 0, 0], [1, 0, 0], [1, 0, 0]] - todas linhas mudaram!
+
+# ✅ Correto:
+matrix = [[0] * 3 for _ in range(3)]  # Cria 3 listas diferentes
+```
+
+### 10. Ignorar complexidade amortizada (susto com realocações)
+
+```python
+# Arrays dinâmicos crescem em saltos (doubling)
+arr = []
+for i in range(1_000_000):
+    arr.append(i)  # O(1) amortizado, mas ocasionalmente O(n) ao realocar
+```
+
+Se você está em um sistema de **tempo real** (embedded, games, trading):
+- Realocações causam **latency spikes** imprevisíveis
+- Solução: pré-alocar tamanho máximo se você souber o limite:
+  ```python
+  arr = [None] * 1_000_000  # Aloca tudo de uma vez
+  ```

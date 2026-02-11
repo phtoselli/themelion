@@ -1,10 +1,11 @@
 import { useNavigation } from "@client/contexts/navigation-context";
 import { useLocale } from "@client/hooks/use-locale";
-import { useIsMobile } from "@client/hooks/use-mobile";
+import { useIsMobile } from "@client/hooks/use-media-query";
 import { useTheme } from "@client/hooks/use-theme";
 import { exportProgress, importProgress } from "@client/lib/progress";
 import { Sheet, SheetContent } from "@client/shared/components/ui/sheet";
 import { getNavItems } from "@client/shared/constants/navigation";
+import { ERROR_MESSAGE_DURATION } from "@client/shared/constants/timing";
 import {
 	ChevronLeft,
 	ChevronRight,
@@ -29,10 +30,7 @@ export const AppSidebar = () => {
 	const { pathname } = useLocation();
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const [settingsOpen, setSettingsOpen] = useState(false);
-	const [importStatus, setImportStatus] = useState<{
-		type: "success" | "error";
-		message: string;
-	} | null>(null);
+	const [importError, setImportError] = useState<string | null>(null);
 
 	const handleExport = useCallback(() => {
 		exportProgress();
@@ -48,22 +46,15 @@ export const AppSidebar = () => {
 			if (!file) return;
 
 			try {
-				const { imported } = await importProgress(file);
-				setImportStatus({
-					type: "success",
-					message: t.sidebar.importSuccess(imported),
-				});
+				await importProgress(file);
+				window.location.reload();
 			} catch (err) {
-				setImportStatus({
-					type: "error",
-					message: err instanceof Error ? err.message : t.sidebar.importError,
-				});
+				setImportError(err instanceof Error ? err.message : t.sidebar.importError);
+				setTimeout(() => setImportError(null), ERROR_MESSAGE_DURATION);
 			}
 
 			// Limpa o input pra permitir reimportar o mesmo arquivo
 			e.target.value = "";
-
-			setTimeout(() => setImportStatus(null), 4000);
 		},
 		[t],
 	);
@@ -217,15 +208,9 @@ export const AppSidebar = () => {
 							className="hidden"
 						/>
 
-						{importStatus && (
-							<p
-								className={`text-xs px-3 py-1.5 rounded-md ${
-									importStatus.type === "success"
-										? "text-beginner bg-beginner/10"
-										: "text-advanced bg-advanced/10"
-								}`}
-							>
-								{importStatus.message}
+						{importError && (
+							<p className="text-xs px-3 py-1.5 rounded-md text-advanced bg-advanced/10">
+								{importError}
 							</p>
 						)}
 					</div>

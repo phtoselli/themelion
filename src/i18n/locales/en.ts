@@ -84,6 +84,9 @@ export const en: Locale = {
 		comingSoonTitle: "Coming Soon",
 		comingSoonDescription: "This content is being prepared and will be available soon.",
 		mdxPlaceholder: "MDX content will be rendered here",
+		markCompleted: "Mark as completed",
+		completed: "Completed",
+		completedAt: (date: string) => `Completed on ${date}`,
 	},
 
 	roadmapsPage: {
@@ -97,6 +100,8 @@ export const en: Locale = {
 
 	roadmapPage: {
 		notFound: "Roadmap not found",
+		completed: "Completed",
+		completionPercent: (percent: number) => `${percent}% completed`,
 	},
 
 	progress: {

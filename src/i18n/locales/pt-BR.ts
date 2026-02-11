@@ -77,6 +77,9 @@ export interface Locale {
 		comingSoonTitle: string;
 		comingSoonDescription: string;
 		mdxPlaceholder: string;
+		markCompleted: string;
+		completed: string;
+		completedAt: (date: string) => string;
 	};
 
 	roadmapsPage: {
@@ -89,6 +92,8 @@ export interface Locale {
 
 	roadmapPage: {
 		notFound: string;
+		completed: string;
+		completionPercent: (percent: number) => string;
 	};
 
 	progress: {
@@ -189,6 +194,9 @@ export const ptBR: Locale = {
 		comingSoonTitle: "Em Breve",
 		comingSoonDescription: "Este conteúdo está sendo preparado e estará disponível em breve.",
 		mdxPlaceholder: "Conteúdo MDX será renderizado aqui",
+		markCompleted: "Marcar como concluído",
+		completed: "Concluído",
+		completedAt: (date: string) => `Concluído em ${date}`,
 	},
 
 	roadmapsPage: {
@@ -203,6 +211,8 @@ export const ptBR: Locale = {
 
 	roadmapPage: {
 		notFound: "Roadmap não encontrado",
+		completed: "Concluído",
+		completionPercent: (percent: number) => `${percent}% concluído`,
 	},
 
 	progress: {

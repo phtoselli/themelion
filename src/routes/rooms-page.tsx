@@ -1,14 +1,36 @@
 import { useLocale } from "@client/hooks/use-locale";
 import { useRooms } from "@client/hooks/use-rooms";
+import { clearActiveRoadmap } from "@client/lib/active-roadmap";
 import { PageLayout } from "@client/modules/layout/components/page-layout";
 import { PageSkeleton } from "@client/modules/layout/components/skeletons";
 import { getRoomIcon } from "@client/shared/utils/helpers/room-icons";
 import { ArrowRight } from "lucide-react";
+import { useEffect, useMemo } from "react";
 import { Link } from "react-router";
 
 export const RoomsPage = () => {
 	const { t } = useLocale();
 	const { rooms, loading } = useRooms();
+
+	useEffect(() => {
+		clearActiveRoadmap();
+	}, []);
+
+
+	// Memoizar total de tópicos para evitar recalcular em cada render
+	const totalTopics = useMemo(
+		() => rooms.reduce(
+			(sum, room) => sum + room.categories.reduce((catSum, cat) => catSum + cat.topics.length, 0),
+			0,
+		),
+		[rooms],
+	);
+
+	// Memoizar ordenação para evitar sort em cada render
+	const sortedRooms = useMemo(
+		() => [...rooms].sort((a, b) => a.name.localeCompare(b.name)),
+		[rooms],
+	);
 
 	if (loading) {
 		return (
@@ -17,11 +39,6 @@ export const RoomsPage = () => {
 			</PageLayout>
 		);
 	}
-
-	const totalTopics = rooms.reduce(
-		(sum, room) => sum + room.categories.reduce((catSum, cat) => catSum + cat.topics.length, 0),
-		0,
-	);
 
 	return (
 		<PageLayout breadcrumbs={[{ label: t.common.home, href: "/" }, { label: t.nav.studyRooms }]}>
@@ -61,8 +78,7 @@ export const RoomsPage = () => {
 
 			{/* Grid de salas */}
 			<div className="space-y-4 md:space-y-6">
-				{rooms
-					.sort((a, b) => a.order - b.order)
+				{sortedRooms
 					.map((room, index) => {
 						const Icon = getRoomIcon(room.icon);
 						const topicCount = room.categories.reduce((sum, cat) => sum + cat.topics.length, 0);

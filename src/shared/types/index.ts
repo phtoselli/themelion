@@ -36,6 +36,7 @@ export interface RelatedTool {
 export interface Topic extends TopicFrontmatter {
 	status: TopicStatus;
 	contentPath: string;
+	content: string;
 	examples: TopicExample[];
 }
 

@@ -1,6 +1,6 @@
 import { useNavigation } from "@client/contexts/navigation-context";
 import { useLocale } from "@client/hooks/use-locale";
-import { useIsMobile } from "@client/hooks/use-mobile";
+import { useIsMobile } from "@client/hooks/use-media-query";
 import { AppSidebar } from "@client/modules/layout/components/app-sidebar";
 import {
 	Breadcrumb,
@@ -11,7 +11,7 @@ import {
 	BreadcrumbSeparator,
 } from "@client/shared/components/ui/breadcrumb";
 import { Landmark, Menu } from "lucide-react";
-import type { ReactNode } from "react";
+import { Fragment, type ReactNode } from "react";
 import { Link } from "react-router";
 
 export interface BreadcrumbItemData {
@@ -69,23 +69,25 @@ export const PageLayout = ({ children, breadcrumbs, fullWidth = false }: PageLay
 									{breadcrumbs.map((item, index) => {
 										const isLast = index === breadcrumbs.length - 1;
 										return (
-											<BreadcrumbItem key={item.label}>
-												{!isLast && item.href ? (
-													<BreadcrumbLink asChild>
-														<Link
-															to={item.href}
-															className="text-text-faint hover:text-primary transition-colors duration-200 text-xs"
-														>
+											<Fragment key={item.label}>
+												<BreadcrumbItem>
+													{!isLast && item.href ? (
+														<BreadcrumbLink asChild>
+															<Link
+																to={item.href}
+																className="text-text-faint hover:text-primary transition-colors duration-200 text-xs"
+															>
+																{item.label}
+															</Link>
+														</BreadcrumbLink>
+													) : (
+														<BreadcrumbPage className="text-text-muted font-medium text-xs">
 															{item.label}
-														</Link>
-													</BreadcrumbLink>
-												) : (
-													<BreadcrumbPage className="text-text-muted font-medium text-xs">
-														{item.label}
-													</BreadcrumbPage>
-												)}
+														</BreadcrumbPage>
+													)}
+												</BreadcrumbItem>
 												{!isLast && <BreadcrumbSeparator className="text-text-faint/40" />}
-											</BreadcrumbItem>
+											</Fragment>
 										);
 									})}
 								</BreadcrumbList>
@@ -104,23 +106,25 @@ export const PageLayout = ({ children, breadcrumbs, fullWidth = false }: PageLay
 								{breadcrumbs.map((item, index) => {
 									const isLast = index === breadcrumbs.length - 1;
 									return (
-										<BreadcrumbItem key={item.label}>
-											{!isLast && item.href ? (
-												<BreadcrumbLink asChild>
-													<Link
-														to={item.href}
-														className="text-text-faint hover:text-primary transition-colors duration-200"
-													>
+										<Fragment key={item.label}>
+											<BreadcrumbItem>
+												{!isLast && item.href ? (
+													<BreadcrumbLink asChild>
+														<Link
+															to={item.href}
+															className="text-text-faint hover:text-primary transition-colors duration-200"
+														>
+															{item.label}
+														</Link>
+													</BreadcrumbLink>
+												) : (
+													<BreadcrumbPage className="text-text-muted font-medium">
 														{item.label}
-													</Link>
-												</BreadcrumbLink>
-											) : (
-												<BreadcrumbPage className="text-text-muted font-medium">
-													{item.label}
-												</BreadcrumbPage>
-											)}
+													</BreadcrumbPage>
+												)}
+											</BreadcrumbItem>
 											{!isLast && <BreadcrumbSeparator className="text-text-faint/40" />}
-										</BreadcrumbItem>
+										</Fragment>
 									);
 								})}
 							</BreadcrumbList>

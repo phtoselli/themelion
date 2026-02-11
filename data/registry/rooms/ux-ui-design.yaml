@@ -1,0 +1,1768 @@
+room: ux-ui-design
+name: "UX/UI Design"
+description: "Domine os fundamentos de design visual, experiência do usuário, design de interfaces, acessibilidade, psicologia aplicada, prototipagem e metodologias de design. Desde princípios visuais e teoria das cores até design systems, UX writing e métricas — tudo que um designer precisa para criar produtos digitais centrados no usuário."
+icon: "palette"
+order: 8
+
+categories:
+
+  # ═══════════════════════════════════════════════════════════════
+  # FUNDAMENTOS DE DESIGN
+  # ═══════════════════════════════════════════════════════════════
+
+  - slug: "principios-visuais"
+    name: "Princípios Visuais"
+    order: 1
+    topics:
+      - slug: "hierarquia-visual"
+        title: "Hierarquia Visual"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["composicao", "atencao", "prioridade"]
+
+      - slug: "contraste"
+        title: "Contraste"
+        difficulty: beginner
+        order: 2
+        prerequisites: []
+        tags: ["diferenciacao", "destaque", "legibilidade"]
+
+      - slug: "equilibrio"
+        title: "Equilíbrio"
+        difficulty: beginner
+        order: 3
+        prerequisites: []
+        tags: ["simetrico", "assimetrico", "radial", "composicao"]
+
+      - slug: "alinhamento-e-proximidade"
+        title: "Alinhamento e Proximidade"
+        difficulty: beginner
+        order: 4
+        prerequisites: []
+        tags: ["organizacao", "agrupamento", "relacionamento"]
+
+      - slug: "repeticao-e-consistencia"
+        title: "Repetição e Consistência"
+        difficulty: beginner
+        order: 5
+        prerequisites: []
+        tags: ["padrao", "coesao", "identidade"]
+
+      - slug: "proporcao-e-escala"
+        title: "Proporção e Escala"
+        difficulty: beginner
+        order: 6
+        prerequisites: []
+        tags: ["tamanho", "relacao", "dimensao"]
+
+      - slug: "ritmo-e-enfase"
+        title: "Ritmo e Ênfase"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["hierarquia-visual", "contraste"]
+        tags: ["movimento", "destaque", "fluxo"]
+
+      - slug: "unidade-e-harmonia"
+        title: "Unidade, Variedade e Harmonia"
+        difficulty: intermediate
+        order: 8
+        prerequisites: ["repeticao-e-consistencia"]
+        tags: ["coesao", "diversidade", "equilibrio-visual"]
+
+      - slug: "espaco-negativo"
+        title: "Espaço Negativo (White Space)"
+        difficulty: beginner
+        order: 9
+        prerequisites: []
+        tags: ["respiro", "clareza", "minimalismo"]
+
+      - slug: "figura-fundo"
+        title: "Figura-Fundo"
+        difficulty: intermediate
+        order: 10
+        prerequisites: ["contraste", "espaco-negativo"]
+        tags: ["percepcao", "camadas", "destaque"]
+
+      - slug: "gestalt-principles"
+        title: "Princípios de Gestalt"
+        difficulty: intermediate
+        order: 11
+        prerequisites: ["alinhamento-e-proximidade", "figura-fundo"]
+        tags: ["pregnancia", "similaridade", "continuidade", "fechamento", "conexao", "destino-comum"]
+
+  - slug: "teoria-das-cores"
+    name: "Teoria das Cores"
+    order: 2
+    topics:
+      - slug: "circulo-cromatico"
+        title: "Círculo Cromático"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["primarias", "secundarias", "terciarias", "fundamento"]
+
+      - slug: "harmonias-de-cores"
+        title: "Harmonias de Cores"
+        difficulty: beginner
+        order: 2
+        prerequisites: ["circulo-cromatico"]
+        tags: ["complementares", "analogas", "triadicas", "tetradicas", "monocromaticas"]
+
+      - slug: "propriedades-da-cor"
+        title: "Propriedades da Cor"
+        difficulty: beginner
+        order: 3
+        prerequisites: ["circulo-cromatico"]
+        tags: ["matiz", "saturacao", "valor", "temperatura", "tint", "tone", "shade"]
+
+      - slug: "psicologia-das-cores"
+        title: "Psicologia das Cores"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["propriedades-da-cor"]
+        tags: ["emocao", "significado", "cultura", "associacao"]
+
+      - slug: "contraste-de-cores"
+        title: "Contraste de Cores"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["harmonias-de-cores", "propriedades-da-cor"]
+        tags: ["legibilidade", "destaque", "acessibilidade"]
+
+      - slug: "acessibilidade-de-cores"
+        title: "Acessibilidade de Cores"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["contraste-de-cores"]
+        tags: ["wcag", "daltonismo", "deuteranopia", "simulacao", "ratio"]
+
+      - slug: "modo-escuro-vs-claro"
+        title: "Modo Escuro vs Modo Claro"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["contraste-de-cores", "acessibilidade-de-cores"]
+        tags: ["dark-mode", "light-mode", "tema", "conforto-visual"]
+
+  - slug: "tipografia"
+    name: "Tipografia"
+    order: 3
+    topics:
+      - slug: "anatomia-tipografica"
+        title: "Anatomia das Letras"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["ascender", "descender", "baseline", "x-height", "cap-height"]
+
+      - slug: "classificacao-tipografica"
+        title: "Classificação Tipográfica"
+        difficulty: beginner
+        order: 2
+        prerequisites: ["anatomia-tipografica"]
+        tags: ["serif", "sans-serif", "display", "script", "monospace"]
+
+      - slug: "espacamento-tipografico"
+        title: "Espaçamento Tipográfico"
+        difficulty: beginner
+        order: 3
+        prerequisites: ["anatomia-tipografica"]
+        tags: ["kerning", "tracking", "leading", "letter-spacing", "line-height"]
+
+      - slug: "hierarquia-tipografica"
+        title: "Hierarquia Tipográfica"
+        difficulty: beginner
+        order: 4
+        prerequisites: ["classificacao-tipografica", "espacamento-tipografico"]
+        tags: ["titulo", "subtitulo", "corpo", "destaque"]
+
+      - slug: "escala-tipografica"
+        title: "Escala Tipográfica e Modular Scale"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["hierarquia-tipografica"]
+        tags: ["modular-scale", "proporcao", "sistema"]
+
+      - slug: "alinhamento-de-texto"
+        title: "Alinhamento e Formatação de Texto"
+        difficulty: beginner
+        order: 6
+        prerequisites: []
+        tags: ["esquerda", "direita", "centro", "justificado", "viuvas", "orfas", "hifenizacao"]
+
+      - slug: "legibilidade"
+        title: "Readability vs Legibility"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["espacamento-tipografico", "alinhamento-de-texto"]
+        tags: ["line-length", "measure", "paragraph-spacing", "leitura"]
+
+      - slug: "font-pairing"
+        title: "Font Pairing"
+        difficulty: intermediate
+        order: 8
+        prerequisites: ["classificacao-tipografica", "hierarquia-tipografica"]
+        tags: ["combinacao", "peso", "estilo", "italic", "oblique"]
+
+      - slug: "tipografia-avancada"
+        title: "Tipografia Avançada"
+        difficulty: advanced
+        order: 9
+        prerequisites: ["font-pairing", "escala-tipografica"]
+        tags: ["ligatures", "opentype", "variable-fonts", "hifenizacao"]
+
+      - slug: "fontes-na-web"
+        title: "Fontes na Web"
+        difficulty: intermediate
+        order: 10
+        prerequisites: ["classificacao-tipografica"]
+        tags: ["web-safe", "custom-fonts", "carregamento", "performance"]
+
+  - slug: "grid-e-layout"
+    name: "Grid e Layout"
+    order: 4
+    topics:
+      - slug: "grid-system"
+        title: "Grid System"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["estrutura", "organizacao", "alinhamento"]
+
+      - slug: "tipos-de-grid"
+        title: "Tipos de Grid"
+        difficulty: intermediate
+        order: 2
+        prerequisites: ["grid-system"]
+        tags: ["column-grid", "modular-grid", "baseline-grid"]
+
+      - slug: "proporcao-aurea"
+        title: "Proporção Áurea e Fibonacci"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["grid-system"]
+        tags: ["golden-ratio", "rule-of-thirds", "fibonacci", "composicao"]
+
+      - slug: "espacamento-em-grid"
+        title: "Espaçamento em Grid"
+        difficulty: beginner
+        order: 4
+        prerequisites: ["grid-system"]
+        tags: ["gutter", "margin", "padding"]
+
+      - slug: "container-e-breakpoints"
+        title: "Container e Breakpoints"
+        difficulty: beginner
+        order: 5
+        prerequisites: ["grid-system"]
+        tags: ["largura", "responsivo", "adaptacao"]
+
+      - slug: "grid-fluido-vs-fixo"
+        title: "Grid Fluido vs Fixo"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["tipos-de-grid", "container-e-breakpoints"]
+        tags: ["fluid", "fixed", "hybrid"]
+
+      - slug: "sistemas-de-grid"
+        title: "Sistemas de Grid (8pt e 4pt)"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["espacamento-em-grid"]
+        tags: ["8pt", "4pt", "consistencia", "espacamento"]
+
+      - slug: "padroes-de-leitura"
+        title: "Padrões de Leitura"
+        difficulty: beginner
+        order: 8
+        prerequisites: []
+        tags: ["z-pattern", "f-pattern", "gutenberg-diagram", "escaneamento"]
+
+      - slug: "composicao-de-layout"
+        title: "Composição de Layout"
+        difficulty: intermediate
+        order: 9
+        prerequisites: ["tipos-de-grid", "padroes-de-leitura"]
+        tags: ["composicao", "organizacao", "visual"]
+
+  # ═══════════════════════════════════════════════════════════════
+  # USER EXPERIENCE (UX)
+  # ═══════════════════════════════════════════════════════════════
+
+  - slug: "pesquisa-de-usuario"
+    name: "Pesquisa de Usuário"
+    order: 5
+    topics:
+      - slug: "metodos-de-pesquisa"
+        title: "Métodos de Pesquisa de Usuário"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["qualitativa", "quantitativa", "metodologia"]
+
+      - slug: "entrevistas-e-surveys"
+        title: "Entrevistas e Pesquisas"
+        difficulty: beginner
+        order: 2
+        prerequisites: ["metodos-de-pesquisa"]
+        tags: ["entrevistas", "surveys", "questionarios", "profundidade"]
+
+      - slug: "card-sorting"
+        title: "Card Sorting e Tree Testing"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["metodos-de-pesquisa"]
+        tags: ["organizacao", "navegacao", "validacao"]
+
+      - slug: "testes-de-usabilidade"
+        title: "Testes de Usabilidade"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["metodos-de-pesquisa"]
+        tags: ["moderado", "nao-moderado", "remoto", "guerrilla"]
+
+      - slug: "testes-ab"
+        title: "A/B Testing e Multivariate Testing"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["metodos-de-pesquisa"]
+        tags: ["comparacao", "variacao", "experimento", "dados"]
+
+      - slug: "pesquisa-de-campo"
+        title: "Pesquisa de Campo"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["metodos-de-pesquisa"]
+        tags: ["observacao-contextual", "shadowing", "diary-studies", "etnografia"]
+
+      - slug: "testes-rapidos"
+        title: "Testes Rápidos"
+        difficulty: beginner
+        order: 7
+        prerequisites: ["metodos-de-pesquisa"]
+        tags: ["first-click", "five-second", "preference-testing"]
+
+      - slug: "analytics-e-heatmaps"
+        title: "Analytics e Heatmaps"
+        difficulty: intermediate
+        order: 8
+        prerequisites: ["metodos-de-pesquisa"]
+        tags: ["eye-tracking", "heat-maps", "click-maps", "scroll-maps", "session-recording"]
+
+      - slug: "dados-comportamentais"
+        title: "Dados Comportamentais vs Attitudinais"
+        difficulty: intermediate
+        order: 9
+        prerequisites: ["analytics-e-heatmaps"]
+        tags: ["comportamento", "atitude", "interpretacao"]
+
+      - slug: "rigor-em-pesquisa"
+        title: "Rigor em Pesquisa"
+        difficulty: advanced
+        order: 10
+        prerequisites: ["metodos-de-pesquisa", "entrevistas-e-surveys"]
+        tags: ["sample-size", "recrutamento", "etica", "vies", "triangulacao"]
+
+  - slug: "user-personas-e-analise"
+    name: "User Personas e Análise"
+    order: 6
+    topics:
+      - slug: "user-personas"
+        title: "User Personas"
+        difficulty: beginner
+        order: 1
+        prerequisites: ["metodos-de-pesquisa"]
+        tags: ["persona", "proto-persona", "buyer-persona", "representacao"]
+
+      - slug: "empathy-maps"
+        title: "Empathy Maps"
+        difficulty: beginner
+        order: 2
+        prerequisites: ["user-personas"]
+        tags: ["empatia", "pensa", "sente", "faz", "diz"]
+
+      - slug: "journey-maps"
+        title: "Journey Maps"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["user-personas", "empathy-maps"]
+        tags: ["user-journey", "experience-map", "customer-journey"]
+
+      - slug: "service-blueprints"
+        title: "Service Blueprints"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["journey-maps"]
+        tags: ["servico", "frontstage", "backstage", "processos"]
+
+      - slug: "touchpoints-e-pain-points"
+        title: "Touchpoints e Pain Points"
+        difficulty: beginner
+        order: 5
+        prerequisites: ["journey-maps"]
+        tags: ["pontos-de-contato", "dor", "moments-of-truth"]
+
+      - slug: "jobs-to-be-done"
+        title: "Jobs to Be Done (JTBD)"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["user-personas"]
+        tags: ["motivacao", "resultado", "progresso"]
+
+      - slug: "user-stories"
+        title: "User Stories e Cenários"
+        difficulty: beginner
+        order: 7
+        prerequisites: ["user-personas"]
+        tags: ["stories", "scenarios", "use-cases"]
+
+      - slug: "necessidades-do-usuario"
+        title: "Necessidades do Usuário"
+        difficulty: beginner
+        order: 8
+        prerequisites: ["user-personas"]
+        tags: ["goals", "needs", "motivations"]
+
+      - slug: "modelos-mentais"
+        title: "Modelos Mentais"
+        difficulty: intermediate
+        order: 9
+        prerequisites: ["necessidades-do-usuario"]
+        tags: ["mental-model", "conceptual-model", "expectativa"]
+
+      - slug: "segmentacao-de-usuarios"
+        title: "Segmentação de Usuários"
+        difficulty: intermediate
+        order: 10
+        prerequisites: ["user-personas", "dados-comportamentais"]
+        tags: ["segmentacao", "arquetipos-comportamentais", "grupos"]
+
+  - slug: "arquitetura-da-informacao"
+    name: "Arquitetura da Informação"
+    order: 7
+    topics:
+      - slug: "fundamentos-de-ia"
+        title: "Fundamentos de Arquitetura da Informação"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["ia", "organizacao", "estrutura"]
+
+      - slug: "taxonomia-e-ontologia"
+        title: "Taxonomia e Ontologia"
+        difficulty: intermediate
+        order: 2
+        prerequisites: ["fundamentos-de-ia"]
+        tags: ["classificacao", "relacao", "hierarquia"]
+
+      - slug: "organizacao-da-informacao"
+        title: "Organização da Informação"
+        difficulty: beginner
+        order: 3
+        prerequisites: ["fundamentos-de-ia"]
+        tags: ["hierarquica", "sequencial", "matricial"]
+
+      - slug: "sistemas-de-navegacao"
+        title: "Sistemas de Navegação"
+        difficulty: beginner
+        order: 4
+        prerequisites: ["organizacao-da-informacao"]
+        tags: ["navegacao", "estrutura", "acesso"]
+
+      - slug: "sistemas-de-rotulagem"
+        title: "Sistemas de Rotulagem"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["sistemas-de-navegacao"]
+        tags: ["labeling", "nomenclatura", "clareza"]
+
+      - slug: "sistemas-de-busca"
+        title: "Sistemas de Busca"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["sistemas-de-navegacao"]
+        tags: ["findability", "discoverability", "pesquisa"]
+
+      - slug: "card-sorting-em-ia"
+        title: "Card Sorting para IA"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["organizacao-da-informacao"]
+        tags: ["aberto", "fechado", "hibrido", "categorizacao"]
+
+      - slug: "auditoria-de-conteudo"
+        title: "Auditoria de Conteúdo"
+        difficulty: intermediate
+        order: 8
+        prerequisites: ["fundamentos-de-ia"]
+        tags: ["sitemap", "content-inventory", "content-audit"]
+
+      - slug: "vocabulario-e-metadata"
+        title: "Vocabulário e Metadata"
+        difficulty: advanced
+        order: 9
+        prerequisites: ["taxonomia-e-ontologia", "sistemas-de-rotulagem"]
+        tags: ["metadata", "controlled-vocabulary", "folksonomy"]
+
+      - slug: "navegacao-avancada"
+        title: "Navegação Avançada"
+        difficulty: intermediate
+        order: 10
+        prerequisites: ["sistemas-de-navegacao", "sistemas-de-busca"]
+        tags: ["faceted-navigation", "breadcrumbs", "wayfinding"]
+
+      - slug: "carga-cognitiva-e-information-scent"
+        title: "Carga Cognitiva e Information Scent"
+        difficulty: intermediate
+        order: 11
+        prerequisites: ["sistemas-de-navegacao"]
+        tags: ["cognitive-load", "information-scent", "pistas"]
+
+  - slug: "fluxos-e-navegacao"
+    name: "Fluxos e Navegação"
+    order: 8
+    topics:
+      - slug: "user-flows"
+        title: "User Flows e Task Flows"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["user-flow", "task-flow", "wireflow", "caminho"]
+
+      - slug: "flowcharts-e-decision-trees"
+        title: "Flowcharts e Decision Trees"
+        difficulty: beginner
+        order: 2
+        prerequisites: ["user-flows"]
+        tags: ["fluxograma", "decisao", "ramificacao"]
+
+      - slug: "padroes-de-navegacao"
+        title: "Padrões de Navegação"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["user-flows"]
+        tags: ["hub-and-spoke", "nested-doll", "bento-box", "filtered-view"]
+
+      - slug: "tipos-de-navegacao"
+        title: "Tipos de Navegação"
+        difficulty: beginner
+        order: 4
+        prerequisites: []
+        tags: ["primary", "secondary", "global", "local", "contextual", "utility", "footer"]
+
+      - slug: "menus-de-navegacao"
+        title: "Menus de Navegação"
+        difficulty: beginner
+        order: 5
+        prerequisites: ["tipos-de-navegacao"]
+        tags: ["hamburger", "tab", "stepper", "bottom-nav"]
+
+      - slug: "progressive-disclosure"
+        title: "Progressive Disclosure"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["tipos-de-navegacao"]
+        tags: ["revelacao-progressiva", "complexidade", "simplicidade"]
+
+      - slug: "estados-de-interface"
+        title: "Estados de Interface"
+        difficulty: beginner
+        order: 7
+        prerequisites: []
+        tags: ["error-state", "empty-state", "loading-state", "success-state"]
+
+  - slug: "usabilidade"
+    name: "Princípios de Usabilidade"
+    order: 9
+    topics:
+      - slug: "heuristicas-de-nielsen"
+        title: "Heurísticas de Nielsen"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["10-heuristicas", "visibilidade", "consistencia", "prevencao-de-erros"]
+
+      - slug: "affordances-e-signifiers"
+        title: "Affordances e Signifiers"
+        difficulty: beginner
+        order: 2
+        prerequisites: ["heuristicas-de-nielsen"]
+        tags: ["possibilidade", "indicador", "interacao"]
+
+      - slug: "feedback-e-feedforward"
+        title: "Feedback e Feedforward"
+        difficulty: beginner
+        order: 3
+        prerequisites: ["heuristicas-de-nielsen"]
+        tags: ["resposta", "antecipacao", "comunicacao"]
+
+      - slug: "constraints-e-mapping"
+        title: "Constraints e Mapping"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["affordances-e-signifiers"]
+        tags: ["restricoes", "mapeamento", "fisico", "cultural", "semantico", "logico"]
+
+      - slug: "atributos-de-usabilidade"
+        title: "Atributos de Usabilidade"
+        difficulty: beginner
+        order: 5
+        prerequisites: ["heuristicas-de-nielsen"]
+        tags: ["learnability", "efficiency", "memorability", "satisfaction"]
+
+      - slug: "prevencao-de-erros"
+        title: "Prevenção e Recuperação de Erros"
+        difficulty: beginner
+        order: 6
+        prerequisites: ["heuristicas-de-nielsen"]
+        tags: ["error-prevention", "error-recovery", "visibilidade"]
+
+      - slug: "leis-de-interacao"
+        title: "Leis de Interação"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["atributos-de-usabilidade"]
+        tags: ["fitts-law", "hicks-law", "millers-law", "jakobs-law"]
+
+      - slug: "leis-de-percepcao"
+        title: "Leis de Percepção e Comportamento"
+        difficulty: intermediate
+        order: 8
+        prerequisites: ["leis-de-interacao"]
+        tags: ["serial-position", "zeigarnik", "von-restorff", "proximity"]
+
+      - slug: "leis-de-design"
+        title: "Leis de Design"
+        difficulty: intermediate
+        order: 9
+        prerequisites: ["leis-de-percepcao"]
+        tags: ["aesthetic-usability", "peak-end", "doherty", "teslers-law", "pareto", "postels-law"]
+
+  # ═══════════════════════════════════════════════════════════════
+  # DESIGN DE INTERFACE (UI)
+  # ═══════════════════════════════════════════════════════════════
+
+  - slug: "componentes-e-padroes"
+    name: "Componentes e Padrões"
+    order: 10
+    topics:
+      - slug: "atomic-design"
+        title: "Atomic Design"
+        difficulty: intermediate
+        order: 1
+        prerequisites: []
+        tags: ["atomos", "moleculas", "organismos", "templates", "paginas"]
+
+      - slug: "design-patterns-ui"
+        title: "Design Patterns"
+        difficulty: intermediate
+        order: 2
+        prerequisites: ["atomic-design"]
+        tags: ["ui-patterns", "navigation", "input", "form", "search", "e-commerce"]
+
+      - slug: "botoes"
+        title: "Botões"
+        difficulty: beginner
+        order: 3
+        prerequisites: []
+        tags: ["primary", "secondary", "tertiary", "ghost", "icon-button"]
+
+      - slug: "inputs-e-formularios"
+        title: "Inputs e Formulários"
+        difficulty: beginner
+        order: 4
+        prerequisites: ["botoes"]
+        tags: ["text", "number", "email", "password", "checkbox", "radio", "toggle", "dropdown", "autocomplete", "datepicker"]
+
+      - slug: "tags-e-badges"
+        title: "Tags, Badges e Avatars"
+        difficulty: beginner
+        order: 5
+        prerequisites: []
+        tags: ["tags", "chips", "badges", "avatars", "indicadores"]
+
+      - slug: "tooltips-e-popovers"
+        title: "Tooltips e Popovers"
+        difficulty: beginner
+        order: 6
+        prerequisites: []
+        tags: ["dica", "contexto", "flutuante"]
+
+      - slug: "modais-e-drawers"
+        title: "Modais e Drawers"
+        difficulty: beginner
+        order: 7
+        prerequisites: []
+        tags: ["modal", "dialog", "drawer", "side-panel", "overlay"]
+
+      - slug: "notificacoes-ui"
+        title: "Alertas e Notificações"
+        difficulty: beginner
+        order: 8
+        prerequisites: []
+        tags: ["alerts", "toast", "snackbar", "feedback"]
+
+      - slug: "indicadores-de-progresso"
+        title: "Indicadores de Progresso"
+        difficulty: beginner
+        order: 9
+        prerequisites: []
+        tags: ["progress-bar", "spinner", "loader", "skeleton-screen"]
+
+      - slug: "cards-e-listas"
+        title: "Cards e Listas"
+        difficulty: beginner
+        order: 10
+        prerequisites: []
+        tags: ["card", "list", "data-table", "agrupamento"]
+
+      - slug: "paginacao-e-scroll"
+        title: "Paginação e Scroll"
+        difficulty: beginner
+        order: 11
+        prerequisites: []
+        tags: ["pagination", "infinite-scroll", "carregamento"]
+
+      - slug: "tabs-e-accordions"
+        title: "Tabs e Accordions"
+        difficulty: beginner
+        order: 12
+        prerequisites: []
+        tags: ["abas", "acordeao", "organizacao-de-conteudo"]
+
+      - slug: "carousels"
+        title: "Carousels e Sliders"
+        difficulty: beginner
+        order: 13
+        prerequisites: []
+        tags: ["carousel", "slider", "rotacao", "galeria"]
+
+      - slug: "componentes-de-navegacao"
+        title: "Componentes de Navegação"
+        difficulty: beginner
+        order: 14
+        prerequisites: []
+        tags: ["breadcrumbs", "steppers", "navbar", "sidebar", "footer"]
+
+      - slug: "secoes-de-pagina"
+        title: "Seções de Página"
+        difficulty: beginner
+        order: 15
+        prerequisites: []
+        tags: ["hero", "cta", "empty-state", "error-state", "404", "onboarding", "search-results", "filters"]
+
+  - slug: "estados-e-interacoes"
+    name: "Estados e Interações"
+    order: 11
+    topics:
+      - slug: "estados-de-componentes"
+        title: "Estados de Componentes"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["default", "hover", "active", "focused", "disabled", "loading", "error", "success", "selected", "pressed"]
+
+      - slug: "transicoes"
+        title: "Transições"
+        difficulty: beginner
+        order: 2
+        prerequisites: ["estados-de-componentes"]
+        tags: ["easing", "duracao", "delay", "timing"]
+
+      - slug: "animacoes"
+        title: "Animações"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["transicoes"]
+        tags: ["entrada", "saida", "loading", "scroll"]
+
+      - slug: "micro-interacoes"
+        title: "Micro-interações"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["transicoes"]
+        tags: ["detalhe", "feedback", "prazer", "engajamento"]
+
+      - slug: "parallax"
+        title: "Parallax Effect"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["animacoes"]
+        tags: ["profundidade", "scroll", "camadas"]
+
+      - slug: "principios-de-motion"
+        title: "Princípios de Motion Design"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["animacoes", "micro-interacoes"]
+        tags: ["motion", "principios", "coerencia"]
+
+      - slug: "animacao-aplicada-a-ui"
+        title: "Princípios de Animação Aplicados a UI"
+        difficulty: advanced
+        order: 7
+        prerequisites: ["principios-de-motion"]
+        tags: ["disney", "squash-stretch", "anticipation", "staging", "follow-through", "exaggeration"]
+
+  - slug: "design-systems"
+    name: "Design Systems"
+    order: 12
+    topics:
+      - slug: "design-tokens"
+        title: "Design Tokens"
+        difficulty: intermediate
+        order: 1
+        prerequisites: []
+        tags: ["color", "typography", "spacing", "shadow", "border-radius"]
+
+      - slug: "component-library"
+        title: "Component Library"
+        difficulty: intermediate
+        order: 2
+        prerequisites: ["design-tokens"]
+        tags: ["biblioteca", "pattern-library", "reutilizacao"]
+
+      - slug: "style-guide"
+        title: "Style Guide e Brand Guidelines"
+        difficulty: beginner
+        order: 3
+        prerequisites: []
+        tags: ["estilo", "marca", "identidade"]
+
+      - slug: "design-language"
+        title: "Design Language e Princípios"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["style-guide"]
+        tags: ["linguagem-visual", "principios", "consistencia"]
+
+      - slug: "voice-and-tone"
+        title: "Voice and Tone"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["design-language"]
+        tags: ["voz", "tom", "personalidade", "comunicacao"]
+
+      - slug: "sistemas-visuais"
+        title: "Sistemas Visuais"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["design-tokens"]
+        tags: ["iconografia", "ilustracao", "fotografia", "data-viz"]
+
+      - slug: "motion-guidelines"
+        title: "Motion Guidelines"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["principios-de-motion"]
+        tags: ["animacao", "diretrizes", "consistencia"]
+
+      - slug: "documentacao-de-design-system"
+        title: "Documentação de Design System"
+        difficulty: intermediate
+        order: 8
+        prerequisites: ["component-library"]
+        tags: ["documentacao", "component-api", "variantes", "estados", "composicao"]
+
+      - slug: "theming"
+        title: "Theming e Customização"
+        difficulty: intermediate
+        order: 9
+        prerequisites: ["design-tokens"]
+        tags: ["tema", "dark-mode", "customizacao"]
+
+      - slug: "governanca-de-design-system"
+        title: "Governança de Design System"
+        difficulty: advanced
+        order: 10
+        prerequisites: ["component-library", "documentacao-de-design-system"]
+        tags: ["escalabilidade", "manutencao", "versionamento", "governanca"]
+
+  - slug: "responsividade-e-adaptacao"
+    name: "Responsividade e Adaptação"
+    order: 13
+    topics:
+      - slug: "responsive-vs-adaptive"
+        title: "Responsive vs Adaptive Design"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["responsivo", "adaptativo", "abordagem"]
+
+      - slug: "mobile-first"
+        title: "Mobile-First Design"
+        difficulty: beginner
+        order: 2
+        prerequisites: ["responsive-vs-adaptive"]
+        tags: ["mobile-first", "desktop-first", "estrategia"]
+
+      - slug: "breakpoints-strategy"
+        title: "Estratégia de Breakpoints"
+        difficulty: beginner
+        order: 3
+        prerequisites: ["responsive-vs-adaptive"]
+        tags: ["breakpoints", "media-queries", "pontos-de-quebra"]
+
+      - slug: "tipografia-e-espacamento-fluido"
+        title: "Tipografia e Espaçamento Fluido"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["breakpoints-strategy"]
+        tags: ["fluid-typography", "fluid-spacing", "viewport-units"]
+
+      - slug: "media-queries-e-container-queries"
+        title: "Media Queries e Container Queries"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["breakpoints-strategy"]
+        tags: ["media-query", "container-query", "condicional"]
+
+      - slug: "design-para-toque"
+        title: "Design para Toque"
+        difficulty: beginner
+        order: 6
+        prerequisites: []
+        tags: ["touch-target", "thumb-zone", "one-handed", "reachability"]
+
+      - slug: "densidades-de-tela"
+        title: "Densidades de Tela"
+        difficulty: intermediate
+        order: 7
+        prerequisites: []
+        tags: ["1x", "2x", "3x", "retina", "orientacao"]
+
+      - slug: "cross-platform"
+        title: "Design Cross-Platform"
+        difficulty: intermediate
+        order: 8
+        prerequisites: ["mobile-first"]
+        tags: ["ios", "android", "plataforma"]
+
+      - slug: "progressive-enhancement"
+        title: "Progressive Enhancement e Graceful Degradation"
+        difficulty: intermediate
+        order: 9
+        prerequisites: ["responsive-vs-adaptive"]
+        tags: ["melhoria-progressiva", "degradacao-elegante", "feature-detection", "compatibilidade"]
+
+  # ═══════════════════════════════════════════════════════════════
+  # ACESSIBILIDADE (A11y)
+  # ═══════════════════════════════════════════════════════════════
+
+  - slug: "acessibilidade"
+    name: "Acessibilidade"
+    order: 14
+    topics:
+      - slug: "wcag"
+        title: "WCAG e Níveis de Conformidade"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["wcag", "a", "aa", "aaa", "pour"]
+
+      - slug: "tecnologias-assistivas"
+        title: "Tecnologias Assistivas"
+        difficulty: beginner
+        order: 2
+        prerequisites: ["wcag"]
+        tags: ["screen-reader", "keyboard", "voice-control", "switch-access", "magnification"]
+
+      - slug: "texto-alternativo"
+        title: "Texto Alternativo"
+        difficulty: beginner
+        order: 3
+        prerequisites: ["wcag"]
+        tags: ["alt-text", "descricao", "imagem"]
+
+      - slug: "aria"
+        title: "ARIA"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["wcag", "tecnologias-assistivas"]
+        tags: ["aria-labels", "roles", "states", "properties"]
+
+      - slug: "html-semantico"
+        title: "HTML Semântico"
+        difficulty: beginner
+        order: 5
+        prerequisites: ["wcag"]
+        tags: ["semantica", "significado", "estrutura"]
+
+      - slug: "gerenciamento-de-foco"
+        title: "Gerenciamento de Foco"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["tecnologias-assistivas"]
+        tags: ["focus-management", "focus-indicators", "skip-links", "landmark-regions"]
+
+      - slug: "hierarquia-e-formularios-acessiveis"
+        title: "Hierarquia e Formulários Acessíveis"
+        difficulty: beginner
+        order: 7
+        prerequisites: ["html-semantico"]
+        tags: ["heading-hierarchy", "form-labels", "error-identification"]
+
+      - slug: "contraste-e-cor-a11y"
+        title: "Contraste e Cor"
+        difficulty: beginner
+        order: 8
+        prerequisites: ["wcag"]
+        tags: ["contrast-ratio", "color-independence", "4-5-1", "3-1"]
+
+      - slug: "texto-acessivel"
+        title: "Texto Acessível"
+        difficulty: intermediate
+        order: 9
+        prerequisites: ["wcag"]
+        tags: ["text-resizing", "text-spacing", "reflow", "orientation"]
+
+      - slug: "movimento-e-animacao-acessiveis"
+        title: "Movimento e Animação Acessíveis"
+        difficulty: intermediate
+        order: 10
+        prerequisites: ["wcag"]
+        tags: ["prefers-reduced-motion", "animation-control", "timeout", "pause-stop-hide"]
+
+      - slug: "navegacao-por-teclado"
+        title: "Navegação por Teclado"
+        difficulty: beginner
+        order: 11
+        prerequisites: ["gerenciamento-de-foco"]
+        tags: ["keyboard-shortcuts", "focus-order", "tab-order", "touch-target-size"]
+
+      - slug: "midia-acessivel"
+        title: "Mídia Acessível"
+        difficulty: intermediate
+        order: 12
+        prerequisites: ["wcag"]
+        tags: ["captions", "audio-descriptions", "sign-language"]
+
+      - slug: "conteudo-acessivel"
+        title: "Conteúdo Acessível"
+        difficulty: intermediate
+        order: 13
+        prerequisites: ["wcag"]
+        tags: ["reading-level", "pronunciation", "link-purpose", "multiple-ways"]
+
+  # ═══════════════════════════════════════════════════════════════
+  # PROTOTIPAGEM E VALIDAÇÃO
+  # ═══════════════════════════════════════════════════════════════
+
+  - slug: "prototipagem-e-validacao"
+    name: "Prototipagem e Validação"
+    order: 15
+    topics:
+      - slug: "niveis-de-fidelidade"
+        title: "Níveis de Fidelidade"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["paper", "low-fi", "mid-fi", "high-fi", "fidelity-spectrum"]
+
+      - slug: "prototipos-interativos"
+        title: "Protótipos Interativos"
+        difficulty: intermediate
+        order: 2
+        prerequisites: ["niveis-de-fidelidade"]
+        tags: ["clickable", "animated", "html-prototype", "interactive"]
+
+      - slug: "prototipagem-rapida"
+        title: "Prototipagem Rápida"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["niveis-de-fidelidade"]
+        tags: ["rapid-prototyping", "iterative-design", "progressive-fidelity"]
+
+      - slug: "design-sprints"
+        title: "Design Sprints e Lean UX"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["prototipagem-rapida"]
+        tags: ["design-sprint", "lean-ux", "agile-ux"]
+
+      - slug: "mvp-e-mlp"
+        title: "MVP e MLP"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["design-sprints"]
+        tags: ["minimum-viable-product", "minimum-lovable-product"]
+
+      - slug: "testes-explorativos"
+        title: "Testes Explorativos"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["niveis-de-fidelidade"]
+        tags: ["wizard-of-oz", "concierge", "hallway-testing"]
+
+      - slug: "testes-de-usabilidade-validacao"
+        title: "Testes de Usabilidade"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["prototipos-interativos"]
+        tags: ["usability-testing", "think-aloud", "retrospective", "concurrent"]
+
+      - slug: "avaliacao-heuristica"
+        title: "Avaliação Heurística e Expert Review"
+        difficulty: intermediate
+        order: 8
+        prerequisites: ["heuristicas-de-nielsen"]
+        tags: ["expert-review", "heuristic-evaluation", "cognitive-walkthrough", "pluralistic-walkthrough"]
+
+      - slug: "auditoria-de-acessibilidade"
+        title: "Auditoria de Acessibilidade"
+        difficulty: intermediate
+        order: 9
+        prerequisites: ["wcag"]
+        tags: ["accessibility-audit", "conformidade", "validacao"]
+
+      - slug: "metricas-de-teste"
+        title: "Métricas de Teste"
+        difficulty: intermediate
+        order: 10
+        prerequisites: ["testes-de-usabilidade-validacao"]
+        tags: ["sus", "nps", "csat", "task-success", "time-on-task", "error-rate"]
+
+  # ═══════════════════════════════════════════════════════════════
+  # PSICOLOGIA E COMPORTAMENTO
+  # ═══════════════════════════════════════════════════════════════
+
+  - slug: "psicologia-e-comportamento"
+    name: "Psicologia e Comportamento"
+    order: 16
+    topics:
+      - slug: "gestalt-aplicada"
+        title: "Gestalt Aplicada"
+        difficulty: beginner
+        order: 1
+        prerequisites: ["gestalt-principles"]
+        tags: ["percepcao", "agrupamento", "organizacao"]
+
+      - slug: "carga-cognitiva"
+        title: "Carga Cognitiva"
+        difficulty: intermediate
+        order: 2
+        prerequisites: []
+        tags: ["cognitive-load", "working-memory", "long-term-memory"]
+
+      - slug: "atencao"
+        title: "Atenção"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["carga-cognitiva"]
+        tags: ["attention-span", "selective", "divided", "sustained"]
+
+      - slug: "percepcao-visual"
+        title: "Percepção Visual"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["gestalt-aplicada"]
+        tags: ["pattern-recognition", "depth", "color-perception", "motion-perception"]
+
+      - slug: "padroes-de-escaneamento"
+        title: "Padrões de Escaneamento e Leitura"
+        difficulty: beginner
+        order: 5
+        prerequisites: []
+        tags: ["scanning", "reading-patterns", "banner-blindness", "change-blindness"]
+
+      - slug: "tomada-de-decisao"
+        title: "Tomada de Decisão"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["carga-cognitiva"]
+        tags: ["behavioral-economics", "choice-architecture", "choice-overload", "decision-fatigue"]
+
+      - slug: "vieses-cognitivos"
+        title: "Vieses Cognitivos"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["tomada-de-decisao"]
+        tags: ["anchoring", "confirmation", "loss-aversion", "sunk-cost", "framing", "status-quo"]
+
+      - slug: "influencia-social"
+        title: "Influência Social"
+        difficulty: intermediate
+        order: 8
+        prerequisites: ["vieses-cognitivos"]
+        tags: ["social-proof", "authority", "scarcity", "reciprocity", "bandwagon"]
+
+      - slug: "habitos-e-motivacao"
+        title: "Hábitos e Motivação"
+        difficulty: intermediate
+        order: 9
+        prerequisites: []
+        tags: ["habit-formation", "trigger-action-reward", "gamification", "intrinsic", "extrinsic", "flow-state"]
+
+      - slug: "design-emocional"
+        title: "Design Emocional"
+        difficulty: advanced
+        order: 10
+        prerequisites: ["habitos-e-motivacao"]
+        tags: ["visceral", "behavioral", "reflective", "emotional-design"]
+
+      - slug: "persuasao-e-etica"
+        title: "Persuasão e Ética em Design"
+        difficulty: intermediate
+        order: 11
+        prerequisites: ["influencia-social"]
+        tags: ["persuasive-design", "dark-patterns", "ethical-design", "inclusive-design", "universal-design"]
+
+  # ═══════════════════════════════════════════════════════════════
+  # DESIGN VISUAL AVANÇADO
+  # ═══════════════════════════════════════════════════════════════
+
+  - slug: "design-visual-avancado"
+    name: "Design Visual Avançado"
+    order: 17
+    topics:
+      - slug: "peso-e-fluxo-visual"
+        title: "Peso e Fluxo Visual"
+        difficulty: intermediate
+        order: 1
+        prerequisites: ["hierarquia-visual"]
+        tags: ["visual-weight", "visual-direction", "visual-flow", "focal-point"]
+
+      - slug: "simetria-e-composicao"
+        title: "Simetria e Composição"
+        difficulty: intermediate
+        order: 2
+        prerequisites: ["equilibrio"]
+        tags: ["rule-of-odds", "symmetry", "asymmetry", "static", "dynamic"]
+
+      - slug: "profundidade-e-perspectiva"
+        title: "Profundidade e Perspectiva"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["peso-e-fluxo-visual"]
+        tags: ["layering", "overlapping", "isometric", "atmospheric", "linear-perspective"]
+
+      - slug: "fotografia-em-design"
+        title: "Fotografia em Design"
+        difficulty: beginner
+        order: 4
+        prerequisites: []
+        tags: ["cropping", "aspect-ratios", "formatos", "otimizacao", "resolucao"]
+
+      - slug: "design-de-icones"
+        title: "Design de Ícones"
+        difficulty: intermediate
+        order: 5
+        prerequisites: []
+        tags: ["icon-grid", "optical-alignment", "consistencia", "sizing", "line", "filled", "duotone"]
+
+      - slug: "ilustracao"
+        title: "Ilustração"
+        difficulty: intermediate
+        order: 6
+        prerequisites: []
+        tags: ["estilos", "principios", "svg-vs-png"]
+
+      - slug: "carregamento-de-imagens"
+        title: "Carregamento de Imagens"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["fotografia-em-design"]
+        tags: ["placeholder", "lazy-loading", "progressive-loading"]
+
+      - slug: "sombras-e-elevacao"
+        title: "Sombras e Elevação"
+        difficulty: intermediate
+        order: 8
+        prerequisites: []
+        tags: ["cast-shadow", "drop-shadow", "inner-shadow", "direction", "softness", "material-design"]
+
+      - slug: "estilos-visuais"
+        title: "Estilos Visuais"
+        difficulty: intermediate
+        order: 9
+        prerequisites: ["sombras-e-elevacao"]
+        tags: ["neumorphism", "skeuomorphism", "flat-design"]
+
+      - slug: "camadas-e-sobreposicao"
+        title: "Camadas e Sobreposição"
+        difficulty: intermediate
+        order: 10
+        prerequisites: []
+        tags: ["layers", "z-index", "overlays"]
+
+      - slug: "efeitos-visuais"
+        title: "Efeitos Visuais"
+        difficulty: intermediate
+        order: 11
+        prerequisites: ["camadas-e-sobreposicao"]
+        tags: ["blur", "frosted-glass", "opacity", "transparency"]
+
+      - slug: "gradientes"
+        title: "Gradientes"
+        difficulty: beginner
+        order: 12
+        prerequisites: []
+        tags: ["linear", "radial", "conic", "gradient-mesh"]
+
+  # ═══════════════════════════════════════════════════════════════
+  # CONTEÚDO E COMUNICAÇÃO
+  # ═══════════════════════════════════════════════════════════════
+
+  - slug: "ux-writing"
+    name: "UX Writing"
+    order: 18
+    topics:
+      - slug: "microcopy"
+        title: "Microcopy"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["texto-curto", "interface", "orientacao"]
+
+      - slug: "voice-and-tone-writing"
+        title: "Voice and Tone"
+        difficulty: intermediate
+        order: 2
+        prerequisites: ["microcopy"]
+        tags: ["voz", "tom", "personalidade", "consistencia"]
+
+      - slug: "estrategia-de-conteudo"
+        title: "Estratégia de Conteúdo"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["microcopy"]
+        tags: ["content-strategy", "content-design"]
+
+      - slug: "principios-de-escrita"
+        title: "Princípios de Escrita"
+        difficulty: beginner
+        order: 4
+        prerequisites: []
+        tags: ["clareza", "concisao", "conversacional", "acao", "voz-ativa"]
+
+      - slug: "copy-de-interface"
+        title: "Copy de Interface"
+        difficulty: beginner
+        order: 5
+        prerequisites: ["principios-de-escrita"]
+        tags: ["error-messages", "success", "empty-state", "onboarding", "cta", "labels", "placeholder", "tooltips", "404"]
+
+      - slug: "localizacao-e-i18n"
+        title: "Localização e Internacionalização"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["estrategia-de-conteudo"]
+        tags: ["localizacao", "i18n", "traducao", "sensibilidade-cultural"]
+
+      - slug: "conteudo-escaneavel"
+        title: "Conteúdo Escaneável"
+        difficulty: beginner
+        order: 7
+        prerequisites: ["principios-de-escrita"]
+        tags: ["plain-language", "reading-level", "scannable", "hierarquia-textual", "progressive-disclosure"]
+
+  # ═══════════════════════════════════════════════════════════════
+  # PROCESSO E METODOLOGIA
+  # ═══════════════════════════════════════════════════════════════
+
+  - slug: "processo-e-metodologia"
+    name: "Processo e Metodologia"
+    order: 19
+    topics:
+      - slug: "design-thinking"
+        title: "Design Thinking"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["empatia", "definicao", "ideacao", "prototipagem", "teste"]
+
+      - slug: "double-diamond"
+        title: "Double Diamond"
+        difficulty: beginner
+        order: 2
+        prerequisites: ["design-thinking"]
+        tags: ["divergente", "convergente", "explorar", "definir"]
+
+      - slug: "tecnicas-de-ideacao"
+        title: "Técnicas de Ideação"
+        difficulty: beginner
+        order: 3
+        prerequisites: ["design-thinking"]
+        tags: ["brainstorming", "brainwriting", "mind-mapping", "crazy-eights", "how-might-we", "scamper", "six-thinking-hats"]
+
+      - slug: "priorizacao"
+        title: "Priorização"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["tecnicas-de-ideacao"]
+        tags: ["affinity-mapping", "dot-voting", "moscow", "kano", "impact-vs-effort"]
+
+      - slug: "stakeholder-management"
+        title: "Gestão de Stakeholders"
+        difficulty: intermediate
+        order: 5
+        prerequisites: []
+        tags: ["stakeholders", "alinhamento", "comunicacao"]
+
+      - slug: "critica-e-feedback"
+        title: "Crítica e Feedback de Design"
+        difficulty: beginner
+        order: 6
+        prerequisites: []
+        tags: ["design-critique", "review", "feedback-loops"]
+
+      - slug: "co-design-e-workshops"
+        title: "Co-design e Workshops"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["critica-e-feedback"]
+        tags: ["co-design", "participatory-design", "facilitacao"]
+
+      - slug: "design-handoff"
+        title: "Design Handoff"
+        difficulty: intermediate
+        order: 8
+        prerequisites: []
+        tags: ["handoff", "developer-collaboration", "design-qa", "specs", "redlines", "asset-export"]
+
+      - slug: "documentacao-de-design"
+        title: "Documentação de Design"
+        difficulty: intermediate
+        order: 9
+        prerequisites: ["design-handoff"]
+        tags: ["rationale", "decision-documentation", "version-control", "naming-conventions"]
+
+      - slug: "estrategia-de-design"
+        title: "Estratégia de Design"
+        difficulty: intermediate
+        order: 10
+        prerequisites: ["design-thinking"]
+        tags: ["business-goals", "user-goals", "design-vision", "design-strategy"]
+
+      - slug: "metricas-de-negocio"
+        title: "Métricas de Negócio"
+        difficulty: intermediate
+        order: 11
+        prerequisites: ["estrategia-de-design"]
+        tags: ["kpis", "okrs", "success-metrics", "design-roi"]
+
+      - slug: "analise-competitiva"
+        title: "Análise Competitiva"
+        difficulty: intermediate
+        order: 12
+        prerequisites: []
+        tags: ["benchmarking", "swot", "value-proposition"]
+
+      - slug: "constraints-e-riscos"
+        title: "Constraints e Riscos"
+        difficulty: intermediate
+        order: 13
+        prerequisites: ["estrategia-de-design"]
+        tags: ["problem-solution-fit", "product-market-fit", "roadmap", "constraints", "risk-assessment"]
+
+  # ═══════════════════════════════════════════════════════════════
+  # PLATAFORMAS E CONTEXTOS
+  # ═══════════════════════════════════════════════════════════════
+
+  - slug: "plataformas-e-contextos"
+    name: "Plataformas e Contextos"
+    order: 20
+    topics:
+      - slug: "guidelines-de-plataforma"
+        title: "Guidelines de Plataforma"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["ios-hig", "material-design", "diretrizes"]
+
+      - slug: "gestos-de-toque"
+        title: "Gestos de Toque"
+        difficulty: beginner
+        order: 2
+        prerequisites: []
+        tags: ["tap", "double-tap", "long-press", "swipe", "pinch", "rotate", "drag", "gesture-affordances"]
+
+      - slug: "navegacao-mobile"
+        title: "Navegação Mobile"
+        difficulty: beginner
+        order: 3
+        prerequisites: ["guidelines-de-plataforma"]
+        tags: ["tab-bar", "hamburger", "bottom-sheet", "bottom-navigation", "fab"]
+
+      - slug: "anatomia-de-app"
+        title: "Anatomia de App"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["guidelines-de-plataforma"]
+        tags: ["edge-to-edge", "safe-areas", "notch", "dynamic-island", "status-bar"]
+
+      - slug: "interacoes-mobile"
+        title: "Interações Mobile"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["gestos-de-toque"]
+        tags: ["pull-to-refresh", "swipe-actions", "modal-sheets", "action-sheets", "context-menus", "haptic-feedback"]
+
+      - slug: "notificacoes-e-permissoes"
+        title: "Notificações e Permissões"
+        difficulty: intermediate
+        order: 6
+        prerequisites: ["guidelines-de-plataforma"]
+        tags: ["push-notifications", "in-app", "permissions-design", "offline-states"]
+
+      - slug: "onboarding-mobile"
+        title: "Onboarding Mobile"
+        difficulty: beginner
+        order: 7
+        prerequisites: []
+        tags: ["app-icons", "splash-screens", "onboarding-screens"]
+
+      - slug: "layout-web"
+        title: "Layout Web"
+        difficulty: beginner
+        order: 8
+        prerequisites: []
+        tags: ["above-the-fold", "hero", "long-form"]
+
+      - slug: "navegacao-web"
+        title: "Navegação Web"
+        difficulty: beginner
+        order: 9
+        prerequisites: ["layout-web"]
+        tags: ["sticky-nav", "mega-menus", "multi-level", "breadcrumbs", "sidebar", "footer"]
+
+      - slug: "formularios-web"
+        title: "Formulários Web"
+        difficulty: intermediate
+        order: 10
+        prerequisites: []
+        tags: ["form-design", "multi-step", "validation", "inline-validation", "error-handling"]
+
+      - slug: "busca-e-filtragem-web"
+        title: "Busca e Filtragem Web"
+        difficulty: intermediate
+        order: 11
+        prerequisites: ["navegacao-web"]
+        tags: ["search", "autocomplete", "filters", "facets", "pagination-vs-infinite-scroll"]
+
+      - slug: "dados-e-dashboards"
+        title: "Dados e Dashboards"
+        difficulty: intermediate
+        order: 12
+        prerequisites: []
+        tags: ["data-tables", "dashboards", "charts", "data-visualization"]
+
+      - slug: "midia-web"
+        title: "Mídia Web"
+        difficulty: intermediate
+        order: 13
+        prerequisites: []
+        tags: ["responsive-images", "hero-images", "background-videos"]
+
+      - slug: "interacoes-web"
+        title: "Interações Web"
+        difficulty: intermediate
+        order: 14
+        prerequisites: []
+        tags: ["cursor-states", "hover-effects", "scroll-behavior", "smooth-scrolling", "scroll-snap", "parallax"]
+
+      - slug: "interfaces-de-voz"
+        title: "Interfaces de Voz"
+        difficulty: advanced
+        order: 15
+        prerequisites: []
+        tags: ["vui", "conversational-ui", "chatbot", "voice-commands", "nlp"]
+
+      - slug: "realidade-aumentada-e-virtual"
+        title: "Realidade Aumentada e Virtual"
+        difficulty: advanced
+        order: 16
+        prerequisites: []
+        tags: ["ar", "vr", "spatial-design", "3d-interface", "gesture-based"]
+
+      - slug: "wearables-e-iot"
+        title: "Wearables e IoT"
+        difficulty: advanced
+        order: 17
+        prerequisites: []
+        tags: ["watch-ui", "tv-ott", "10-foot-ui", "car-interface", "iot"]
+
+  # ═══════════════════════════════════════════════════════════════
+  # ÉTICA E RESPONSABILIDADE
+  # ═══════════════════════════════════════════════════════════════
+
+  - slug: "etica-em-design"
+    name: "Ética e Responsabilidade"
+    order: 21
+    topics:
+      - slug: "privacy-by-design"
+        title: "Privacy by Design"
+        difficulty: intermediate
+        order: 1
+        prerequisites: []
+        tags: ["data-privacy", "informed-consent", "transparency", "user-control", "data-minimization"]
+
+      - slug: "dark-patterns"
+        title: "Dark Patterns"
+        difficulty: intermediate
+        order: 2
+        prerequisites: []
+        tags: ["confirmshaming", "disguised-ads", "forced-continuity", "hidden-costs", "misdirection", "roach-motel", "trick-questions"]
+
+      - slug: "design-anti-vicio"
+        title: "Design Anti-Vício"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["dark-patterns"]
+        tags: ["addiction-design", "attention-economy", "etica"]
+
+      - slug: "vieses-algoritmicos"
+        title: "Vieses Algorítmicos"
+        difficulty: advanced
+        order: 4
+        prerequisites: ["dark-patterns"]
+        tags: ["algorithmic-bias", "fairness", "impacto"]
+
+      - slug: "design-inclusivo"
+        title: "Design Inclusivo"
+        difficulty: beginner
+        order: 5
+        prerequisites: []
+        tags: ["inclusive-design", "diversity", "cultural-sensitivity", "accessibility-as-default"]
+
+      - slug: "design-sustentavel"
+        title: "Design Sustentável e Bem-Estar Digital"
+        difficulty: intermediate
+        order: 6
+        prerequisites: []
+        tags: ["sustainable-design", "digital-wellbeing", "screen-time", "notification-ethics"]
+
+  # ═══════════════════════════════════════════════════════════════
+  # PERFORMANCE E OTIMIZAÇÃO
+  # ═══════════════════════════════════════════════════════════════
+
+  - slug: "performance-e-otimizacao"
+    name: "Performance e Otimização"
+    order: 22
+    topics:
+      - slug: "performance-percebida"
+        title: "Performance Percebida"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["perceived-performance", "loading-strategies", "skeleton-screens", "progressive-loading"]
+
+      - slug: "core-web-vitals"
+        title: "Core Web Vitals"
+        difficulty: intermediate
+        order: 2
+        prerequisites: ["performance-percebida"]
+        tags: ["fcp", "lcp", "cls", "fid", "tti"]
+
+      - slug: "otimizacao-de-recursos"
+        title: "Otimização de Recursos"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["core-web-vitals"]
+        tags: ["critical-rendering-path", "preloading", "prefetching", "resource-hints"]
+
+      - slug: "otimizacao-de-assets"
+        title: "Otimização de Assets"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["otimizacao-de-recursos"]
+        tags: ["image-optimization", "font-loading", "code-splitting", "minification", "caching", "cdn"]
+
+      - slug: "cro"
+        title: "Otimização de Conversão (CRO)"
+        difficulty: intermediate
+        order: 5
+        prerequisites: []
+        tags: ["conversion-rate", "otimizacao"]
+
+      - slug: "pontos-de-friccao"
+        title: "Pontos de Fricção"
+        difficulty: beginner
+        order: 6
+        prerequisites: ["cro"]
+        tags: ["cognitive-friction", "visual-friction", "form-fields"]
+
+      - slug: "sinais-de-confianca"
+        title: "Sinais de Confiança"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["cro"]
+        tags: ["trust-signals", "social-proof", "urgency", "scarcity", "value-proposition"]
+
+      - slug: "otimizacao-de-cta"
+        title: "Otimização de CTA"
+        difficulty: intermediate
+        order: 8
+        prerequisites: ["cro"]
+        tags: ["cta", "button-copy", "placement", "size", "color"]
+
+      - slug: "otimizacao-de-checkout"
+        title: "Otimização de Checkout"
+        difficulty: intermediate
+        order: 9
+        prerequisites: ["pontos-de-friccao"]
+        tags: ["checkout-flow", "guest-checkout", "progress-indicators"]
+
+      - slug: "recuperacao-de-abandono"
+        title: "Recuperação de Abandono"
+        difficulty: intermediate
+        order: 10
+        prerequisites: ["otimizacao-de-checkout"]
+        tags: ["exit-intent", "abandonment-recovery"]
+
+  # ═══════════════════════════════════════════════════════════════
+  # MÉTRICAS E ANALYTICS
+  # ═══════════════════════════════════════════════════════════════
+
+  - slug: "metricas-e-analytics"
+    name: "Métricas e Analytics"
+    order: 23
+    topics:
+      - slug: "metricas-de-engajamento"
+        title: "Métricas de Engajamento"
+        difficulty: beginner
+        order: 1
+        prerequisites: []
+        tags: ["bounce-rate", "exit-rate", "pages-per-session", "session-duration", "return-visitor"]
+
+      - slug: "metricas-de-produto"
+        title: "Métricas de Produto"
+        difficulty: intermediate
+        order: 2
+        prerequisites: ["metricas-de-engajamento"]
+        tags: ["feature-adoption", "usage-frequency"]
+
+      - slug: "metricas-de-conversao"
+        title: "Métricas de Conversão"
+        difficulty: intermediate
+        order: 3
+        prerequisites: ["metricas-de-engajamento"]
+        tags: ["conversion-rate", "ctr", "completion-rate", "drop-off-rate"]
+
+      - slug: "analise-de-funil"
+        title: "Análise de Funil e Cohort"
+        difficulty: intermediate
+        order: 4
+        prerequisites: ["metricas-de-conversao"]
+        tags: ["funnel-analysis", "cohort-analysis"]
+
+      - slug: "metricas-de-retencao"
+        title: "Métricas de Retenção"
+        difficulty: intermediate
+        order: 5
+        prerequisites: ["metricas-de-produto"]
+        tags: ["retention-rate", "churn-rate", "dau", "wau", "mau", "stickiness"]
+
+      - slug: "metricas-de-usabilidade"
+        title: "Métricas de Usabilidade"
+        difficulty: intermediate
+        order: 6
+        prerequisites: []
+        tags: ["task-success", "time-on-task", "error-rate", "learnability"]
+
+      - slug: "analytics-comportamental"
+        title: "Analytics Comportamental"
+        difficulty: intermediate
+        order: 7
+        prerequisites: ["metricas-de-engajamento"]
+        tags: ["heatmap", "scroll-depth", "rage-clicks", "form-analytics"]
