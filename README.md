@@ -70,7 +70,8 @@ Diferente de tutoriais que ensinam frameworks e ferramentas que mudam a cada ano
 
 ---
 
-## 🚀 Executando Localmente
+<details>
+<summary><strong>🚀 Executando Localmente</strong></summary>
 
 ### Pré-requisitos
 
@@ -93,8 +94,7 @@ npm run dev
 
 A aplicação estará disponível em `http://localhost:5173`
 
-<details>
-<summary><strong>📝 Scripts Disponíveis</strong></summary>
+#### Scripts Disponíveis
 
 ```bash
 npm run dev        # Servidor de desenvolvimento (Vite)
@@ -108,46 +108,22 @@ npm run format     # Formatar código (Biome)
 
 ---
 
-## 🤝 Contribuindo
+<details>
+<summary><strong>🤝 Contribuindo <em>[EM BREVE]</em></strong></summary>
 
-Themelion é um projeto **open source** e aceita contribuições!
+Themelion é um projeto **open source** e vai aceitar contribuições em breve! Estamos estruturando o processo de contribuição para garantir qualidade e consistência.
 
 Estamos especialmente interessados em:
 
 - 📝 **Criação de conteúdo** — Escrever novos tópicos técnicos
-- 🌍 **Tradução** — Adicionar suporte a outros idiomas
 - 🐛 **Correções de bugs** — Melhorar a experiência do usuário
 - ✨ **Novas funcionalidades** — Sugerir e implementar melhorias
 
-### Como contribuir
+Enquanto isso, se você tem interesse em contribuir, acompanhe o repositório e fique de olho nas issues — em breve abriremos as primeiras `good first issue` para novos contribuidores.
 
-Se você tem interesse em se tornar um contribuidor, entre em contato:
-
-📧 **[contato@pedrotoselli.com](mailto:contato@pedrotoselli.com)**
-
-<details>
-<summary><strong>📋 Diretrizes de Contribuição</strong></summary>
-
-Antes de contribuir, por favor:
-
-1. Leia o arquivo `CLAUDE.md` na raiz do projeto — ele contém toda a documentação técnica, arquitetura e filosofia do projeto
-2. Familiarize-se com o fluxo de criação de conteúdo
-3. Siga o style guide do projeto (Biome cuida da formatação)
-4. Commits devem ser em inglês e focados em uma única mudança
-5. Use branch naming: `seu-username/feature-name`
+Para mais detalhes, leia o [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 </details>
-
----
-
-## 👨‍💻 Autor
-
-**Pedro Toselli**
-
-- 🌐 Website: [pedrotoselli.com](https://pedrotoselli.com)
-- 📧 Email: [contato@pedrotoselli.com](mailto:contato@pedrotoselli.com)
-- 💼 LinkedIn: [Pedro Toselli](https://linkedin.com/in/pedrotoselli)
-- 🐙 GitHub: [@phtoselli](https://github.com/phtoselli)
 
 ---
 
