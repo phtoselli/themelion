@@ -1,0 +1,330 @@
+---
+title: "Unit Testing"
+slug: "unit-testing"
+room: "engenharia-de-software"
+category: "testes"
+difficulty: "beginner"
+order: 1
+prerequisites: ["pure-functions"]
+tags: ["qualidade", "automacao", "confianca"]
+aiGenerated: true
+---
+
+## O que é
+
+**Unit testing (teste unitário)** é testar **uma unidade isolada de código** — geralmente uma função ou método — verificando que ela produz o resultado esperado para diferentes entradas. O teste é automatizado: roda com um comando e reporta passa/falha sem intervenção humana.
+
+```python
+# Função a ser testada
+def sum_values(a, b):
+    return a + b
+
+# Teste unitário
+def test_sum_positive_numbers():
+    assert sum_values(2, 3) == 5
+
+def test_sum_negative_numbers():
+    assert sum_values(-1, -2) == -3
+
+def test_sum_with_zero():
+    assert sum_values(0, 5) == 5
+```
+
+## Por que importa
+
+Sem testes, a única forma de verificar se o código funciona é testar manualmente — abrir a aplicação, clicar em botões, preencher formulários. Isso é:
+
+- **Lento:** minutos para testar um cenário, horas para testar todos
+- **Não repetível:** esquece de testar um caso, introduz bug silencioso
+- **Não escalável:** 100 features = 100 caminhos para testar manualmente
+
+Com testes unitários:
+- **Segundos** para verificar centenas de cenários
+- **Automático:** roda em cada commit, CI/CD barra código quebrado
+- **Documentação viva:** testes mostram como a função deve se comportar
+- **Refatoração segura:** muda a implementação, roda os testes, confirma que nada quebrou
+
+## Como funciona
+
+### Estrutura de um teste (AAA Pattern)
+
+Todo teste unitário segue o padrão **Arrange-Act-Assert**:
+
+```python
+def test_calculate_discount():
+    # Arrange (preparar): montar os dados de entrada
+    price = 100.00
+    discount_percent = 15
+
+    # Act (agir): executar a função sendo testada
+    result = calculate_discount(price, discount_percent)
+
+    # Assert (verificar): conferir o resultado
+    assert result == 85.00
+```
+
+```
+Arrange → Configurar o cenário
+Act     → Executar a unidade sendo testada
+Assert  → Verificar se o resultado é o esperado
+```
+
+### O que é uma "unidade"?
+
+```
+Unidade = menor pedaço de código testável de forma isolada
+
+Geralmente:
+  - Uma função pura (entrada → saída, sem side effects)
+  - Um método de uma classe
+  - Um módulo com responsabilidade única
+
+NÃO é unidade:
+  - Um fluxo completo (login → dashboard → logout)
+  - Uma API inteira (request → response)
+  - Interação com banco de dados
+```
+
+### Isolamento com mocks e stubs
+
+Quando a função depende de algo externo (banco, API, filesystem), usamos **mocks** para simular essas dependências:
+
+```python
+# Função que depende de serviço externo
+def get_user_greeting(user_id, user_service):
+    user = user_service.find(user_id)
+    return f"Olá, {user.name}!"
+
+# Teste com mock: simula o serviço sem acessar banco real
+def test_greeting_returns_user_name():
+    # Arrange: criar mock do serviço
+    mock_service = Mock()
+    mock_service.find.return_value = User(name="João")
+
+    # Act
+    result = get_user_greeting(42, mock_service)
+
+    # Assert
+    assert result == "Olá, João!"
+    mock_service.find.assert_called_once_with(42)
+```
+
+```
+Mock:  objeto falso que simula comportamento e registra chamadas
+Stub:  objeto falso que retorna valores fixos (sem verificar chamadas)
+Spy:   objeto real que registra chamadas (verifica interações)
+
+Use mocks para isolar a unidade de suas dependências.
+O teste verifica a LÓGICA da função, não o banco ou a API.
+```
+
+### Casos de teste: o que testar?
+
+```
+Para cada função, teste:
+
+1. Caso feliz (happy path):
+   - Entrada válida → resultado esperado
+
+2. Casos de borda (edge cases):
+   - Lista vazia, string vazia, zero, null
+   - Primeiro e último elemento
+   - Valores negativos, muito grandes
+
+3. Casos de erro:
+   - Entrada inválida → erro ou valor default esperado
+   - Divisão por zero, índice fora do array
+
+4. Equivalência:
+   - Se funciona para 5, funciona para 3 e 7 (mesma classe)
+   - Não precisa testar TODOS os números, apenas representantes
+```
+
+```python
+# Exemplo: testar função de validação de email
+def test_valid_email():
+    assert is_valid_email("user@domain.com") == True
+
+def test_email_without_at():
+    assert is_valid_email("userdomain.com") == False
+
+def test_email_without_domain():
+    assert is_valid_email("user@") == False
+
+def test_empty_email():
+    assert is_valid_email("") == False
+
+def test_email_with_subdomain():
+    assert is_valid_email("user@sub.domain.com") == True
+```
+
+### Nomenclatura de testes
+
+```
+Bons nomes de teste descrevem:
+  O QUE está sendo testado + CENÁRIO + RESULTADO ESPERADO
+
+❌ test_1, test_discount, test_it_works
+✅ test_calculate_discount_with_15_percent_returns_85
+✅ test_validate_email_without_at_symbol_returns_false
+✅ test_find_user_with_invalid_id_throws_not_found_error
+```
+
+## Na prática
+
+### Frameworks de teste populares
+
+```
+Python:      pytest (padrão de fato), unittest (stdlib)
+TypeScript:  Vitest, Jest
+C#:          xUnit, NUnit, MSTest
+Go:          testing (stdlib) — não precisa de framework externo
+Rust:        cargo test (built-in) — testes no próprio arquivo
+Java:        JUnit
+Ruby:        RSpec, Minitest
+PHP:         PHPUnit
+```
+
+### Execução e relatório
+
+```bash
+# Rodar todos os testes
+pytest                    # Python
+npx vitest                # TypeScript
+dotnet test               # C#
+go test ./...             # Go
+cargo test                # Rust
+
+# Saída típica:
+# ✓ test_sum_positive_numbers         (0.01s)
+# ✓ test_sum_negative_numbers         (0.01s)
+# ✗ test_sum_with_zero                (0.01s)
+#   FAILED: expected 5, got 0
+#
+# 2 passed, 1 failed (0.03s)
+```
+
+### Test coverage
+
+```
+Coverage mede quanto do código é executado pelos testes.
+
+  90% coverage = 90% das linhas/branches são exercitados por testes
+
+Mas coverage alta ≠ testes bons:
+  - 100% coverage com asserts fracos ainda é frágil
+  - Testes que verificam implementação ao invés de comportamento quebram em refatorações
+
+Meta pragmática: 70-80% coverage para código de negócio.
+Não busque 100% — o custo de manter testes para getters/setters triviais não compensa.
+```
+
+## Quando usar (e quando não usar)
+
+### Sempre teste:
+- **Lógica de negócio:** cálculos, validações, regras de domínio
+- **Funções puras:** entrada → saída determinística
+- **Edge cases conhecidos:** divisão por zero, limites, valores nulos
+- **Bugs corrigidos:** escreva um teste que reproduz o bug, depois corrija
+
+### Não vale a pena testar:
+- **Código trivial:** getters, setters, delegações diretas
+- **Código gerado:** migrations, código auto-gerado por frameworks
+- **Integração com terceiros:** melhor coberto por testes de integração
+- **UI pixel-perfect:** testes visuais/snapshot são mais adequados
+
+### Testes unitários vs outros tipos:
+
+```
+Unit tests:
+  - Rápidos (milissegundos)
+  - Testam lógica isolada
+  - Não precisam de infra (banco, rede)
+
+Integration tests:
+  - Mais lentos (segundos)
+  - Testam componentes juntos
+  - Precisam de infra (banco, API mock)
+
+E2E tests:
+  - Lentos (segundos a minutos)
+  - Testam fluxo completo do usuário
+  - Precisam da aplicação rodando
+```
+
+## Erros comuns
+
+### 1. Testar implementação ao invés de comportamento
+
+```python
+# ❌ Teste acoplado à implementação
+def test_sort_uses_quicksort():
+    with patch('module.quicksort') as mock:
+        sort_list([3, 1, 2])
+        mock.assert_called_once()  # Quebra se trocar para mergesort!
+
+# ✅ Teste de comportamento
+def test_sort_returns_ordered_list():
+    assert sort_list([3, 1, 2]) == [1, 2, 3]  # Funciona com qualquer algoritmo
+```
+
+### 2. Testes que dependem de ordem ou estado global
+
+```python
+# ❌ Teste depende de outro teste ter rodado antes
+counter = 0
+
+def test_increment():
+    global counter
+    counter += 1
+    assert counter == 1  # Funciona só se rodar primeiro!
+
+def test_increment_again():
+    global counter
+    counter += 1
+    assert counter == 2  # Falha se rodar isolado
+
+# ✅ Cada teste é independente
+def test_increment():
+    counter = Counter(initial=0)
+    counter.increment()
+    assert counter.value == 1
+```
+
+### 3. Asserts fracos ou ausentes
+
+```python
+# ❌ Teste sem assert — não verifica nada!
+def test_create_user():
+    user = create_user("João", "joao@email.com")
+    # ... e? O que deveria acontecer?
+
+# ❌ Assert genérico — não verifica o valor correto
+def test_create_user():
+    user = create_user("João", "joao@email.com")
+    assert user is not None  # Passa mesmo se dados estiverem errados
+
+# ✅ Asserts específicos
+def test_create_user():
+    user = create_user("João", "joao@email.com")
+    assert user.name == "João"
+    assert user.email == "joao@email.com"
+```
+
+### 4. Testes lentos por falta de isolamento
+
+```python
+# ❌ Teste unitário que acessa banco real
+def test_find_user():
+    db.insert(User(name="João"))   # Lento: acesso a disco
+    user = find_user("João")       # Lento: query real
+    assert user.name == "João"
+    db.delete(user)                # Cleanup
+
+# ✅ Mock do repositório — milissegundos
+def test_find_user():
+    repo = Mock()
+    repo.find_by_name.return_value = User(name="João")
+    user = find_user("João", repo=repo)
+    assert user.name == "João"
+```

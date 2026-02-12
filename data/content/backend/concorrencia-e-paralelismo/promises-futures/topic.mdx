@@ -1,0 +1,237 @@
+---
+title: "Promises e Futures"
+slug: "promises-futures"
+room: "backend"
+category: "concorrencia-e-paralelismo"
+difficulty: "intermediate"
+order: 5
+prerequisites: ["asynchronous-programming"]
+tags: ["resultado-futuro", "composicao", "encadeamento"]
+aiGenerated: true
+---
+
+## O que é
+
+Uma Promise (JavaScript, Dart) ou Future (Rust, Java, C#, Python) é um **objeto que representa o resultado futuro de uma operação assíncrona**. Em vez de receber o resultado imediatamente, você recebe uma "promessa" de que o resultado estará disponível depois — pode ser um valor (sucesso) ou um erro (falha).
+
+```javascript
+// fetch() retorna uma Promise, NÃO os dados
+const promise = fetch('/api/users');
+// promise = Promise { <pending> }
+
+// O resultado chega depois, via .then()
+promise
+    .then(response => response.json())  // Quando resolver com sucesso
+    .catch(error => console.error(error)); // Quando falhar
+```
+
+Analogia: uma Promise é como um ticket de pedido no restaurante. Você recebe o ticket imediatamente, faz outras coisas, e quando o pedido fica pronto, te chamam.
+
+## Por que importa
+
+Promises resolvem o **callback hell** — o problema de callbacks aninhados que tornam código assíncrono ilegível:
+
+```javascript
+// ❌ Callback hell
+getUser(id, (err, user) => {
+    if (err) return handleError(err);
+    getOrders(user.id, (err, orders) => {
+        if (err) return handleError(err);
+        getDetails(orders[0].id, (err, details) => {
+            if (err) return handleError(err);
+            render(details);
+        });
+    });
+});
+
+// ✅ Promises — encadeamento linear
+getUser(id)
+    .then(user => getOrders(user.id))
+    .then(orders => getDetails(orders[0].id))
+    .then(details => render(details))
+    .catch(err => handleError(err));  // Um catch para todos os erros
+```
+
+## Como funciona
+
+### Os 3 estados
+
+Uma Promise está sempre em um destes estados:
+
+- **PENDING (pendente):** aguardando resultado — a operação ainda não terminou
+- **FULFILLED (concluída com sucesso):** a operação terminou e retornou um valor
+- **REJECTED (rejeitada com erro):** a operação falhou
+
+```
+Promise:
+  ┌──────────────┐
+  │   PENDING    │ ← Estado inicial (aguardando)
+  │  (pendente)  │
+  └──────┬───────┘
+         │
+   ┌─────┴─────┐
+   ↓           ↓
+┌──────────┐  ┌──────────┐
+│FULFILLED │  │ REJECTED │
+│(sucesso) │  │ (erro)   │
+└──────────┘  └──────────┘
+```
+
+Uma vez resolvida (fulfilled ou rejected), a Promise **nunca muda de estado** — o resultado é definitivo.
+
+### Criando Promises
+
+```javascript
+// Criar Promise manualmente
+const promise = new Promise((resolve, reject) => {
+    // Operação assíncrona
+    const data = doSomething();
+
+    if (data) {
+        resolve(data);  // Sucesso → .then() recebe 'data'
+    } else {
+        reject(new Error('Falhou'));  // Erro → .catch() recebe o Error
+    }
+});
+```
+
+### Encadeamento (chaining)
+
+Cada `.then()` retorna uma **nova Promise**, permitindo encadear:
+
+```javascript
+fetch('/api/users/42')
+    .then(response => {
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        return response.json();  // Retorna Promise → próximo .then() espera
+    })
+    .then(user => {
+        console.log(user.name);
+        return fetch(`/api/users/${user.id}/orders`);
+    })
+    .then(response => response.json())
+    .then(orders => console.log('Pedidos:', orders))
+    .catch(err => console.error('Erro em qualquer etapa:', err))
+    .finally(() => console.log('Sempre executa'));
+```
+
+### Combinadores de Promises
+
+```javascript
+const p1 = fetch('/api/users');
+const p2 = fetch('/api/products');
+const p3 = fetch('/api/orders');
+
+// Promise.all — espera TODAS resolverem (falha se QUALQUER uma falhar)
+const [users, products, orders] = await Promise.all([p1, p2, p3]);
+
+// Promise.allSettled — espera TODAS, independente de sucesso/falha
+const results = await Promise.allSettled([p1, p2, p3]);
+// results = [
+//   { status: 'fulfilled', value: ... },
+//   { status: 'rejected', reason: Error },
+//   { status: 'fulfilled', value: ... }
+// ]
+
+// Promise.race — retorna a PRIMEIRA que resolver (ou rejeitar)
+const fastest = await Promise.race([p1, p2, p3]);
+
+// Promise.any — retorna a PRIMEIRA que RESOLVER com sucesso
+const firstSuccess = await Promise.any([p1, p2, p3]);
+// Ignora rejeições, só falha se TODAS falharem
+```
+
+### Promise vs Callback
+
+| Aspecto | Callback | Promise |
+|---|---|---|
+| Composição | Aninhamento (pyramid) | Encadeamento (.then) |
+| Erros | Manual em cada nível | Um .catch() para todos |
+| Combinação | Difícil (manual) | Promise.all, race, etc. |
+| Estado | Sem garantia | Imutável após settled |
+| Legibilidade | Piora com complexidade | Mantém linear |
+
+## Na prática
+
+<CodeTabs />
+
+## Quando usar (e quando não usar)
+
+### Use Promises para:
+- **Operações assíncronas** que retornam um resultado
+- **Encadear** múltiplas operações assíncronas
+- **Combinar** resultados de operações paralelas
+
+### Use async/await ao invés de .then():
+Na maioria dos casos, `async/await` é mais legível que `.then()` chains. Promises são o mecanismo por baixo; async/await é a sintaxe mais ergonômica.
+
+### Use callbacks quando:
+- **Event handlers** (click, scroll) — não retornam resultado futuro
+- APIs que esperam callbacks (bibliotecas legadas)
+
+## Erros comuns
+
+### 1. Promise sem catch
+
+```javascript
+// ❌ Unhandled Promise Rejection — crash em Node.js
+fetchData().then(data => process(data));
+// Se falhar, erro é silencioso (browser) ou crash (Node.js)
+
+// ✅ Sempre tratar rejeição
+fetchData()
+    .then(data => process(data))
+    .catch(err => handleError(err));
+```
+
+### 2. Aninhamento de Promises (Promise hell)
+
+```javascript
+// ❌ Voltou ao callback hell
+fetch('/api/users')
+    .then(res => {
+        res.json().then(users => {
+            fetch(`/api/users/${users[0].id}`).then(res => {
+                // Pyramid novamente...
+            });
+        });
+    });
+
+// ✅ Retornar Promise para encadear
+fetch('/api/users')
+    .then(res => res.json())
+    .then(users => fetch(`/api/users/${users[0].id}`))
+    .then(res => res.json())
+    .then(user => console.log(user));
+```
+
+### 3. Esquecer de retornar dentro de .then()
+
+```javascript
+// ❌ Sem return: próximo .then() recebe undefined
+fetch('/api/users')
+    .then(res => {
+        res.json();  // Esqueceu o return!
+    })
+    .then(data => {
+        console.log(data);  // undefined!
+    });
+
+// ✅ Retornar a Promise
+fetch('/api/users')
+    .then(res => res.json())     // Arrow function com return implícito
+    .then(data => console.log(data));  // Dados corretos
+```
+
+### 4. Promise.all falha com um erro
+
+```javascript
+// ❌ Se QUALQUER promise falhar, ALL rejeita e descarta os resultados
+await Promise.all([fetchA(), fetchB(), fetchC()]);
+// Se fetchB() falhar, resultados de A e C são perdidos
+
+// ✅ allSettled: recebe todos os resultados (sucessos e falhas)
+const results = await Promise.allSettled([fetchA(), fetchB(), fetchC()]);
+const successful = results.filter(r => r.status === 'fulfilled');
+const failed = results.filter(r => r.status === 'rejected');
+```

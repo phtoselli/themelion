@@ -1,0 +1,285 @@
+---
+title: "HTTP Status Codes"
+slug: "http-status-codes"
+room: "frontend"
+category: "fundamentos-web"
+difficulty: "beginner"
+order: 3
+prerequisites: ["http-methods"]
+tags: ["resposta", "erro", "sucesso"]
+aiGenerated: true
+---
+
+## O que é
+
+Status codes são **números de 3 dígitos** que o servidor envia na resposta HTTP para indicar o resultado da requisição. São a "linguagem" padronizada entre cliente e servidor: em vez de ler o body para saber se deu certo, o status code responde instantaneamente.
+
+```
+HTTP/1.1 200 OK          ← Deu certo
+HTTP/1.1 404 Not Found   ← Recurso não existe
+HTTP/1.1 500 Internal Server Error  ← Servidor quebrou
+```
+
+O primeiro dígito define a **categoria**:
+
+| Range | Categoria | Significado |
+|---|---|---|
+| **1xx** | Informativo | Requisição recebida, processando |
+| **2xx** | Sucesso | Requisição processada com sucesso |
+| **3xx** | Redirecionamento | Cliente precisa fazer mais algo |
+| **4xx** | Erro do cliente | Requisição inválida |
+| **5xx** | Erro do servidor | Servidor falhou ao processar |
+
+## Por que importa
+
+Status codes são essenciais para:
+
+**Frontend:** decidir o que mostrar ao usuário
+```javascript
+const res = await fetch('/api/users');
+if (res.status === 200) showUsers(await res.json());
+if (res.status === 401) redirectToLogin();
+if (res.status === 404) showNotFound();
+if (res.status === 500) showServerError();
+```
+
+**Backend:** comunicar o resultado corretamente
+```python
+# ❌ Sempre retornar 200 com mensagem de erro no body
+return 200, {"error": "User not found"}  # Cliente acha que deu certo!
+
+# ✅ Status code correto
+return 404, {"error": "User not found"}  # Cliente sabe que é erro
+```
+
+**Intermediários:** proxies, CDNs e caches usam status codes para decidir o que cachear (200), o que redirecionar (301), o que não cachear (500).
+
+## Como funciona
+
+### 2xx — Sucesso
+
+**200 OK** — Requisição processada com sucesso. Resposta contém o resultado.
+```
+GET /api/users/42 → 200 OK + {"name": "João", "age": 28}
+```
+
+**201 Created** — Recurso criado com sucesso. Usado após POST.
+```
+POST /api/users → 201 Created
+Location: /api/users/43
+Body: {"id": 43, "name": "João"}
+```
+
+**204 No Content** — Sucesso, mas sem body na resposta. Usado após DELETE.
+```
+DELETE /api/users/42 → 204 No Content (sem body)
+```
+
+### 3xx — Redirecionamento
+
+**301 Moved Permanently** — Recurso mudou de URL permanentemente. Buscadores atualizam o link. Navegadores cacheiam o redirecionamento.
+```
+GET /old-page → 301 Moved Permanently
+Location: /new-page
+```
+
+**302 Found** — Redirecionamento temporário. URL original continua válida.
+```
+GET /promo → 302 Found
+Location: /summer-sale  (temporário, volta ao normal depois)
+```
+
+**304 Not Modified** — O recurso não mudou desde a última vez. Navegador usa a versão do cache.
+```
+GET /api/data
+If-None-Match: "abc123"  ← hash da versão cacheada
+
+→ 304 Not Modified (sem body — use o cache!)
+```
+
+### 4xx — Erro do cliente
+
+**400 Bad Request** — Requisição malformada (JSON inválido, campos faltando).
+```
+POST /api/users
+Body: {"name": ""}  ← campo obrigatório vazio
+→ 400 Bad Request + {"error": "Nome é obrigatório"}
+```
+
+**401 Unauthorized** — Não autenticado. O cliente não se identificou (sem token, token expirado).
+```
+GET /api/dashboard
+(sem header Authorization)
+→ 401 Unauthorized + {"error": "Token não fornecido"}
+```
+
+**403 Forbidden** — Autenticado mas sem permissão. O servidor sabe quem você é, mas você não tem acesso.
+```
+DELETE /api/users/42
+Authorization: Bearer token-de-usuario-comum
+→ 403 Forbidden + {"error": "Apenas admins podem deletar usuários"}
+```
+
+**404 Not Found** — Recurso não existe.
+```
+GET /api/users/99999 → 404 Not Found
+```
+
+**405 Method Not Allowed** — Método HTTP não suportado para este recurso.
+```
+DELETE /api/config → 405 Method Not Allowed
+(config não pode ser deletada, apenas lida ou atualizada)
+```
+
+**409 Conflict** — Conflito com o estado atual do recurso.
+```
+POST /api/users
+Body: {"email": "joao@email.com"}  ← email já existe
+→ 409 Conflict + {"error": "Email já cadastrado"}
+```
+
+**422 Unprocessable Entity** — Dados sintaticamente corretos mas semanticamente inválidos.
+```
+POST /api/users
+Body: {"name": "João", "age": -5}  ← idade negativa
+→ 422 Unprocessable Entity + {"error": "Idade deve ser positiva"}
+```
+
+**429 Too Many Requests** — Rate limiting. Cliente enviou requisições demais.
+```
+→ 429 Too Many Requests
+Retry-After: 60  ← tente novamente em 60 segundos
+```
+
+### 5xx — Erro do servidor
+
+**500 Internal Server Error** — Erro genérico no servidor. Algo deu errado que não foi previsto.
+```
+GET /api/users → 500 Internal Server Error
+(bug no código, banco caiu, exceção não tratada)
+```
+
+**502 Bad Gateway** — Servidor intermediário (proxy, load balancer) recebeu resposta inválida do servidor real.
+
+**503 Service Unavailable** — Servidor temporariamente fora do ar (manutenção, sobrecarga).
+```
+→ 503 Service Unavailable
+Retry-After: 300  ← volte em 5 minutos
+```
+
+**504 Gateway Timeout** — Servidor intermediário não recebeu resposta a tempo do servidor real.
+
+## Na prática
+
+Referência rápida dos códigos mais usados no dia a dia:
+
+```
+Sucesso:
+  200 OK              → GET bem-sucedido
+  201 Created         → POST criou recurso
+  204 No Content      → DELETE bem-sucedido
+
+Redirecionamento:
+  301 Moved           → URL mudou permanentemente
+  304 Not Modified    → Use o cache
+
+Erro do cliente:
+  400 Bad Request     → Dados inválidos
+  401 Unauthorized    → Não logado
+  403 Forbidden       → Sem permissão
+  404 Not Found       → Não existe
+  409 Conflict        → Duplicata
+  422 Unprocessable   → Validação falhou
+  429 Too Many        → Rate limit
+
+Erro do servidor:
+  500 Internal Error  → Bug no servidor
+  503 Unavailable     → Servidor fora do ar
+```
+
+## Quando usar (e quando não usar)
+
+### Escolha o status code mais específico:
+
+| Situação | Código correto |
+|---|---|
+| Busca retornou dados | 200 |
+| Recurso criado | 201 |
+| Ação sem resposta | 204 |
+| Dados inválidos | 400 ou 422 |
+| Precisa de login | 401 |
+| Sem permissão | 403 |
+| Não encontrado | 404 |
+| Duplicata | 409 |
+| Bug no servidor | 500 |
+
+### Não invente status codes
+
+Existem ~60 status codes oficiais. Use os existentes. Não crie 299, 499 ou outros não padronizados — intermediários não sabem o que fazer com eles.
+
+## Erros comuns
+
+### 1. Usar 200 para tudo (inclusive erros)
+
+```javascript
+// ❌ Status 200 mas é um erro
+res.status(200).json({ error: "Usuário não encontrado" });
+// O frontend acha que deu certo!
+
+// ✅ Status correto
+res.status(404).json({ error: "Usuário não encontrado" });
+```
+
+### 2. Confundir 401 e 403
+
+```
+401 = QUEM é você? (não autenticado — precisa fazer login)
+403 = Eu SEI quem você é, mas NÃO TEM PERMISSÃO
+
+Exemplo:
+- Sem token → 401 (faça login)
+- Com token de usuário comum tentando acessar /admin → 403 (sem permissão)
+```
+
+### 3. Retornar 500 para erros do cliente
+
+```python
+# ❌ Erro de validação retornando 500
+try:
+    user = create_user(data)
+except ValidationError as e:
+    return 500, {"error": str(e)}  # 500 = bug no servidor, mas o erro é do cliente!
+
+# ✅ Erro de validação = 400 ou 422
+except ValidationError as e:
+    return 422, {"error": str(e)}
+```
+
+### 4. Não usar 201 para criação
+
+```python
+# ❌ Criou recurso mas retorna 200
+@app.post("/users")
+def create_user():
+    user = db.create(...)
+    return 200, user  # Deveria ser 201!
+
+# ✅
+    return 201, user
+```
+
+### 5. Ignorar 429 (Rate Limiting)
+
+```javascript
+// ❌ Ignorar o 429 e continuar enviando requisições
+while (true) {
+    await fetch('/api/data');  // Servidor vai bloquear ou banir
+}
+
+// ✅ Respeitar o Retry-After
+const res = await fetch('/api/data');
+if (res.status === 429) {
+    const retryAfter = res.headers.get('Retry-After');
+    await sleep(retryAfter * 1000);
+}
+```

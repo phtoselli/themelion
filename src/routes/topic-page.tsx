@@ -5,6 +5,7 @@ import { useTopicTitles } from "@client/hooks/use-topic-titles";
 import { getActiveRoadmap } from "@client/lib/active-roadmap";
 import { getTopicProgress, markTopicCompleted, markTopicVisited } from "@client/lib/progress";
 import { PageLayout } from "@client/modules/layout/components/page-layout";
+import { AiGeneratedBadge } from "@client/modules/study/components/ai-generated-badge";
 import { DifficultyBadge } from "@client/modules/study/components/difficulty-badge";
 import { TagBadge } from "@client/modules/study/components/tag-badge";
 import { TopicContent } from "@client/modules/study/components/topic-content";
@@ -13,6 +14,7 @@ import {
 	ArrowRight,
 	BookOpen,
 	Check,
+	ChevronLeft,
 	CircleCheck,
 	Link as LinkIcon,
 } from "lucide-react";
@@ -103,6 +105,19 @@ export const TopicPage = () => {
 		};
 	}, [room, topic, topicTitles]);
 
+	// Link de voltar: trilha ativa → voltar para trilha, senão → voltar para módulo
+	const backLink = useMemo(() => {
+		if (!topic) return null;
+		const activeRoadmapSlug = getActiveRoadmap();
+		if (activeRoadmapSlug) {
+			const roadmap = getRoadmapBySlug(activeRoadmapSlug);
+			if (roadmap) {
+				return { href: `/roadmap/${activeRoadmapSlug}`, label: t.topicPage.backToRoadmap };
+			}
+		}
+		return { href: `/room/${topic.room}`, label: t.topicPage.backToModule };
+	}, [topic, t]);
+
 	const handleMarkCompleted = useCallback(() => {
 		if (!topic) return;
 		markTopicCompleted(topic.slug);
@@ -145,6 +160,35 @@ export const TopicPage = () => {
 				{ label: topic.title },
 			]}
 		>
+			{/* Barra de navegacao superior: voltar + prev/next */}
+			<div className="topic-top-bar">
+				{backLink && (
+					<Link to={backLink.href} className="topic-back-link">
+						<ChevronLeft size={16} />
+						<span>{backLink.label}</span>
+					</Link>
+				)}
+
+				<div className="topic-top-nav">
+					{prevTopic ? (
+						<Link to={`/topic/${prevTopic.slug}`} className="topic-top-nav-btn">
+							<ArrowLeft size={14} />
+							<span>{prevTopic.title}</span>
+						</Link>
+					) : (
+						<div />
+					)}
+					{nextTopic ? (
+						<Link to={`/topic/${nextTopic.slug}`} className="topic-top-nav-btn" data-align="right">
+							<span>{nextTopic.title}</span>
+							<ArrowRight size={14} />
+						</Link>
+					) : (
+						<div />
+					)}
+				</div>
+			</div>
+
 			{/* Header do topico */}
 			<div className="topic-header">
 				<div className="topic-title-row">
@@ -162,6 +206,7 @@ export const TopicPage = () => {
 					{topic.tags.map((tag) => (
 						<TagBadge key={tag}>{tag}</TagBadge>
 					))}
+					{topic.aiGenerated && <AiGeneratedBadge />}
 				</div>
 
 				{topic.prerequisites.length > 0 && (

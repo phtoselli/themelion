@@ -1,0 +1,248 @@
+---
+title: "Pure Functions"
+slug: "pure-functions"
+room: "fundamentos"
+category: "conceitos-de-linguagens"
+difficulty: "beginner"
+order: 9
+prerequisites: []
+tags: ["sem-efeito-colateral", "determinismo", "testabilidade"]
+aiGenerated: true
+---
+
+## O que é
+
+Uma função pura é uma função que segue duas regras:
+
+1. **Determinística:** para a mesma entrada, **sempre** retorna a mesma saída
+2. **Sem efeitos colaterais:** não modifica nada fora do seu escopo (sem mudar variáveis globais, sem escrever em disco, sem fazer requests)
+
+```python
+# ✅ Pura: mesma entrada → mesma saída, sem side effects
+def add(a, b):
+    return a + b
+
+add(2, 3)  # Sempre 5. Não importa quando, onde ou quantas vezes chamar.
+
+# ❌ Impura: resultado depende de estado externo
+total = 0
+def add_to_total(x):
+    global total
+    total += x      # Modifica estado externo (side effect)
+    return total    # Resultado depende de 'total' anterior
+```
+
+## Por que importa
+
+Funções puras são **previsíveis, testáveis e componíveis**. Funções impuras são imprevisíveis, difíceis de testar e fonte de bugs sutis.
+
+**Testabilidade:**
+```python
+# Função pura: teste trivial
+def calculate_tax(price, rate):
+    return price * rate
+
+assert calculate_tax(100, 0.15) == 15  # Sempre verdade. Sem setup, sem mocks.
+
+# Função impura: precisa de setup, mocks, limpeza
+def calculate_tax_impure(price):
+    rate = get_tax_rate_from_database()  # Depende do banco
+    log_calculation(price, rate)         # Escreve em disco
+    return price * rate
+# Teste precisa: mock do banco, mock do logger, cleanup depois
+```
+
+**Paralelismo:**
+Funções puras podem rodar em paralelo sem problemas, porque não compartilham dados. Funções impuras que modificam os mesmos dados podem causar resultados inesperados quando rodam ao mesmo tempo.
+
+**Cache (memoization):**
+```python
+# Pura: pode cachear o resultado com segurança
+from functools import lru_cache
+
+@lru_cache
+def fibonacci(n):
+    if n <= 1: return n
+    return fibonacci(n - 1) + fibonacci(n - 2)
+# fibonacci(100) calculado uma vez, cacheado para sempre
+```
+
+## Como funciona
+
+### Regra 1: Determinismo
+
+A saída depende **exclusivamente** da entrada:
+
+```python
+# ✅ Determinística
+def greet(name):
+    return f"Olá, {name}"
+
+# ❌ Não-determinística: depende do relógio
+def greet_with_time(name):
+    hour = datetime.now().hour  # Valor muda a cada segundo
+    if hour < 12:
+        return f"Bom dia, {name}"
+    return f"Boa tarde, {name}"
+
+# ❌ Não-determinística: depende de random
+import random
+def roll_dice():
+    return random.randint(1, 6)  # Resultado diferente a cada chamada
+```
+
+### Regra 2: Sem efeitos colaterais
+
+A função não modifica nada fora do seu escopo:
+
+```python
+# Efeitos colaterais comuns:
+# 1. Modificar variável global/externa
+counter = 0
+def increment():
+    global counter
+    counter += 1  # ❌ Side effect
+
+# 2. Modificar argumento mutável
+def add_item(lst, item):
+    lst.append(item)  # ❌ Modifica a lista original
+    return lst
+
+# 3. I/O (ler/escrever disco, rede, console)
+def save_user(user):
+    db.save(user)  # ❌ Escreve no banco
+    print("Saved")  # ❌ Escreve no console
+```
+
+**Versão pura:**
+```python
+# 1. Retornar novo valor ao invés de modificar
+def increment(counter):
+    return counter + 1  # ✅ Retorna novo valor
+
+# 2. Retornar nova lista ao invés de modificar a original
+def add_item(lst, item):
+    return [*lst, item]  # ✅ Nova lista, original intacta
+
+# 3. Separar lógica (pura) de I/O (impura)
+def prepare_user_data(user):  # ✅ Pura: só transforma dados
+    return {"name": user.name, "email": user.email}
+
+def save_user(user):  # Impura (inevitável), mas a lógica está isolada
+    data = prepare_user_data(user)
+    db.save(data)
+```
+
+### Substituição segura (transparência referencial)
+
+Uma expressão é **referencialmente transparente** se pode ser substituída pelo seu valor sem mudar o comportamento do programa. Em outras palavras: se `add(2, 3)` sempre retorna 5, você pode trocar `add(2, 3)` por `5` em qualquer lugar do código sem quebrar nada:
+
+```python
+# ✅ Referencialmente transparente
+x = add(2, 3)  # Pode substituir por 5 em qualquer lugar
+y = add(2, 3) + add(2, 3)  # Mesmo que 5 + 5 = 10
+
+# ❌ Não é referencialmente transparente
+x = get_current_time()  # Não pode substituir por um valor fixo
+y = read_file("data.txt")  # Resultado pode mudar entre chamadas
+```
+
+### Pureza no mundo real
+
+Programas reais **precisam** de efeitos colaterais (ler input, escrever output, acessar banco). A estratégia é **maximizar funções puras e isolar as impuras**:
+
+A ideia é: coloque toda a lógica "inteligente" do seu programa em funções puras (o "núcleo"). As partes que precisam interagir com o mundo externo (banco de dados, arquivos, internet) ficam na "casca", finas e simples. Isso se chama "Functional Core, Imperative Shell".
+
+## Na prática
+
+<CodeTabs />
+
+## Quando usar (e quando não usar)
+
+### Priorize funções puras para:
+- **Lógica de negócio:** validação, cálculos, transformações de dados
+- **Utilitários:** formatação, parsing, conversão
+- **Algoritmos:** sorting, searching, filtering, mapping
+
+### Aceite impureza para:
+- **I/O:** leitura/escrita de arquivos, banco de dados, rede
+- **Logging:** registrar eventos (mas isole da lógica)
+- **Interação com usuário:** input/output
+- **Geração de IDs:** UUIDs, timestamps
+
+### Estratégia: empurre impureza para as bordas
+
+```python
+# ❌ Impureza misturada com lógica
+def process_order(order_id):
+    order = db.get(order_id)           # Impuro
+    discount = calculate_discount(order) # Poderia ser puro
+    order.total -= discount             # Mutação
+    db.save(order)                      # Impuro
+    send_email(order.user)              # Impuro
+
+# ✅ Lógica pura isolada, I/O nas bordas
+def calculate_order_total(order, discount_rules):  # Pura
+    discount = apply_rules(order, discount_rules)
+    return order.subtotal - discount
+
+# Orquestração impura (fina, sem lógica)
+def process_order(order_id):
+    order = db.get(order_id)
+    new_total = calculate_order_total(order, DISCOUNT_RULES)
+    db.update(order_id, total=new_total)
+    send_email(order.user)
+```
+
+## Erros comuns
+
+### 1. Achar que "retornar valor" = puro
+
+```python
+# ❌ Retorna valor MAS tem side effect
+def get_next_id():
+    global _counter
+    _counter += 1      # Modifica estado global
+    return _counter     # Retorna valor, mas não é pura
+```
+
+### 2. Modificar argumento mutável
+
+```python
+# ❌ Modifica a lista original (side effect)
+def sort_and_return(lst):
+    lst.sort()          # Modifica lst in-place!
+    return lst
+
+original = [3, 1, 2]
+result = sort_and_return(original)
+print(original)  # [1, 2, 3] — original foi modificado!
+
+# ✅ Criar nova lista
+def sort_and_return(lst):
+    return sorted(lst)  # Retorna nova lista, original intacta
+```
+
+### 3. Dependência escondida de estado global
+
+```python
+# ❌ Parece pura, mas depende de config global
+config = {"tax_rate": 0.15}
+
+def calculate_tax(price):
+    return price * config["tax_rate"]  # Depende de estado externo
+
+# ✅ Tornar a dependência explícita via parâmetro
+def calculate_tax(price, tax_rate):
+    return price * tax_rate
+```
+
+### 4. Confundir "sem side effects" com "sem argumentos mutáveis"
+
+```python
+# ✅ Pura — recebe referência mas não modifica
+def count_active(users):
+    return sum(1 for u in users if u.active)  # Apenas lê, não modifica
+```
+
+Receber um objeto mutável não torna a função impura — **modificá-lo** sim.

@@ -1,0 +1,245 @@
+---
+title: "Git Fundamentals"
+slug: "git-fundamentals"
+room: "engenharia-de-software"
+category: "versionamento-e-colaboracao"
+difficulty: "beginner"
+order: 1
+prerequisites: []
+tags: ["versionamento", "controle", "historico"]
+aiGenerated: true
+---
+
+## O que é
+
+Git é um **sistema de controle de versão distribuído** que rastreia todas as mudanças em arquivos ao longo do tempo. Pense em Git como um "save game" infinito para código: cada commit é um snapshot do projeto inteiro que você pode voltar a qualquer momento.
+
+**Distribuído** significa que cada desenvolvedor tem uma cópia completa do histórico do projeto na sua máquina — não depende de um servidor central para funcionar.
+
+## Por que importa
+
+Sem controle de versão, desenvolver software em equipe é como editar um documento com 10 pessoas ao mesmo tempo sem o Google Docs:
+
+- **Sem Git:** "Quem sobrescreveu meu arquivo?" / "Qual versão é a mais recente?" / "Como eu desfaço isso?"
+- **Com Git:** cada mudança é rastreada, atribuída a um autor, e pode ser desfeita ou comparada com qualquer versão anterior
+
+Git resolve três problemas fundamentais:
+1. **Histórico:** o que mudou, quando, por quem e por quê
+2. **Colaboração:** múltiplas pessoas trabalhando no mesmo código sem conflitos
+3. **Segurança:** reverter mudanças ruins, recuperar código perdido
+
+## Como funciona
+
+### Os três estados do Git
+
+Todo arquivo em um repositório Git está em um de três estados:
+
+```
+Working Directory       Staging Area (Index)      Repository (.git)
+┌──────────────┐       ┌──────────────┐          ┌──────────────┐
+│ Arquivos     │──────→│ Preparados   │─────────→│ Commits      │
+│ modificados  │ add   │ para commit  │ commit   │ (histórico)  │
+└──────────────┘       └──────────────┘          └──────────────┘
+                                                        │
+      ←─────────────────────────────────────────────────┘
+                        checkout / restore
+```
+
+- **Working Directory:** seus arquivos no disco, onde você edita
+- **Staging Area:** área de preparação — você escolhe quais mudanças entram no próximo commit
+- **Repository:** histórico de commits armazenado na pasta `.git`
+
+### Anatomia de um commit
+
+Cada commit contém:
+
+```
+commit a1b2c3d4e5f6...
+├── Snapshot de todos os arquivos (tree)
+├── Referência ao commit anterior (parent)
+├── Autor: "João Silva <joao@email.com>"
+├── Data: "2024-01-15 14:30:00"
+└── Mensagem: "fix: corrigir cálculo de desconto"
+```
+
+Commits formam uma **corrente** — cada commit aponta para o anterior, como elos de uma cadeia:
+
+```
+[commit 1] ← [commit 2] ← [commit 3] ← [commit 4] (HEAD)
+```
+
+### Comandos fundamentais
+
+**Inicializar repositório:**
+```bash
+git init                    # Cria pasta .git no diretório atual
+git clone <url>             # Copia repositório remoto para a máquina
+```
+
+**Ciclo básico (editar → preparar → salvar):**
+```bash
+git status                  # Ver o que mudou
+git diff                    # Ver mudanças em detalhe
+git add arquivo.py          # Mover para staging area
+git add .                   # Adicionar tudo (cuidado com arquivos sensíveis)
+git commit -m "mensagem"    # Criar snapshot
+```
+
+**Navegar pelo histórico:**
+```bash
+git log                     # Ver histórico de commits
+git log --oneline           # Versão compacta (1 linha por commit)
+git show <commit-hash>      # Ver detalhes de um commit específico
+git diff <commit1> <commit2> # Comparar dois commits
+```
+
+**Desfazer mudanças:**
+```bash
+git restore <arquivo>       # Descartar mudanças no working directory
+git restore --staged <arq>  # Remover do staging (manter mudanças)
+git revert <commit>         # Criar novo commit que desfaz outro (seguro)
+```
+
+### HEAD, branches e refs
+
+**HEAD** é um ponteiro que indica "onde você está agora":
+
+```
+main:    [c1] ← [c2] ← [c3] ← HEAD
+```
+
+Quando você faz um commit, HEAD avança:
+
+```
+main:    [c1] ← [c2] ← [c3] ← [c4] ← HEAD
+```
+
+**Branches** são ponteiros leves para commits (apenas um arquivo com 40 caracteres). Criar branch é instantâneo — não copia nenhum arquivo.
+
+### Aprofundamento: o modelo de dados do Git
+
+Internamente, Git armazena tudo como **objetos** identificados por um hash (código único gerado a partir do conteúdo):
+
+```
+Blob   → conteúdo de um arquivo
+Tree   → diretório (lista de blobs e subtrees)
+Commit → snapshot (aponta para tree + parent + metadados)
+Tag    → referência nomeada para um commit
+```
+
+Cada mudança cria novos objetos; objetos existentes **nunca são modificados** (imutabilidade). Isso garante integridade do histórico.
+
+## Na prática
+
+O fluxo mais comum para iniciantes:
+
+```bash
+# 1. Clonar o repositório
+git clone https://github.com/user/project.git
+cd project
+
+# 2. Fazer mudanças
+# (editar arquivos normalmente)
+
+# 3. Ver o que mudou
+git status
+git diff
+
+# 4. Preparar e commitar
+git add -p              # Adicionar interativamente (escolher mudanças)
+git commit -m "feat: adicionar validação de email"
+
+# 5. Enviar para o servidor
+git push origin main
+```
+
+## Quando usar (e quando não usar)
+
+### Use Git para:
+- **Todo projeto de software**, sem exceção
+- **Configurações e infraestrutura** (Infrastructure as Code)
+- **Documentação** (markdown, asciidoc)
+- **Qualquer arquivo de texto** que muda ao longo do tempo
+
+### Não use Git para:
+- **Arquivos binários grandes** (vídeos, datasets, imagens raw) — use Git LFS
+- **Credenciais e secrets** — use variáveis de ambiente ou vault
+- **Arquivos gerados** (node_modules, dist, build) — use `.gitignore`
+- **Dados sensíveis** — uma vez commitado, fica no histórico para sempre
+
+## Erros comuns
+
+### 1. Commitar credenciais ou secrets
+
+```bash
+# ❌ Nunca commite estes arquivos
+.env
+credentials.json
+private_key.pem
+
+# ✅ Adicione ao .gitignore ANTES do primeiro commit
+echo ".env" >> .gitignore
+echo "*.pem" >> .gitignore
+```
+
+Se já commitou: o secret está no histórico. Trocar a credencial imediatamente e usar `git filter-branch` ou BFG Repo-Cleaner para remover do histórico.
+
+### 2. Commits gigantes ("Alterações diversas")
+
+```bash
+# ❌ Um commit com 50 arquivos e mensagem vaga
+git add .
+git commit -m "alterações"
+
+# ✅ Commits pequenos e focados
+git add src/auth/login.py
+git commit -m "fix: corrigir timeout de sessão após login"
+
+git add src/auth/register.py
+git commit -m "feat: adicionar validação de senha forte"
+```
+
+Commits pequenos são mais fáceis de entender, revisar e reverter.
+
+### 3. Não usar .gitignore desde o início
+
+```bash
+# Crie .gitignore no início do projeto
+# Node.js
+node_modules/
+dist/
+.env
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# IDE
+.vscode/
+.idea/
+```
+
+### 4. Fazer `git add .` sem verificar
+
+```bash
+# ❌ Adiciona TUDO, incluindo lixo
+git add .
+
+# ✅ Verificar antes
+git status            # Ver o que seria adicionado
+git add -p            # Adicionar interativamente (revisar cada mudança)
+```
+
+### 5. Mensagens de commit ruins
+
+```bash
+# ❌ Sem informação útil
+git commit -m "fix"
+git commit -m "WIP"
+git commit -m "asdfgh"
+
+# ✅ Descreve o que E por quê
+git commit -m "fix: corrigir cálculo de frete para pedidos internacionais"
+git commit -m "feat: adicionar cache de 5min para consultas de CEP"
+```

@@ -1,0 +1,249 @@
+---
+title: "LocalStorage e SessionStorage"
+slug: "local-storage"
+room: "frontend"
+category: "fundamentos-web"
+difficulty: "beginner"
+order: 8
+prerequisites: ["http-https"]
+tags: ["persistencia", "navegador", "armazenamento"]
+aiGenerated: true
+---
+
+## O que é
+
+**localStorage** e **sessionStorage** são APIs do navegador que permitem armazenar dados no formato **chave-valor** diretamente no browser do usuário, sem enviar nada ao servidor. Diferente de cookies, esses dados ficam **apenas no frontend**.
+
+```javascript
+// Salvar dado
+localStorage.setItem('theme', 'dark');
+
+// Ler dado
+const theme = localStorage.getItem('theme');  // 'dark'
+
+// Remover dado
+localStorage.removeItem('theme');
+```
+
+**localStorage:** dados persistem até serem explicitamente removidos (sobrevivem a fechar o navegador).
+
+**sessionStorage:** dados duram até a **aba** ser fechada.
+
+## Por que importa
+
+Nem todo dado precisa ir para o servidor. Armazenamento local resolve cenários comuns sem complexidade de backend:
+
+- **Preferências visuais:** tema escuro/claro, idioma, tamanho de fonte
+- **Cache de dados:** evitar requisições repetidas à API
+- **Estado de UI:** sidebar aberta/fechada, última aba ativa
+- **Progresso offline:** rascunhos de formulários, progresso em tutoriais
+- **Dados temporários:** carrinho de compras, filtros de busca
+
+A alternativa (sem storage local) seria enviar cada preferência ao servidor, exigindo backend, banco de dados e autenticação — overkill para dados que só o navegador precisa.
+
+## Como funciona
+
+### API (idêntica para localStorage e sessionStorage)
+
+```javascript
+// Salvar (setItem)
+localStorage.setItem('user', 'João');
+localStorage.setItem('config', JSON.stringify({ theme: 'dark', lang: 'pt' }));
+
+// Ler (getItem)
+const user = localStorage.getItem('user');          // 'João'
+const config = JSON.parse(localStorage.getItem('config'));  // { theme: 'dark', lang: 'pt' }
+
+// Remover (removeItem)
+localStorage.removeItem('user');
+
+// Limpar tudo (clear)
+localStorage.clear();
+
+// Verificar quantidade de itens
+console.log(localStorage.length);  // número de chaves armazenadas
+
+// Iterar
+for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    console.log(key, localStorage.getItem(key));
+}
+```
+
+### Diferença entre localStorage e sessionStorage
+
+| Aspecto | localStorage | sessionStorage |
+|---|---|---|
+| Duração | Até ser removido manualmente | Até a aba fechar |
+| Compartilhamento entre abas | Sim (mesmo domínio) | Não (isolado por aba) |
+| Capacidade | ~5-10 MB | ~5-10 MB |
+| Sobrevive a refresh (F5) | Sim | Sim |
+| Sobrevive a fechar navegador | Sim | Não |
+
+### Armazenamento por origem
+
+Dados são isolados por **origem** (protocolo + domínio + porta):
+
+```
+https://meusite.com     → localStorage A
+https://outrosite.com   → localStorage B  (não acessa A)
+http://meusite.com      → localStorage C  (protocolo diferente = origem diferente)
+```
+
+Nenhum site pode acessar o localStorage de outro site.
+
+### Limitações
+
+- **Apenas strings:** chaves e valores são sempre strings
+  ```javascript
+  localStorage.setItem('count', 42);
+  const count = localStorage.getItem('count');
+  console.log(typeof count);  // 'string', NÃO 'number'
+  console.log(count);         // '42' (string)
+
+  // Usar JSON para tipos complexos:
+  localStorage.setItem('data', JSON.stringify({ x: 42 }));
+  const data = JSON.parse(localStorage.getItem('data'));  // { x: 42 }
+  ```
+
+- **Síncrono:** quando você salva ou lê dados, o navegador pausa tudo até terminar. Para poucos dados é imperceptível. Para milhares de itens, a página pode travar momentaneamente.
+
+- **Sem expiração automática:** diferente de cookies, localStorage não tem `Max-Age` built-in
+
+### Padrão para expiração manual
+
+```javascript
+function setWithExpiry(key, value, ttlMs) {
+    const item = {
+        value: value,
+        expiry: Date.now() + ttlMs,
+    };
+    localStorage.setItem(key, JSON.stringify(item));
+}
+
+function getWithExpiry(key) {
+    const raw = localStorage.getItem(key);
+    if (!raw) return null;
+
+    const item = JSON.parse(raw);
+    if (Date.now() > item.expiry) {
+        localStorage.removeItem(key);
+        return null;  // Expirado
+    }
+    return item.value;
+}
+
+// Uso: cachear por 1 hora
+setWithExpiry('api-data', responseData, 3600000);
+```
+
+## Na prática
+
+```javascript
+// Exemplo real: persistir preferência de tema
+function setTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+}
+
+function loadTheme() {
+    const saved = localStorage.getItem('theme');
+    if (saved) {
+        document.documentElement.setAttribute('data-theme', saved);
+    }
+}
+
+// Carregar ao abrir a página
+loadTheme();
+```
+
+## Quando usar (e quando não usar)
+
+### Use localStorage para:
+- **Preferências de UI** que devem persistir entre sessões
+- **Cache de dados** da API (com expiração manual)
+- **Progresso do usuário** em apps offline-first
+- **Dados não sensíveis** que só o frontend precisa
+
+### Use sessionStorage para:
+- **Dados de uma sessão específica** (wizard multi-step, filtros temporários)
+- **Dados que não devem vazar** entre abas
+
+### Não use para:
+- **Dados sensíveis** (tokens, senhas, dados pessoais) — vulnerável a XSS
+- **Dados críticos** — usuário pode limpar a qualquer momento
+- **Grandes volumes** (> 5MB) — use IndexedDB
+- **Dados que o servidor precisa ler** — use cookies
+
+### Comparação completa de armazenamento no navegador
+
+| Aspecto | Cookie | localStorage | sessionStorage | IndexedDB |
+|---|---|---|---|---|
+| Capacidade | ~4KB | ~5-10MB | ~5-10MB | Centenas de MB |
+| Servidor acessa | Sim | Não | Não | Não |
+| Expiração | Configurável | Manual | Aba fecha | Manual |
+| API | String bruta | Chave-valor | Chave-valor | NoSQL completo |
+| Performance | Baixa (headers) | OK | OK | Alta (async) |
+| Ideal para | Auth, sessão | Preferências | Dados temporários | Dados offline |
+
+## Erros comuns
+
+### 1. Guardar tokens de autenticação no localStorage
+
+```javascript
+// ❌ Vulnerável a XSS — qualquer script injetado pode roubar
+localStorage.setItem('auth_token', 'eyJhbGci...');
+// Se houver XSS, atacante faz: localStorage.getItem('auth_token') → roubo
+
+// ✅ Tokens de sessão em cookies HttpOnly (JS não acessa)
+// Set-Cookie: session=abc123; HttpOnly; Secure
+```
+
+### 2. Não fazer JSON.parse/stringify
+
+```javascript
+// ❌ Objeto é convertido para "[object Object]"
+localStorage.setItem('user', { name: 'João' });
+localStorage.getItem('user');  // "[object Object]" — dados perdidos!
+
+// ✅ Serializar com JSON
+localStorage.setItem('user', JSON.stringify({ name: 'João' }));
+JSON.parse(localStorage.getItem('user'));  // { name: 'João' }
+```
+
+### 3. Não tratar chave inexistente
+
+```javascript
+// ❌ getItem retorna null para chave inexistente
+const config = JSON.parse(localStorage.getItem('config'));
+console.log(config.theme);  // TypeError: Cannot read property of null
+
+// ✅ Verificar antes
+const raw = localStorage.getItem('config');
+const config = raw ? JSON.parse(raw) : { theme: 'light' };
+```
+
+### 4. Confiar que os dados sempre estarão lá
+
+```javascript
+// localStorage pode ser limpo pelo:
+// - Usuário (limpar dados do site)
+// - Navegador (modo incógnito = tudo apagado ao fechar)
+// - Storage pressure (pouco espaço em disco)
+
+// ✅ Sempre ter fallback
+const theme = localStorage.getItem('theme') || 'light';
+```
+
+### 5. Usar localStorage como banco de dados
+
+```javascript
+// ❌ Milhares de registros no localStorage
+for (let i = 0; i < 100000; i++) {
+    localStorage.setItem(`item-${i}`, JSON.stringify(bigObject));
+}
+// Lento (síncrono), atinge limite de 5MB, sem queries
+
+// ✅ Para dados grandes/complexos, use IndexedDB
+// API assíncrona, suporta índices, centenas de MB
+```

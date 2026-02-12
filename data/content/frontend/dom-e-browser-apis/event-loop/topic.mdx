@@ -1,0 +1,242 @@
+---
+title: "Event Loop"
+slug: "event-loop"
+room: "frontend"
+category: "dom-e-browser-apis"
+difficulty: "intermediate"
+order: 4
+prerequisites: ["callbacks"]
+tags: ["assincrono", "concorrencia", "fila"]
+aiGenerated: true
+---
+
+## O que é
+
+O Event Loop é o mecanismo que permite JavaScript — uma linguagem **single-threaded** — executar operações assíncronas sem bloquear. JavaScript só consegue fazer **uma coisa de cada vez** (como um caixa de supermercado que atende um cliente por vez). O Event Loop é o "maestro" que coordena a execução do código, processamento de eventos e callbacks assíncronos.
+
+JavaScript tem apenas **uma thread** para executar código. Sem o Event Loop, uma operação que leva 5 segundos (fetch de API, timer) travaria toda a interface por 5 segundos — nenhum clique, scroll ou animação funcionaria.
+
+## Por que importa
+
+Entender o Event Loop explica comportamentos que parecem "mágicos" ou "bugados":
+
+```javascript
+console.log('1');
+setTimeout(() => console.log('2'), 0);  // Delay de 0ms
+console.log('3');
+
+// Output: 1, 3, 2
+// Por que "2" vem depois de "3" se o delay é 0?
+// Porque setTimeout SEMPRE vai para a fila, mesmo com 0ms
+```
+
+Sem entender o Event Loop:
+- Você não sabe por que `setTimeout(fn, 0)` não é instantâneo
+- Não entende por que a UI trava durante operações síncronas longas
+- Não consegue debugar race conditions
+- Não sabe a diferença entre microtasks e macrotasks
+
+## Como funciona
+
+### Componentes
+
+- **Call Stack** = a pilha de pratos (o que está executando agora — último a entrar, primeiro a sair)
+- **Web APIs** = funcionalidades do navegador que rodam em segundo plano (timers, fetch, eventos DOM)
+- **Callback Queue** = a fila de espera (callbacks prontos esperando o Call Stack ficar vazio)
+
+```
+┌─────────────────────────────────────────────────┐
+│                    JavaScript Engine              │
+│  ┌──────────────┐    ┌───────────────────────┐  │
+│  │  Call Stack   │    │     Heap (memória)     │  │
+│  │  ┌─────────┐ │    │  objetos, closures     │  │
+│  │  │ func()  │ │    │                        │  │
+│  │  │ main()  │ │    └───────────────────────┘  │
+│  │  └─────────┘ │                                │
+│  └──────────────┘                                │
+└──────────────────────────────────────────────────┘
+         ↕
+┌──────────────────┐     ┌──────────────────────┐
+│  Web APIs         │     │  Callback Queues      │
+│  (navegador)      │     │                       │
+│  • setTimeout     │────→│  Macrotask Queue      │
+│  • fetch          │     │  [callback1, cb2...]  │
+│  • DOM events     │     │                       │
+│  • setInterval    │     │  Microtask Queue       │
+└──────────────────┘     │  [promise1, p2...]     │
+                          └──────────────────────┘
+                                    ↕
+                          ┌──────────────────┐
+                          │    Event Loop     │
+                          │  (coordenador)    │
+                          └──────────────────┘
+```
+
+### O ciclo
+
+1. **Call Stack:** executa código síncrono, uma função por vez (LIFO — Last In, First Out, como uma pilha de pratos: o último a entrar é o primeiro a sair)
+2. **Web APIs:** operações assíncronas (timers, fetch, DOM events) rodam fora da thread principal
+3. **Quando termina:** o callback vai para a **fila** (queue)
+4. **Event Loop:** quando o Call Stack está vazio, pega o próximo callback da fila e coloca no Stack
+
+```
+Passo a passo: setTimeout(() => console.log('async'), 1000)
+
+1. Call Stack: [setTimeout()]
+2. setTimeout registra callback na Web API (timer de 1000ms)
+3. Call Stack: [] (vazio, continua executando código)
+4. ... 1 segundo depois ...
+5. Timer termina → callback vai para a Macrotask Queue
+6. Event Loop: Stack vazio? Sim → move callback para o Stack
+7. Call Stack: [() => console.log('async')]
+8. Executa: "async"
+```
+
+### Microtasks vs Macrotasks
+
+Existem duas filas com **prioridades diferentes**. Na prática, a regra é simples: **Promises têm prioridade sobre timers/eventos**. Ou seja, `.then()` roda antes de `setTimeout()`.
+
+**Microtask Queue (alta prioridade):**
+- Promises (`.then()`, `.catch()`, `.finally()`)
+- `queueMicrotask()`
+- `MutationObserver`
+
+**Macrotask Queue (prioridade normal):**
+- `setTimeout` / `setInterval`
+- `setImmediate` (Node.js)
+- I/O callbacks
+- DOM events (click, scroll, keydown)
+
+**Regra:** o Event Loop esvazia **toda** a Microtask Queue antes de processar a próxima Macrotask.
+
+```javascript
+console.log('1');                          // Síncrono
+setTimeout(() => console.log('2'), 0);     // Macrotask
+Promise.resolve().then(() => console.log('3')); // Microtask
+console.log('4');                          // Síncrono
+
+// Output: 1, 4, 3, 2
+// 1 e 4: síncronos (executam imediatamente)
+// 3: microtask (prioridade sobre macrotask)
+// 2: macrotask (só depois de todas microtasks)
+```
+
+### Bloqueio da thread principal
+
+Código síncrono pesado bloqueia **tudo** — UI, eventos, animações:
+
+```javascript
+// ❌ Bloqueia a thread por ~5 segundos
+function heavyComputation() {
+    let sum = 0;
+    for (let i = 0; i < 5_000_000_000; i++) {
+        sum += i;
+    }
+    return sum;
+}
+heavyComputation(); // UI trava: sem scroll, sem cliques, sem animações
+
+// ✅ Quebrar em chunks com setTimeout
+function heavyAsync(callback) {
+    let sum = 0;
+    let i = 0;
+    const chunk = 1_000_000;
+
+    function processChunk() {
+        const end = Math.min(i + chunk, 5_000_000_000);
+        for (; i < end; i++) {
+            sum += i;
+        }
+        if (i < 5_000_000_000) {
+            setTimeout(processChunk, 0); // Libera thread entre chunks
+        } else {
+            callback(sum);
+        }
+    }
+    processChunk();
+}
+```
+
+## Na prática
+
+Ordem de execução completa:
+
+```javascript
+console.log('A');
+
+setTimeout(() => console.log('B'), 0);
+
+Promise.resolve()
+    .then(() => console.log('C'))
+    .then(() => console.log('D'));
+
+setTimeout(() => console.log('E'), 0);
+
+console.log('F');
+
+// Output: A, F, C, D, B, E
+// A, F: síncronos
+// C, D: microtasks (promises)
+// B, E: macrotasks (setTimeout)
+```
+
+## Quando usar (e quando não usar)
+
+### Conhecimento do Event Loop é essencial para:
+- Entender timing de callbacks e promises
+- Debugar ordem de execução inesperada
+- Evitar bloquear a UI com operações pesadas
+- Otimizar performance de rendering
+
+### Use Web Workers para:
+- Operações CPU-intensivas que travariam a thread principal
+- Workers rodam em **thread separada**, não bloqueiam a UI
+- Comunicação via `postMessage`
+
+## Erros comuns
+
+### 1. Achar que setTimeout(fn, 0) é instantâneo
+
+```javascript
+setTimeout(() => console.log('depois'), 0);
+console.log('antes');
+// Output: "antes", "depois"
+// 0ms = "o mais rápido possível DEPOIS do stack esvaziar", não "agora"
+```
+
+### 2. Bloquear a thread com loop síncrono
+
+```javascript
+// ❌ UI trava durante o loop
+button.addEventListener('click', () => {
+    for (let i = 0; i < 10_000_000; i++) { /* ... */ }
+    updateUI(); // Só executa DEPOIS do loop terminar
+});
+
+// ✅ Usar Web Worker ou requestAnimationFrame
+```
+
+### 3. Microtask infinita trava o navegador
+
+```javascript
+// ❌ Microtask gera outra microtask infinitamente
+function loop() {
+    Promise.resolve().then(loop); // Nunca chega na macrotask queue
+}
+loop();
+// O Event Loop NUNCA processa macrotasks (setTimeout, eventos, rendering)
+// Navegador trava completamente
+```
+
+### 4. Assumir ordem entre setTimeout callbacks
+
+```javascript
+setTimeout(() => console.log('A'), 100);
+setTimeout(() => console.log('B'), 100);
+// A e B têm o mesmo delay, mas a ordem é garantida: A antes de B
+// (mesma fila, FIFO)
+
+setTimeout(() => console.log('X'), 10);
+setTimeout(() => console.log('Y'), 5);
+// Y antes de X (5ms < 10ms)
+```

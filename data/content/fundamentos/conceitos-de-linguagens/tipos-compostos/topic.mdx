@@ -1,0 +1,263 @@
+---
+title: "Tipos Compostos"
+slug: "tipos-compostos"
+room: "fundamentos"
+category: "conceitos-de-linguagens"
+difficulty: "beginner"
+order: 2
+prerequisites: ["tipos-de-dados-primitivos"]
+tags: ["struct", "enum", "tuple", "record"]
+aiGenerated: true
+---
+
+## O que é
+
+Tipos compostos são estruturas que **agrupam múltiplos valores** (primitivos ou outros compostos) em uma única unidade lógica. Se tipos primitivos são átomos, tipos compostos são moléculas — combinações que representam conceitos mais complexos do mundo real.
+
+Os tipos compostos fundamentais:
+- **Struct/Record/Class:** agrupa campos nomeados de tipos diferentes
+- **Enum:** define um conjunto fixo de valores possíveis
+- **Tuple:** agrupa valores posicionais (sem nomes)
+- **Union/Variant:** valor que pode ser de um entre vários tipos
+
+## Por que importa
+
+Sem tipos compostos, você modela um usuário assim:
+
+```python
+# ❌ Variáveis soltas — sem relação explícita entre elas
+user_name = "João"
+user_email = "joao@email.com"
+user_age = 28
+user_active = True
+
+# Passar para uma função? 4 parâmetros soltos
+def send_email(name, email, age, active):
+    ...
+```
+
+Com tipos compostos:
+
+```python
+# ✅ Dados agrupados — uma unidade lógica
+@dataclass
+class User:
+    name: str
+    email: str
+    age: int
+    active: bool
+
+user = User("João", "joao@email.com", 28, True)
+
+# Passar para uma função? 1 parâmetro
+def send_email(user: User):
+    ...
+```
+
+Tipos compostos trazem:
+- **Organização:** dados relacionados ficam juntos
+- **Segurança de tipos:** o compilador verifica que você não confundiu email com nome
+- **Legibilidade:** `user.email` é autoexplicativo; `args[1]` não é
+- **Manutenção:** adicionar um campo (ex: `phone`) muda a struct, não 50 funções
+
+## Como funciona
+
+### Structs / Records
+
+Agrupam campos nomeados, cada um com seu tipo:
+
+```
+Struct User:
+┌─────────────────────────────┐
+│ name: String  = "João"      │
+│ email: String = "joao@..."  │
+│ age: int      = 28          │
+│ active: bool  = true        │
+└─────────────────────────────┘
+```
+
+### Aprofundamento: como structs são armazenadas na memória
+
+Campos são armazenados sequencialmente na memória, com "padding" (espaços vazios para alinhamento):
+
+```
+Endereço   Campo        Tamanho
+0x00       name (ptr)   8 bytes
+0x08       email (ptr)  8 bytes
+0x10       age          4 bytes
+0x14       active       1 byte
+0x15       (padding)    3 bytes
+Total:     24 bytes
+```
+
+### Enums (Enumerações)
+
+Definem um **conjunto finito** de valores possíveis:
+
+```
+Enum Status:
+  PENDING   = 0
+  ACTIVE    = 1
+  INACTIVE  = 2
+  BANNED    = 3
+```
+
+Enums previnem valores inválidos:
+```python
+# ❌ Sem enum: qualquer string é aceita
+status = "actve"  # Typo! Mas compila e roda
+
+# ✅ Com enum: compilador/linter verifica
+status = Status.ACTIVE  # Só valores válidos compilam
+```
+
+**Enums com dados associados** (Rust, Swift, Kotlin):
+
+Em algumas linguagens, cada opção de um enum pode carregar dados diferentes. Isso é como dizer: "Uma forma geométrica pode ser um círculo (com raio), um retângulo (com largura e altura), ou um triângulo (com 3 lados)".
+
+```rust
+enum Shape {
+    Circle(f64),              // raio
+    Rectangle(f64, f64),      // largura, altura
+    Triangle(f64, f64, f64),  // 3 lados
+}
+// Cada variante pode ter dados diferentes — muito mais poderoso que enums simples
+```
+
+### Tuples
+
+Agrupam valores **por posição** (sem nomes):
+
+```python
+# Tuple: ("João", 28, True)
+# Posição 0: nome, Posição 1: idade, Posição 2: ativo
+
+# Útil para retornar múltiplos valores de uma função
+def divide(a, b):
+    return (a // b, a % b)  # (quociente, resto)
+
+quociente, resto = divide(17, 5)  # 3, 2
+```
+
+**Tuple vs Struct:**
+- Tuple: acesso por posição (`t[0]`, `t[1]`) — menos legível, mais conciso
+- Struct: acesso por nome (`user.name`, `user.age`) — mais legível, mais verboso
+
+### Type Aliases
+
+Criam nomes semânticos para tipos existentes:
+
+```typescript
+type UserId = number;
+type Email = string;
+type Celsius = number;
+type Fahrenheit = number;
+
+// Sem aliases: function convert(temp: number): number — qual é qual?
+// Com aliases: function convert(temp: Celsius): Fahrenheit — claro!
+```
+
+## Na prática
+
+<CodeTabs />
+
+## Quando usar (e quando não usar)
+
+### Struct quando:
+- Você tem **dados relacionados** que formam uma unidade lógica (User, Product, Config)
+- Precisa passar **múltiplos valores** entre funções
+- Quer **nomes explícitos** para cada campo
+
+### Enum quando:
+- Existe um **conjunto finito** de estados possíveis (Status, Direction, Color)
+- Quer **segurança de tipos** — impedir valores inválidos
+- Precisa de **pattern matching exaustivo** — quando o compilador verifica que você tratou todas as opções possíveis (ex: se o status pode ser ATIVO, INATIVO ou BANIDO, o compilador avisa se você esqueceu algum)
+
+### Tuple quando:
+- Precisa retornar **múltiplos valores** de uma função
+- Os valores são **temporários** e o contexto é óbvio
+- Não vale a pena criar uma struct completa
+
+### Não use tipos compostos quando:
+- Um tipo primitivo resolve (não crie `struct Age { value: int }` sem motivo)
+- A abstração não representa um conceito real do domínio
+
+## Erros comuns
+
+### 1. Struct com campos demais (God Object)
+
+```python
+# ❌ Struct que faz tudo
+@dataclass
+class User:
+    name: str
+    email: str
+    age: int
+    address: str
+    city: str
+    state: str
+    zip_code: str
+    credit_card: str
+    cvv: str
+    # ... 30 campos
+
+# ✅ Composição de structs menores
+@dataclass
+class Address:
+    street: str
+    city: str
+    state: str
+    zip_code: str
+
+@dataclass
+class User:
+    name: str
+    email: str
+    age: int
+    address: Address
+```
+
+### 2. Usar string quando enum é mais seguro
+
+```python
+# ❌ Qualquer string é aceita
+def set_status(status: str):
+    ...
+set_status("actve")  # Typo! Nenhum erro em runtime
+
+# ✅ Enum: compilador ou linter pega o erro
+class Status(Enum):
+    ACTIVE = "active"
+    INACTIVE = "inactive"
+
+def set_status(status: Status):
+    ...
+```
+
+### 3. Tuple com muitos elementos
+
+```python
+# ❌ O que é cada posição?
+result = get_user_data()
+print(result[0])  # Nome? Email? ID?
+print(result[3])  # ???
+
+# ✅ Se tem mais de 2-3 valores, use struct/dataclass
+```
+
+### 4. Mutabilidade desnecessária
+
+```python
+# ❌ Struct mutável pode ser modificada em qualquer lugar
+user.age = -5  # Sem validação
+
+# ✅ Struct imutável + método de criação com validação
+@dataclass(frozen=True)
+class User:
+    name: str
+    age: int
+
+    def __post_init__(self):
+        if self.age < 0:
+            raise ValueError("Idade não pode ser negativa")
+```

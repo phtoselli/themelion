@@ -33,8 +33,8 @@ export const ProjectsPage = () => {
 				</div>
 				<h2 className="projects-construction-title">Em construção</h2>
 				<p className="projects-construction-desc">
-					Estamos preparando projetos práticos incríveis para você construir seu portfólio. Em breve,
-					você terá acesso a desafios completos organizados por trilha de carreira.
+					Estamos preparando projetos práticos incríveis para você construir seu portfólio. Em
+					breve, você terá acesso a desafios completos organizados por trilha de carreira.
 				</p>
 			</div>
 		</PageLayout>

@@ -25,6 +25,7 @@ export interface TopicFrontmatter {
 	prerequisites: string[];
 	tags: string[];
 	relatedTools?: RelatedTool[];
+	aiGenerated?: boolean;
 }
 
 export interface RelatedTool {

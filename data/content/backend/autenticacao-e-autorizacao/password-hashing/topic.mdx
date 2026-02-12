@@ -1,0 +1,225 @@
+---
+title: "Password Hashing (Salt, Pepper, KDF)"
+slug: "password-hashing"
+room: "backend"
+category: "autenticacao-e-autorizacao"
+difficulty: "intermediate"
+order: 4
+prerequisites: ["authentication-vs-authorization"]
+tags: ["seguranca", "hash", "criptografia"]
+aiGenerated: true
+---
+
+## O que é
+
+Password hashing é o processo de transformar uma senha em um **hash irreversível** antes de armazenar no banco de dados. Se o banco for comprometido, o atacante encontra hashes — não senhas em texto puro.
+
+```
+Senha:   "minhaSenha123"
+Hash:    "$2b$12$LJ3m4ys3Lz.W5YMCOuG5.ePQFnYKKGel7EiV5CNVQ/aI4GA.KXW6W"
+
+Armazena no banco: APENAS o hash
+Verificação: hash("minhaSenha123") == hash_armazenado? → ✅ Login OK
+```
+
+**Irreversível** significa que é computacionalmente impossível obter a senha a partir do hash (diferente de criptografia, que é reversível).
+
+## Por que importa
+
+Se você armazena senhas em texto puro:
+- **Vazamento de banco** → todas as senhas expostas instantaneamente
+- **Funcionários** com acesso ao banco veem senhas
+- **Usuários reutilizam senhas** → comprometer sua base compromete email, banco, redes sociais deles
+
+Com hashing seguro:
+- Vazamento expõe hashes, não senhas
+- Hashes modernos (bcrypt, argon2) levam **100ms-1s** para computar — quebrar por força bruta é inviável
+
+## Como funciona
+
+### Hash simples (INSEGURO)
+
+```python
+import hashlib
+
+# ❌ MD5/SHA-256 simples é RÁPIDO — atacante testa bilhões/segundo
+hash = hashlib.sha256("senha123".encode()).hexdigest()
+# "ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f"
+```
+
+**Problema:** hash rápido + rainbow tables (tabelas gigantes com milhões de senhas comuns já convertidas em hash — o atacante simplesmente procura o hash na tabela e encontra a senha correspondente) = senhas quebradas em segundos.
+
+### Salt (proteção contra rainbow tables)
+
+**Salt** é uma string aleatória única adicionada à senha antes do hash:
+
+```
+Sem salt:
+hash("senha123") = "abc123"   ← Mesmo hash para todos que usam "senha123"
+                                 Rainbow table: "abc123" → "senha123" ✅ Quebrado
+
+Com salt:
+hash("senha123" + "x7k9p2") = "def456"   ← User A
+hash("senha123" + "m3n8q1") = "ghi789"   ← User B
+                                            Mesma senha, hashes diferentes!
+                                            Rainbow table não funciona.
+```
+
+Cada usuário tem um salt diferente. O salt é armazenado junto com o hash (não é secreto — sua função é impedir tabelas pré-computadas).
+
+### KDFs (funções de hash para senhas) — o padrão correto
+
+Diferente de hashes comuns (feitos para serem rápidos), as KDFs (Key Derivation Functions) são funções de hash projetadas para serem **deliberadamente lentas**. A lentidão é intencional: se cada tentativa leva 250ms, um atacante consegue testar apenas ~4 senhas por segundo, ao invés de bilhões:
+
+**bcrypt:**
+```
+$2b$12$LJ3m4ys3Lz.W5YMCOuG5.ePQFnYKKGel7EiV5CNVQ/aI4GA.KXW6W
+ │  │  │                    │
+ │  │  │                    └── Hash + Salt (combinados)
+ │  │  └── Cost factor (12 = 2¹² = 4096 iterações)
+ │  └── Versão do algoritmo
+ └── Identificador bcrypt
+```
+
+- Cost factor configurável: cada incremento **dobra** o tempo
+- Cost 12: ~250ms por hash
+- Salt incluído automaticamente
+
+**Argon2** (vencedor do Password Hashing Competition):
+```
+Parâmetros configuráveis:
+- Tempo (iterações)
+- Memória (previne GPUs — precisam de MUITA memória)
+- Paralelismo (threads)
+```
+
+Argon2 é considerado o estado da arte em 2024+.
+
+### Pepper (camada extra)
+
+**Pepper** é um secret adicionado à senha, armazenado **fora do banco** (variável de ambiente, HSM). Se o banco vazar, o atacante não tem o pepper.
+
+```
+hash = bcrypt("senha123" + salt + pepper)
+
+Banco vazou:  atacante tem hash + salt
+Pepper:       está em variável de ambiente → atacante não tem
+Resultado:    ainda precisa do pepper para testar senhas
+```
+
+### Comparação de abordagens
+
+| Abordagem | Velocidade | Proteção |
+|---|---|---|
+| MD5/SHA puro | Bilhões/s por GPU | Nenhuma |
+| SHA + salt | Bilhões/s por GPU | Contra rainbow tables |
+| bcrypt | ~1.000/s | Contra força bruta |
+| Argon2 | ~100/s (configurável) | Contra GPUs e ASICs |
+
+### Verificação de senha
+
+```python
+# Login: NUNCA descriptografa — compara hashes
+def verify_login(email, password_attempt):
+    user = db.find_by_email(email)
+    if not user:
+        return False
+
+    # bcrypt compara internamente (extrai salt do hash armazenado)
+    return bcrypt.checkpw(
+        password_attempt.encode(),
+        user.password_hash.encode()
+    )
+```
+
+## Na prática
+
+```python
+import bcrypt
+
+# Registro: criar hash
+password = "minhaSenha123"
+salt = bcrypt.gensalt(rounds=12)
+hashed = bcrypt.hashpw(password.encode(), salt)
+# Armazena 'hashed' no banco
+
+# Login: verificar
+password_attempt = "minhaSenha123"
+if bcrypt.checkpw(password_attempt.encode(), hashed):
+    print("Login OK")
+else:
+    print("Senha incorreta")
+```
+
+## Quando usar (e quando não usar)
+
+### Sempre use hashing para:
+- **Senhas de usuários** — NUNCA armazene em texto puro
+- **PINs e códigos** — mesmo conceito
+
+### Use bcrypt ou Argon2:
+- **bcrypt:** bem estabelecido, suporte amplo, seguro
+- **Argon2:** mais moderno, resistente a GPUs, melhor para novos projetos
+
+### Nunca use para senhas:
+- MD5, SHA-1, SHA-256 puro (muito rápido)
+- Criptografia reversível (AES, RSA) — se você pode descriptografar, o atacante também
+
+## Erros comuns
+
+### 1. Armazenar senha em texto puro
+
+```python
+# ❌ NUNCA
+db.save({"email": email, "password": password})
+
+# ✅ SEMPRE hashear
+db.save({"email": email, "password_hash": bcrypt.hashpw(...)})
+```
+
+### 2. Usar MD5 ou SHA para senhas
+
+```python
+# ❌ SHA-256 é rápido — GPU moderna testa 10 bilhões/segundo
+hash = hashlib.sha256(password.encode()).hexdigest()
+
+# ✅ bcrypt/Argon2 — lento por design
+hash = bcrypt.hashpw(password.encode(), bcrypt.gensalt(12))
+```
+
+### 3. Salt reutilizado para todos os usuários
+
+```python
+# ❌ Mesmo salt = mesma senha gera mesmo hash
+GLOBAL_SALT = "meu_salt_fixo"
+
+# ✅ Salt único por usuário (bcrypt faz automaticamente)
+bcrypt.gensalt()  # Gera salt aleatório a cada chamada
+```
+
+### 4. Comparar hashes com == (timing attack)
+
+Um "timing attack" (ataque por tempo) explora uma sutileza: a comparação `==` para de verificar no primeiro caractere diferente. Um atacante pode medir o tempo de resposta para descobrir, caractere por caractere, quanto do hash está correto.
+
+```python
+# ❌ Comparação simples vaza informação pelo tempo de resposta
+if stored_hash == computed_hash:  # Retorna False mais rápido se o primeiro byte difere
+
+# ✅ Comparação em tempo constante
+import hmac
+hmac.compare_digest(stored_hash, computed_hash)
+# Ou use bcrypt.checkpw() que já faz isso internamente
+```
+
+### 5. Cost factor muito baixo
+
+```python
+# ❌ Cost 4: ~1ms por hash → atacante testa ~1000/s
+bcrypt.gensalt(rounds=4)
+
+# ✅ Cost 12+: ~250ms por hash → atacante testa ~4/s
+bcrypt.gensalt(rounds=12)
+
+# Escolher cost que leva ~250ms no seu hardware
+# Aumentar conforme hardware fica mais rápido
+```

@@ -1,0 +1,296 @@
+---
+title: "Relacionamentos One-to-Many"
+slug: "one-to-many-relationships"
+room: "banco-de-dados"
+category: "data-modeling"
+difficulty: "beginner"
+order: 1
+prerequisites: ["foreign-keys"]
+tags: ["modelagem", "relacao", "cardinalidade"]
+aiGenerated: true
+---
+
+## O que é
+
+Um relacionamento **One-to-Many (1:N)** significa que **um registro em uma tabela pode estar associado a vários registros em outra tabela**, mas cada registro da segunda tabela pertence a apenas um da primeira. É o tipo de relacionamento mais comum em bancos relacionais.
+
+```
+Um usuário tem MUITOS pedidos.
+Cada pedido pertence a UM único usuário.
+
+users (1) ←──→ (N) orders
+```
+
+## Por que importa
+
+One-to-Many é o padrão fundamental de modelagem relacional. Quase toda relação no mundo real segue esse padrão:
+- Um autor tem muitos livros
+- Um departamento tem muitos funcionários
+- Uma categoria tem muitos produtos
+- Um post tem muitos comentários
+
+Entender 1:N é pré-requisito para modelar qualquer banco de dados. Modelar errado (duplicar dados, usar JSON onde deveria usar tabela separada) causa problemas de consistência, performance e manutenção.
+
+## Como funciona
+
+### Estrutura básica
+
+O lado "many" (N) recebe uma **foreign key** apontando para o lado "one" (1):
+
+```sql
+-- Lado "1": a tabela pai
+CREATE TABLE authors (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
+);
+
+-- Lado "N": a tabela filha (tem a FK)
+CREATE TABLE books (
+    id SERIAL PRIMARY KEY,
+    author_id INT NOT NULL REFERENCES authors(id),  -- FK → lado "1"
+    title VARCHAR(200) NOT NULL,
+    published_year INT
+);
+```
+
+```
+authors (1)                  books (N)
+┌────┬──────────┐           ┌────┬───────────┬──────────────────┐
+│ id │   name   │           │ id │ author_id │     title        │
+├────┼──────────┤           ├────┼───────────┼──────────────────┤
+│  1 │ Machado  │←──────────│  1 │     1     │ Dom Casmurro     │
+│    │          │←──────────│  2 │     1     │ Memórias Póstumas│
+│  2 │ Clarice  │←──────────│  3 │     2     │ A Hora da Estrela│
+│  3 │ Guimarães│           │    │           │                  │
+└────┴──────────┘           └────┴───────────┴──────────────────┘
+                            FK: books.author_id → authors.id
+                            Machado tem 2 livros, Clarice tem 1, Guimarães tem 0
+```
+
+### Regra: a FK sempre fica no lado "many"
+
+```
+❌ ERRADO: colocar FK no lado "1"
+authors: { id, name, book_id }  -- Um autor só poderia ter 1 livro!
+
+✅ CERTO: FK no lado "N"
+books: { id, author_id, title } -- Cada livro aponta para seu autor
+```
+
+### Variações de cardinalidade
+
+```
+1:N obrigatório (NOT NULL):
+  Todo livro DEVE ter um autor.
+  books.author_id INT NOT NULL REFERENCES authors(id)
+
+1:N opcional (NULL permitido):
+  Um funcionário PODE ter um gerente (ou não).
+  employees.manager_id INT REFERENCES employees(id)  -- NULL = sem gerente
+
+  Isso também é um self-referencing 1:N (tabela referencia ela mesma).
+```
+
+### Self-referencing (auto-referência)
+
+Uma tabela pode ter relação 1:N consigo mesma:
+
+```sql
+CREATE TABLE employees (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100),
+    manager_id INT REFERENCES employees(id)  -- FK para a mesma tabela
+);
+
+-- Resultado: árvore hierárquica
+-- CEO (manager_id = NULL)
+--   ├── VP Engineering (manager_id = 1)
+--   │     ├── Tech Lead (manager_id = 2)
+--   │     └── Dev Senior (manager_id = 2)
+--   └── VP Product (manager_id = 1)
+```
+
+### Consultando relações 1:N
+
+```sql
+-- Todos os livros de um autor
+SELECT b.title, b.published_year
+FROM books b
+WHERE b.author_id = 1;
+
+-- Autor de cada livro (JOIN)
+SELECT b.title, a.name AS author
+FROM books b
+JOIN authors a ON b.author_id = a.id;
+
+-- Contagem de livros por autor (agregação)
+SELECT a.name, COUNT(b.id) AS total_books
+FROM authors a
+LEFT JOIN books b ON a.id = b.author_id
+GROUP BY a.id, a.name
+ORDER BY total_books DESC;
+-- LEFT JOIN: inclui autores sem livros (count = 0)
+```
+
+## Na prática
+
+### Exemplo: e-commerce (categorias → produtos)
+
+```sql
+CREATE TABLE categories (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    description TEXT
+);
+
+CREATE TABLE products (
+    id SERIAL PRIMARY KEY,
+    category_id INT NOT NULL REFERENCES categories(id),
+    name VARCHAR(200) NOT NULL,
+    price DECIMAL(10,2) NOT NULL
+);
+
+-- Inserir dados
+INSERT INTO categories (name) VALUES ('Eletrônicos'), ('Livros'), ('Roupas');
+
+INSERT INTO products (category_id, name, price) VALUES
+    (1, 'Notebook', 2999.90),
+    (1, 'Mouse', 79.90),
+    (1, 'Teclado', 149.90),
+    (2, 'Clean Code', 89.90),
+    (3, 'Camiseta', 49.90);
+
+-- Produtos por categoria com total
+SELECT c.name AS category,
+       COUNT(p.id) AS num_products,
+       COALESCE(SUM(p.price), 0) AS total_value
+FROM categories c
+LEFT JOIN products p ON c.id = p.category_id
+GROUP BY c.id, c.name;
+
+-- Eletrônicos | 3 | 3229.70
+-- Livros      | 1 | 89.90
+-- Roupas      | 1 | 49.90
+```
+
+### Exemplo: blog (posts → comentários)
+
+```sql
+CREATE TABLE posts (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(200) NOT NULL,
+    content TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE comments (
+    id SERIAL PRIMARY KEY,
+    post_id INT NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
+    author VARCHAR(100),
+    body TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- CASCADE: deletar post deleta todos os comentários
+-- Faz sentido aqui: comentário sem post não tem utilidade
+```
+
+## Quando usar (e quando não usar)
+
+### Use 1:N quando:
+- Existe uma relação clara de "pertence a" (livro pertence a autor)
+- O lado "many" não faz sentido sem o lado "one" (comentário sem post)
+- Precisa de integridade referencial (banco garante consistência)
+
+### Considere alternativas quando:
+- **Um item pertence a VÁRIOS pais** → Many-to-Many (N:N) com tabela intermediária
+- **Dados são fixos e poucos** → ENUM ou check constraint ao invés de tabela separada
+- **Relação é opcional e rara** → Avaliar se a FK nullable é a melhor opção
+
+### JSON embutido vs tabela separada
+
+```sql
+-- ❌ JSON: sem integridade, sem JOINs eficientes, sem índice por item
+CREATE TABLE orders (
+    id SERIAL PRIMARY KEY,
+    items JSONB  -- [{"product": "Mouse", "qty": 2}, ...]
+);
+
+-- ✅ Tabela separada: integridade, consultas eficientes, índices
+CREATE TABLE order_items (
+    id SERIAL PRIMARY KEY,
+    order_id INT NOT NULL REFERENCES orders(id),
+    product_id INT NOT NULL REFERENCES products(id),
+    quantity INT NOT NULL CHECK (quantity > 0)
+);
+```
+
+Use JSON apenas quando os dados são realmente desestruturados ou variam muito entre registros (metadados, configurações).
+
+## Erros comuns
+
+### 1. FK no lado errado
+
+```sql
+-- ❌ FK no lado "1" — limita a 1 relacionamento
+CREATE TABLE departments (
+    id SERIAL PRIMARY KEY,
+    employee_id INT REFERENCES employees(id)  -- Departamento só pode ter 1 funcionário!
+);
+
+-- ✅ FK no lado "N"
+CREATE TABLE employees (
+    id SERIAL PRIMARY KEY,
+    department_id INT REFERENCES departments(id)  -- Funcionário pertence a 1 departamento
+);
+```
+
+### 2. Duplicar dados ao invés de usar FK
+
+```sql
+-- ❌ Duplicar nome da categoria em cada produto
+CREATE TABLE products (
+    id SERIAL PRIMARY KEY,
+    category_name VARCHAR(100),  -- "Eletrônicos" repetido N vezes
+    name VARCHAR(200)
+);
+-- Se renomear categoria, precisa atualizar TODOS os produtos
+
+-- ✅ Normalizar com FK
+CREATE TABLE products (
+    id SERIAL PRIMARY KEY,
+    category_id INT REFERENCES categories(id),  -- Referência, não cópia
+    name VARCHAR(200)
+);
+-- Renomear categoria: 1 UPDATE em categories, pronto
+```
+
+### 3. Esquecer índice na FK
+
+```sql
+-- FK cria constraint mas NÃO cria índice automaticamente (em alguns bancos)
+-- JOINs e cascades ficam LENTOS sem índice
+
+-- ✅ Criar índice explicitamente
+CREATE INDEX idx_books_author_id ON books(author_id);
+CREATE INDEX idx_products_category_id ON products(category_id);
+```
+
+### 4. Modelar N:N como 1:N
+
+```sql
+-- ❌ Se um aluno pode estar em VÁRIAS turmas:
+CREATE TABLE students (
+    id SERIAL PRIMARY KEY,
+    class_id INT REFERENCES classes(id)  -- Só 1 turma por aluno!
+);
+
+-- ✅ Many-to-Many com tabela intermediária
+CREATE TABLE student_classes (
+    student_id INT REFERENCES students(id),
+    class_id INT REFERENCES classes(id),
+    PRIMARY KEY (student_id, class_id)
+);
+```
+
+Pergunte sempre: "o lado N pode pertencer a MAIS DE UM registro do lado 1?" Se sim, é N:N, não 1:N.

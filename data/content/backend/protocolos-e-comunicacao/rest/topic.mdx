@@ -1,0 +1,225 @@
+---
+title: "REST (Representational State Transfer)"
+slug: "rest"
+room: "backend"
+category: "protocolos-e-comunicacao"
+difficulty: "beginner"
+order: 8
+prerequisites: ["http-https", "http-methods"]
+tags: ["recursos", "stateless", "padrao"]
+aiGenerated: true
+---
+
+## O que é
+
+REST é um **estilo arquitetural** para projetar APIs na web. Não é um protocolo, não é uma tecnologia — é um conjunto de **princípios** que definem como recursos devem ser expostos e manipulados via HTTP.
+
+A ideia central: tudo é um **recurso** (usuário, produto, pedido), cada recurso tem uma **URL única**, e você interage com recursos usando **métodos HTTP padrão** (GET, POST, PUT, DELETE).
+
+```
+Recurso: Usuários
+URL: /api/users
+
+GET    /api/users       → Listar todos
+GET    /api/users/42    → Buscar um específico
+POST   /api/users       → Criar novo
+PUT    /api/users/42    → Atualizar
+DELETE /api/users/42    → Remover
+```
+
+## Por que importa
+
+Antes do REST, cada API inventava suas próprias convenções:
+```
+GET /getUser?id=42
+POST /createNewUser
+POST /doDeleteUser?userId=42
+GET /fetchAllProducts&sort=name&page=2
+```
+
+Nomes diferentes, padrões diferentes, documentação incompatível. Cada integração exigia estudar uma API completamente nova.
+
+REST padroniza: se você sabe como funciona uma API REST, sabe como funciona **qualquer** API REST. URLs são recursos (substantivos), métodos HTTP são ações (verbos).
+
+## Como funciona
+
+### Os 6 princípios REST
+
+**1. Client-Server (separação)**
+Cliente (frontend) e servidor (backend) são independentes. O cliente não sabe como os dados são armazenados; o servidor não sabe como são exibidos.
+
+**2. Stateless (sem estado)**
+Cada requisição contém **toda informação necessária** para ser processada. O servidor não guarda sessão entre requisições.
+```
+# Cada requisição se identifica via token
+GET /api/orders
+Authorization: Bearer eyJhbGci...
+```
+
+**3. Cacheable (cacheável)**
+Respostas devem indicar se podem ser cacheadas. GET responses são naturalmente cacheáveis.
+```
+Cache-Control: max-age=3600  # Cache por 1 hora
+ETag: "abc123"               # Identificador de versão
+```
+
+**4. Uniform Interface (interface uniforme)**
+URLs representam recursos, métodos HTTP representam ações. Consistente em toda a API.
+
+**5. Layered System (camadas)**
+O cliente não precisa saber se está falando com o servidor final ou com um proxy/load balancer/cache intermediário.
+
+**6. Code on Demand (opcional)**
+O servidor pode enviar código executável ao cliente (JavaScript, por exemplo).
+
+### Design de URLs RESTful
+
+```
+# ✅ Recursos (substantivos, plural)
+GET    /api/users
+GET    /api/users/42
+POST   /api/users
+PUT    /api/users/42
+DELETE /api/users/42
+
+# ✅ Recursos aninhados (relações)
+GET    /api/users/42/orders          # Pedidos do usuário 42
+GET    /api/users/42/orders/7        # Pedido 7 do usuário 42
+
+# ✅ Filtros via query string
+GET    /api/products?category=electronics&sort=price&page=2
+
+# ❌ Verbos na URL (antipattern)
+GET    /api/getUsers
+POST   /api/createUser
+POST   /api/deleteUser/42
+GET    /api/searchProducts?name=tv
+```
+
+### Respostas padrão
+
+```json
+// GET /api/users/42 → 200 OK
+{
+    "id": 42,
+    "name": "João",
+    "email": "joao@email.com"
+}
+
+// POST /api/users → 201 Created
+{
+    "id": 43,
+    "name": "Maria",
+    "email": "maria@email.com"
+}
+
+// GET /api/users → 200 OK (coleção)
+{
+    "data": [
+        { "id": 42, "name": "João" },
+        { "id": 43, "name": "Maria" }
+    ],
+    "total": 2,
+    "page": 1,
+    "per_page": 20
+}
+
+// DELETE /api/users/42 → 204 No Content
+(sem body)
+
+// GET /api/users/9999 → 404 Not Found
+{
+    "error": "User not found",
+    "code": "USER_NOT_FOUND"
+}
+```
+
+## Na prática
+
+API REST de um blog:
+
+```
+Posts:
+GET    /api/posts                    → Listar posts
+GET    /api/posts?tag=javascript     → Filtrar por tag
+GET    /api/posts/1                  → Post específico
+POST   /api/posts                    → Criar post
+PUT    /api/posts/1                  → Atualizar post
+DELETE /api/posts/1                  → Deletar post
+
+Comentários (recurso aninhado):
+GET    /api/posts/1/comments         → Comentários do post 1
+POST   /api/posts/1/comments         → Adicionar comentário
+DELETE /api/posts/1/comments/5       → Deletar comentário 5
+```
+
+## Quando usar (e quando não usar)
+
+### Use REST quando:
+- CRUD é a operação principal (criar, ler, atualizar, deletar)
+- Recursos são bem definidos (users, products, orders)
+- Cacheability é importante
+- API pública que precisa ser intuitiva
+
+### Considere alternativas quando:
+- **Operações complexas** que não se encaixam em CRUD → RPC ou GraphQL
+- **Real-time** (chat, notificações) → WebSockets
+- **Frontend precisa de dados muito específicos** → GraphQL (evita over/under-fetching)
+
+## Erros comuns
+
+### 1. Verbos na URL
+
+```
+❌ POST /api/createUser
+❌ GET  /api/deleteUser/42
+❌ POST /api/updateUserEmail
+
+✅ POST   /api/users          (criar)
+✅ DELETE /api/users/42       (deletar)
+✅ PATCH  /api/users/42       (atualizar email)
+```
+
+### 2. Singular vs plural inconsistente
+
+```
+❌ GET /api/user/42    (singular)
+   GET /api/products   (plural)
+
+✅ Sempre plural:
+   GET /api/users/42
+   GET /api/products
+```
+
+### 3. Retornar 200 para erros
+
+```
+❌ 200 OK + {"error": "User not found"}
+✅ 404 Not Found + {"error": "User not found"}
+```
+
+### 4. Não usar HATEOAS (mas também não exagerar)
+
+HATEOAS (Hypermedia As The Engine Of Application State) é um princípio do REST puro onde a resposta inclui links para as próximas ações disponíveis:
+```json
+{
+    "id": 42,
+    "name": "João",
+    "_links": {
+        "self": "/api/users/42",
+        "orders": "/api/users/42/orders"
+    }
+}
+```
+Na prática, poucos APIs implementam HATEOAS completo — foque nos princípios mais impactantes (URLs de recursos, métodos corretos, status codes).
+
+### 5. URLs profundas demais
+
+```
+❌ /api/users/42/orders/7/items/3/reviews/1/comments
+   (mais de 3 níveis de aninhamento = difícil de manter)
+
+✅ Aplainar quando possível:
+   /api/reviews/1/comments
+   /api/order-items/3
+```

@@ -1,0 +1,200 @@
+---
+title: "Asynchronous Programming"
+slug: "asynchronous-programming"
+room: "backend"
+category: "concorrencia-e-paralelismo"
+difficulty: "intermediate"
+order: 4
+prerequisites: ["event-loop"]
+tags: ["nao-bloqueante", "io-bound", "eficiencia"]
+aiGenerated: true
+---
+
+## O que é
+
+Programação assíncrona é um modelo onde operações que **levam tempo** (I/O de rede, disco, banco de dados) são iniciadas e o programa **continua executando** outras tarefas enquanto espera o resultado, ao invés de bloquear e ficar parado.
+
+```python
+# Síncrono (bloqueante): espera cada operação terminar
+dados_a = buscar_do_banco()    # 200ms parado
+dados_b = buscar_da_api()      # 500ms parado
+dados_c = ler_arquivo()         # 100ms parado
+# Total: 800ms (sequencial)
+
+# Assíncrono (não-bloqueante): inicia todas e espera em paralelo
+dados_a, dados_b, dados_c = await asyncio.gather(
+    buscar_do_banco(),    # 200ms
+    buscar_da_api(),      # 500ms  } Todas ao mesmo tempo
+    ler_arquivo(),         # 100ms
+)
+# Total: 500ms (o mais lento define o total)
+```
+
+## Por que importa
+
+A maioria das operações em aplicações web é **I/O-bound** — ou seja, o programa fica **esperando** por coisas externas (rede, banco de dados, disco) ao invés de calculando. Diferente de operações **CPU-bound** (cálculos pesados como processar imagens ou comprimir arquivos), onde o processador está de fato trabalhando. Um servidor web síncrono gasta 99% do tempo **esperando** e 1% **processando**.
+
+```
+Síncrono: 1 thread, 1 requisição por vez
+Requisição 1: [====ESPERANDO BD=====][responde]
+Requisição 2:                                  [====ESPERANDO BD=====][responde]
+Requisição 3:                                                                   [====ESPERANDO BD=====][responde]
+
+Assíncrono: 1 thread, múltiplas requisições simultâneas
+Requisição 1: [inicia BD]...................[BD pronto → responde]
+Requisição 2:     [inicia BD]...............[BD pronto → responde]
+Requisição 3:         [inicia BD]...........[BD pronto → responde]
+
+Enquanto espera I/O, a thread está livre para processar outras requisições.
+```
+
+Resultado prático: um servidor async pode atender **milhares de conexões** com poucas threads. Um servidor síncrono precisa de uma thread por conexão.
+
+## Como funciona
+
+### Síncrono vs Assíncrono vs Paralelo
+
+| Modelo | Threads | Execução | Quando usar |
+|---|---|---|---|
+| Síncrono | 1 | Uma tarefa por vez, bloqueante | Scripts simples |
+| Assíncrono | 1 | Múltiplas tarefas, não-bloqueante | I/O-bound (web, DB) |
+| Paralelo | Múltiplas | Múltiplas tarefas simultâneas | CPU-bound (cálculo) |
+
+**Assíncrono ≠ Paralelo.** Assíncrono usa 1 thread de forma eficiente (não espera I/O). Paralelo usa múltiplas threads/processos para cálculo real simultâneo.
+
+Analogia: Um garçom (assíncrono) atende 10 mesas — enquanto a cozinha prepara o pedido da mesa 1, ele anota o pedido da mesa 2. Um garçom por mesa (paralelo) é desperdício se ele passa 90% do tempo esperando a cozinha.
+
+### Mecanismos de async
+
+**1. Callbacks** (mais antigo)
+```javascript
+readFile('data.json', (err, data) => {
+    if (err) handleError(err);
+    else processData(data);
+});
+```
+
+**2. Promises/Futures** (intermediário)
+```javascript
+readFile('data.json')
+    .then(data => processData(data))
+    .catch(err => handleError(err));
+```
+
+**3. Async/Await** (moderno)
+```javascript
+try {
+    const data = await readFile('data.json');
+    processData(data);
+} catch (err) {
+    handleError(err);
+}
+```
+
+Cada modelo foi criado para resolver problemas do anterior: callbacks → callback hell → promises → chaining complexo → async/await → código legível.
+
+### O Event Loop (revisão)
+
+Programação assíncrona depende do Event Loop para coordenar callbacks:
+
+```
+1. Código inicia operação async (fetch, readFile)
+2. Operação é delegada ao sistema operacional
+3. Thread principal continua executando outro código
+4. Quando operação termina, callback vai para a fila
+5. Event Loop: se stack está vazio, executa callback
+```
+
+## Na prática
+
+<CodeTabs />
+
+## Quando usar (e quando não usar)
+
+### Use async para:
+- **I/O de rede:** HTTP requests, WebSocket, gRPC
+- **Banco de dados:** queries, transactions
+- **Arquivos:** leitura/escrita de disco
+- **Qualquer operação** que envolve esperar resposta externa
+
+### Use síncrono/paralelo para:
+- **CPU-bound:** processamento de imagens, cálculos pesados, compressão
+- **Scripts simples:** automação, CLI tools
+- **Operações rápidas:** se a operação leva < 1ms, async adiciona overhead desnecessário
+
+## Erros comuns
+
+### 1. Async sequencial (perdendo o benefício)
+
+```javascript
+// ❌ Async mas sequencial — sem ganho
+const users = await fetchUsers();     // 200ms
+const orders = await fetchOrders();   // 300ms
+const products = await fetchProducts(); // 150ms
+// Total: 650ms (mesma coisa que síncrono!)
+
+// ✅ Async paralelo — aproveita I/O concurrent
+const [users, orders, products] = await Promise.all([
+    fetchUsers(),     // 200ms ]
+    fetchOrders(),    // 300ms ] Ao mesmo tempo
+    fetchProducts(),  // 150ms ]
+]);
+// Total: 300ms (o mais lento)
+```
+
+### 2. Ignorar erros em operações async
+
+```javascript
+// ❌ Promise sem catch — erro silencioso
+fetchData().then(data => process(data));
+// Se fetchData falhar, nenhum erro é tratado
+
+// ✅ Sempre tratar erros
+fetchData()
+    .then(data => process(data))
+    .catch(err => console.error('Falha:', err));
+
+// ✅ Ou com try/catch em async/await
+try {
+    const data = await fetchData();
+    process(data);
+} catch (err) {
+    console.error('Falha:', err);
+}
+```
+
+### 3. Bloquear a thread em código async
+
+```python
+# ❌ Operação síncrona bloqueante dentro de contexto async
+async def handler(request):
+    data = requests.get('https://api.com/data')  # requests é SÍNCRONO!
+    # Bloqueia toda a event loop enquanto espera
+    return data
+
+# ✅ Usar cliente async
+async def handler(request):
+    async with aiohttp.ClientSession() as session:
+        data = await session.get('https://api.com/data')  # Não bloqueia
+    return data
+```
+
+### 4. Criar tasks demais (sem limite)
+
+```javascript
+// ❌ 10.000 requests simultâneas — pode sobrecarregar API/memória
+const results = await Promise.all(
+    urls.map(url => fetch(url))  // 10.000 fetch ao mesmo tempo!
+);
+
+// ✅ Limitar concorrência
+async function fetchWithLimit(urls, limit = 10) {
+    const results = [];
+    for (let i = 0; i < urls.length; i += limit) {
+        const batch = urls.slice(i, i + limit);
+        const batchResults = await Promise.all(batch.map(fetch));
+        results.push(...batchResults);
+    }
+    return results;
+}
+```

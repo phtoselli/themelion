@@ -1,0 +1,236 @@
+---
+title: "Media Queries e Responsive Design"
+slug: "media-queries"
+room: "frontend"
+category: "css-fundamentals"
+difficulty: "beginner"
+order: 5
+prerequisites: ["flexbox"]
+tags: ["responsivo", "mobile", "breakpoints"]
+aiGenerated: true
+---
+
+## O que é
+
+Media queries são **condições CSS** que aplicam estilos diferentes baseado nas características do dispositivo — largura da tela, orientação, resolução, preferência de cores. São o mecanismo fundamental do **responsive design**: um site que se adapta automaticamente a celulares, tablets e desktops.
+
+```css
+/* Estilos aplicados apenas quando a tela tem até 768px */
+@media (max-width: 768px) {
+    .sidebar {
+        display: none; /* Esconde sidebar no mobile */
+    }
+    .content {
+        width: 100%;   /* Conteúdo ocupa tudo */
+    }
+}
+```
+
+## Por que importa
+
+Mais de 50% do tráfego web é mobile. Um site que só funciona em desktop perde metade dos usuários. Responsive design não é opcional — é requisito mínimo.
+
+Sem responsive design:
+- Texto minúsculo em celulares (precisa dar zoom)
+- Elementos vazando horizontalmente (scroll lateral)
+- Botões impossíveis de clicar (muito pequenos para toque)
+- Google penaliza no ranking mobile
+
+## Como funciona
+
+### Sintaxe básica
+
+```css
+@media (condição) {
+    /* Estilos aplicados quando a condição é verdadeira */
+}
+
+/* Largura máxima (mobile-first: aplica ATÉ 768px) */
+@media (max-width: 768px) { ... }
+
+/* Largura mínima (desktop-first: aplica A PARTIR de 768px) */
+@media (min-width: 768px) { ... }
+
+/* Combinações com AND */
+@media (min-width: 768px) and (max-width: 1024px) { ... }
+
+/* Orientação */
+@media (orientation: portrait) { ... }
+@media (orientation: landscape) { ... }
+
+/* Preferência do sistema operacional */
+@media (prefers-color-scheme: dark) { ... }
+@media (prefers-reduced-motion: reduce) { ... }
+```
+
+### Abordagem mobile-first (recomendada)
+
+Escreva CSS base para mobile, adicione complexidade para telas maiores:
+
+```css
+/* Base: mobile (sem media query) */
+.grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Tablet: 2 colunas */
+@media (min-width: 768px) {
+    .grid {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    .grid > * {
+        flex: 1 1 calc(50% - 16px);
+    }
+}
+
+/* Desktop: 3 colunas */
+@media (min-width: 1024px) {
+    .grid > * {
+        flex: 1 1 calc(33.33% - 16px);
+    }
+}
+```
+
+### Breakpoints comuns
+
+| Breakpoint | Dispositivo | Min-width |
+|---|---|---|
+| Mobile | Smartphones | 0 (base) |
+| Tablet | Tablets | 768px |
+| Desktop | Laptops/Desktops | 1024px |
+| Large | Monitores grandes | 1280px |
+
+**Estes valores são convenções, não regras.** Defina breakpoints onde seu **design quebra**, não baseado em dispositivos específicos.
+
+### Meta viewport (obrigatório)
+
+Sem esta meta tag, o celular renderiza a página em zoom out (como se fosse desktop):
+
+```html
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+```
+
+### Unidades responsivas
+
+| Unidade | Relativa a | Uso |
+|---|---|---|
+| `%` | Elemento pai | Larguras fluidas |
+| `vw` / `vh` | Viewport (janela) | Layouts full-screen |
+| `rem` | Font-size do `<html>` | Tipografia consistente |
+| `em` | Font-size do elemento | Spacing relativo ao texto |
+| `clamp()` | Min, ideal, max | Valores fluidos com limites |
+
+```css
+/* Tipografia fluida: mínimo 16px, ideal 2.5vw, máximo 24px */
+h1 {
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+}
+
+/* Container com largura máxima */
+.container {
+    width: min(90%, 1200px); /* 90% em mobile, max 1200px em desktop */
+    margin: 0 auto;
+}
+```
+
+## Na prática
+
+Layout responsivo completo:
+
+```css
+/* Mobile-first */
+.page {
+    display: flex;
+    flex-direction: column;
+}
+.sidebar { order: 2; }
+.content { order: 1; }
+
+/* Desktop */
+@media (min-width: 1024px) {
+    .page {
+        flex-direction: row;
+    }
+    .sidebar {
+        order: 1;
+        flex: 0 0 250px;
+    }
+    .content {
+        order: 2;
+        flex: 1;
+    }
+}
+```
+
+## Quando usar (e quando não usar)
+
+### Use media queries para:
+- **Mudanças de layout** (coluna → linha, esconder sidebar)
+- **Tipografia** que precisa de tamanhos diferentes
+- **Dark mode** (`prefers-color-scheme`)
+- **Acessibilidade** (`prefers-reduced-motion`)
+
+### Considere alternativas para:
+- **Layouts fluidos simples** → Flexbox com `flex-wrap` ou CSS Grid com `auto-fit`
+- **Tipografia fluida** → `clamp()` sem media query
+- **Containers responsivos** → Container queries (`@container`)
+
+```css
+/* Grid que se adapta automaticamente, SEM media query */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+}
+```
+
+## Erros comuns
+
+### 1. Esquecer a meta viewport
+
+```html
+<!-- ❌ Sem meta viewport: mobile renderiza como desktop em miniatura -->
+<!-- ✅ Sempre incluir no <head> -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+```
+
+### 2. Desktop-first ao invés de mobile-first
+
+```css
+/* ❌ Desktop-first: CSS complexo como base, override para mobile */
+.grid { display: grid; grid-template-columns: 1fr 1fr 1fr; }
+@media (max-width: 768px) {
+    .grid { grid-template-columns: 1fr; } /* Desfaz tudo */
+}
+
+/* ✅ Mobile-first: CSS simples como base, adiciona para desktop */
+.grid { display: flex; flex-direction: column; }
+@media (min-width: 768px) {
+    .grid { flex-direction: row; } /* Adiciona complexidade */
+}
+```
+
+### 3. Breakpoints baseados em dispositivos, não no design
+
+```css
+/* ❌ "iPhone 14 tem 390px" */
+@media (max-width: 390px) { ... }
+
+/* ✅ Onde o DESIGN quebra? Pode ser 500px, 820px, qualquer valor */
+@media (min-width: 600px) { ... }
+```
+
+### 4. Usar pixels fixos em tudo
+
+```css
+/* ❌ Não escala com zoom ou preferência do usuário */
+.text { font-size: 16px; }
+.container { width: 1200px; }
+
+/* ✅ Unidades relativas */
+.text { font-size: 1rem; }
+.container { width: min(90%, 75rem); }
+```

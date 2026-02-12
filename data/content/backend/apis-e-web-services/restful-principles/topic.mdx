@@ -1,0 +1,244 @@
+---
+title: "RESTful Principles"
+slug: "restful-principles"
+room: "backend"
+category: "apis-e-web-services"
+difficulty: "beginner"
+order: 1
+prerequisites: ["rest"]
+tags: ["recursos", "verbos", "stateless"]
+aiGenerated: true
+---
+
+## O que é
+
+RESTful Principles são as **regras práticas** para projetar APIs que seguem a arquitetura REST de forma consistente. Enquanto REST é o estilo arquitetural (teoria), "RESTful" é a aplicação na prática — como nomear URLs, estruturar respostas, tratar erros e versionar a API.
+
+Uma API é "RESTful" quando segue esses princípios de forma consistente. Na prática, a maioria das APIs são "REST-ish" — seguem os princípios mais importantes e ignoram os menos práticos.
+
+## Por que importa
+
+APIs RESTful são **previsíveis**. Um desenvolvedor que conhece os princípios consegue adivinhar como funciona uma API nova sem ler toda a documentação:
+
+```
+Se o recurso é "products":
+GET    /api/products       → Listar
+GET    /api/products/42    → Buscar um
+POST   /api/products       → Criar
+PUT    /api/products/42    → Atualizar
+DELETE /api/products/42    → Deletar
+
+Isso é previsível PORQUE segue princípios RESTful.
+```
+
+## Como funciona
+
+### Princípio 1: Recursos como substantivos
+
+URLs representam **coisas** (substantivos), não **ações** (verbos):
+
+```
+✅ /api/users          → recurso "users"
+✅ /api/orders/42      → recurso "order 42"
+✅ /api/products       → recurso "products"
+
+❌ /api/getUsers        → verbo na URL
+❌ /api/createOrder     → verbo na URL
+❌ /api/deleteProduct   → verbo na URL
+```
+
+Ações são expressas pelo **método HTTP**, não pela URL.
+
+### Princípio 2: Respostas consistentes
+
+Todas as respostas seguem o mesmo formato:
+
+```json
+// Sucesso — item único
+{
+    "data": {
+        "id": 42,
+        "name": "João",
+        "email": "joao@email.com"
+    }
+}
+
+// Sucesso — coleção com paginação
+{
+    "data": [
+        { "id": 42, "name": "João" },
+        { "id": 43, "name": "Maria" }
+    ],
+    "meta": {
+        "total": 150,
+        "page": 1,
+        "per_page": 20,
+        "total_pages": 8
+    }
+}
+
+// Erro
+{
+    "error": {
+        "code": "VALIDATION_ERROR",
+        "message": "Email é obrigatório",
+        "details": [
+            { "field": "email", "message": "Campo obrigatório" }
+        ]
+    }
+}
+```
+
+### Princípio 3: Status codes corretos
+
+Cada ação tem um status code apropriado:
+
+| Ação | Sucesso | Erro comum |
+|---|---|---|
+| GET (buscar) | 200 OK | 404 Not Found |
+| POST (criar) | 201 Created | 400 Bad Request, 409 Conflict |
+| PUT/PATCH (atualizar) | 200 OK | 404 Not Found, 422 Unprocessable |
+| DELETE (remover) | 204 No Content | 404 Not Found |
+
+### Princípio 4: Filtragem, ordenação e paginação via query string
+
+```
+GET /api/products?category=electronics       → Filtrar
+GET /api/products?sort=price&order=desc      → Ordenar
+GET /api/products?page=2&per_page=20         → Paginar
+GET /api/products?search=notebook            → Buscar
+GET /api/products?min_price=100&max_price=500 → Range
+```
+
+Query strings são para **refinar** a busca, não para identificar recursos.
+
+### Princípio 5: Versionamento
+
+APIs evoluem. Versionar permite mudanças sem quebrar clientes existentes:
+
+```
+# Via URL (mais comum)
+/api/v1/users
+/api/v2/users
+
+# Via header (mais "RESTful" porém menos prático)
+Accept: application/vnd.myapi.v2+json
+```
+
+### Princípio 6: Stateless com autenticação por token
+
+Cada requisição é independente — autenticação via token no header:
+
+```
+GET /api/orders HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9...
+```
+
+O servidor não mantém sessão — valida o token a cada requisição.
+
+### Princípio 7: Relações entre recursos
+
+```
+# Recursos aninhados (pertence a)
+GET /api/users/42/orders           → Pedidos do usuário 42
+GET /api/posts/1/comments          → Comentários do post 1
+
+# Ou via query string (equivalente)
+GET /api/orders?user_id=42
+GET /api/comments?post_id=1
+```
+
+Regra: máximo 2 níveis de aninhamento. Mais que isso, use query string.
+
+## Na prática
+
+Checklist para projetar uma API RESTful:
+
+```
+□ URLs são substantivos plurais (/users, /products)
+□ Métodos HTTP corretos (GET lê, POST cria, PUT atualiza, DELETE remove)
+□ Status codes corretos (201 para criação, 404 para não encontrado)
+□ Formato de resposta consistente (data/error wrapper)
+□ Paginação para coleções (page, per_page, total)
+□ Filtragem via query string (?category=x&sort=y)
+□ Autenticação via header (Authorization: Bearer token)
+□ Versionamento (/api/v1/)
+□ Tratamento de erros consistente (código, mensagem, detalhes)
+```
+
+## Quando usar (e quando não usar)
+
+### RESTful é ideal para:
+- APIs CRUD (a maioria das APIs web)
+- APIs públicas (consistência facilita adoção)
+- Microserviços que expõem recursos bem definidos
+
+### Flexibilize RESTful quando:
+- **Ações não-CRUD:** `POST /api/orders/42/cancel` é aceitável (ação no recurso)
+- **Batch operations:** `POST /api/users/batch-delete` quando precisa deletar muitos
+- **Busca complexa:** `POST /api/search` com body JSON quando query string fica muito longa
+
+Ser pragmático > ser purista. Os princípios existem para tornar a API previsível, não para criar dogmas.
+
+## Erros comuns
+
+### 1. Over-engineering HATEOAS
+
+```json
+// HATEOAS completo: útil em teoria, raro na prática
+{
+    "id": 42,
+    "name": "João",
+    "_links": {
+        "self": { "href": "/api/users/42", "method": "GET" },
+        "update": { "href": "/api/users/42", "method": "PUT" },
+        "delete": { "href": "/api/users/42", "method": "DELETE" },
+        "orders": { "href": "/api/users/42/orders", "method": "GET" }
+    }
+}
+// Na prática, documentação + padrões consistentes são suficientes
+```
+
+### 2. Misturar convenções
+
+```
+❌ Inconsistente:
+GET /api/users           (plural)
+GET /api/product/42      (singular)
+POST /api/create-order   (verbo)
+DELETE /api/users/42     (REST)
+
+✅ Consistente:
+GET /api/users
+GET /api/products/42
+POST /api/orders
+DELETE /api/users/42
+```
+
+### 3. Não documentar a API
+
+Princípios RESTful ajudam na previsibilidade, mas documentação continua necessária:
+- Quais campos são obrigatórios?
+- Quais filtros são suportados?
+- Quais são os códigos de erro?
+- Como funciona a autenticação?
+
+### 4. Retornar dados demais ou de menos
+
+```json
+// ❌ Dados demais (over-fetching)
+GET /api/users/42
+{ "id": 42, "name": "João", "password_hash": "...", "internal_notes": "..." }
+
+// ❌ Dados de menos (under-fetching) — precisa de 3 requests
+GET /api/users/42        → { "name": "João" }
+GET /api/users/42/email  → { "email": "joao@..." }
+GET /api/users/42/avatar → { "url": "..." }
+
+// ✅ Retornar o que o cliente precisa
+GET /api/users/42
+{ "id": 42, "name": "João", "email": "joao@...", "avatar_url": "..." }
+
+// ✅ Campos selecionáveis
+GET /api/users/42?fields=name,email
+```

@@ -1,0 +1,232 @@
+---
+title: "Event Delegation"
+slug: "event-delegation"
+room: "frontend"
+category: "dom-e-browser-apis"
+difficulty: "intermediate"
+order: 5
+prerequisites: ["dom-manipulation"]
+tags: ["eventos", "bubbling", "performance"]
+aiGenerated: true
+---
+
+## O que é
+
+Event Delegation é um padrão onde, ao invés de adicionar um event listener em **cada elemento filho**, você adiciona **um único listener no elemento pai** e usa o event bubbling para capturar eventos dos filhos. O evento "borbulha" (bubble) do elemento clicado até o topo do DOM, e o listener no pai identifica qual filho disparou.
+
+```javascript
+// ❌ Sem delegation: 1 listener por item (100 itens = 100 listeners)
+document.querySelectorAll('.item').forEach(item => {
+    item.addEventListener('click', handleClick);
+});
+
+// ✅ Com delegation: 1 listener no pai (100 itens = 1 listener)
+document.querySelector('.list').addEventListener('click', (e) => {
+    if (e.target.classList.contains('item')) {
+        handleClick(e);
+    }
+});
+```
+
+## Por que importa
+
+**Performance:** 1.000 items na lista = 1.000 event listeners sem delegation. Cada listener consome memória. Com delegation: 1 listener, independente do número de itens.
+
+**Elementos dinâmicos:** quando itens são adicionados ao DOM depois (via JavaScript), listeners individuais não funcionam — o novo item não tem listener. Com delegation, funciona automaticamente porque o listener está no pai.
+
+```javascript
+// ❌ Novo item NÃO tem listener
+const newItem = document.createElement('li');
+newItem.textContent = 'Novo item';
+list.appendChild(newItem);
+// Clicar no novo item → nada acontece!
+
+// ✅ Com delegation, funciona automaticamente
+// O listener no pai captura cliques em QUALQUER filho, inclusive novos
+```
+
+## Como funciona
+
+### Event Bubbling (borbulhamento)
+
+Quando um evento ocorre em um elemento, ele **propaga para cima** pelo DOM:
+
+```
+Clique no <span>:
+
+document
+  └── body
+       └── div.container       ← 3° (bubbling)
+            └── ul.list        ← 2° (bubbling)
+                 └── li.item   ← 1° (target — onde o clique aconteceu)
+                      └── span ← 0° (target real)
+```
+
+O evento dispara primeiro no elemento clicado, depois sobe: `span → li → ul → div → body → document`.
+
+### Implementando delegation
+
+```javascript
+const list = document.querySelector('.list');
+
+list.addEventListener('click', (event) => {
+    // event.target: elemento que FOI CLICADO (o mais interno)
+    // event.currentTarget: elemento que TEM O LISTENER (o pai)
+
+    // Encontrar o item relevante (pode ser um filho do item)
+    const item = event.target.closest('.item');
+    if (!item) return; // Clicou fora de um .item
+
+    // Processar o clique
+    console.log('Item clicado:', item.textContent);
+});
+```
+
+### event.target vs event.currentTarget
+
+```javascript
+// HTML: <ul class="list"><li class="item"><span>Texto</span></li></ul>
+
+list.addEventListener('click', (e) => {
+    console.log(e.target);        // <span>Texto</span> (onde clicou)
+    console.log(e.currentTarget); // <ul class="list"> (onde está o listener)
+});
+```
+
+### closest() — encontrar o ancestor relevante
+
+`event.target` pode ser qualquer elemento interno. `closest()` sobe no DOM até encontrar o seletor:
+
+```javascript
+// HTML:
+// <li class="item">
+//   <img src="...">
+//   <span class="title">Produto</span>
+//   <button class="delete">X</button>
+// </li>
+
+list.addEventListener('click', (e) => {
+    // Clicou no botão delete?
+    if (e.target.closest('.delete')) {
+        const item = e.target.closest('.item');
+        item.remove();
+        return;
+    }
+
+    // Clicou no item (qualquer parte)?
+    const item = e.target.closest('.item');
+    if (item) {
+        selectItem(item);
+    }
+});
+```
+
+### Parar propagação
+
+```javascript
+// stopPropagation(): impede o evento de subir
+child.addEventListener('click', (e) => {
+    e.stopPropagation(); // Pai NÃO recebe o evento
+});
+
+// Use com moderação — pode quebrar delegation em ancestors
+```
+
+## Na prática
+
+Lista de tarefas com delegation:
+
+```javascript
+const list = document.querySelector('#todo-list');
+
+// Um único listener para toda a lista
+list.addEventListener('click', (e) => {
+    const deleteBtn = e.target.closest('[data-action="delete"]');
+    if (deleteBtn) {
+        deleteBtn.closest('li').remove();
+        return;
+    }
+
+    const toggleBtn = e.target.closest('[data-action="toggle"]');
+    if (toggleBtn) {
+        toggleBtn.closest('li').classList.toggle('done');
+    }
+});
+
+// Adicionar novos itens — delegation funciona automaticamente
+function addTodo(text) {
+    const li = document.createElement('li');
+    li.innerHTML = `
+        <span>${text}</span>
+        <button data-action="toggle">✓</button>
+        <button data-action="delete">✕</button>
+    `;
+    list.appendChild(li);
+    // Não precisa adicionar listener! Delegation já cobre.
+}
+```
+
+## Quando usar (e quando não usar)
+
+### Use delegation quando:
+- **Muitos elementos similares** com o mesmo comportamento (lista, tabela, grid)
+- **Elementos adicionados dinamicamente** via JavaScript
+- **Performance importa** (menos listeners = menos memória)
+
+### Não use delegation quando:
+- **Poucos elementos** (3-5 botões — delegation é overkill)
+- **Eventos que não fazem bubble** (`focus`, `blur`, `scroll` não bubblam naturalmente; use `focusin`/`focusout` que bubblam)
+- **Lógica muito diferente** por elemento (delegation fica mais complexa que listeners individuais)
+
+## Erros comuns
+
+### 1. Usar event.target sem closest()
+
+```javascript
+// ❌ Se clicar no <span> dentro do <li>, target é <span>
+list.addEventListener('click', (e) => {
+    if (e.target.classList.contains('item')) { ... }
+    // Falha se clicar em elemento DENTRO do .item
+});
+
+// ✅ closest() sobe no DOM até encontrar o .item
+list.addEventListener('click', (e) => {
+    const item = e.target.closest('.item');
+    if (item) { ... }  // Funciona para qualquer clique dentro do .item
+});
+```
+
+### 2. Delegation em eventos que não bubblam
+
+```javascript
+// ❌ focus NÃO faz bubble
+container.addEventListener('focus', (e) => { ... });  // Nunca dispara!
+
+// ✅ focusin FAZ bubble
+container.addEventListener('focusin', (e) => { ... });  // Funciona!
+```
+
+### 3. stopPropagation quebrando delegation
+
+```javascript
+// ❌ Um listener interno para a propagação
+item.addEventListener('click', (e) => {
+    e.stopPropagation();  // O listener delegado no pai NUNCA recebe!
+});
+```
+
+### 4. Não verificar se o target é relevante
+
+```javascript
+// ❌ Processa clique em QUALQUER coisa dentro do container
+container.addEventListener('click', (e) => {
+    processItem(e.target);  // E se clicou no padding do container?
+});
+
+// ✅ Verificar se clicou em algo relevante
+container.addEventListener('click', (e) => {
+    const item = e.target.closest('.item');
+    if (!item) return;  // Clique irrelevante, ignorar
+    processItem(item);
+});
+```

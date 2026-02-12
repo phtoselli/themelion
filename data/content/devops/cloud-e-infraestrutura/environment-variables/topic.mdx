@@ -1,0 +1,322 @@
+---
+title: "Environment Variables"
+slug: "environment-variables"
+room: "devops"
+category: "cloud-e-infraestrutura"
+difficulty: "beginner"
+order: 1
+prerequisites: []
+tags: ["configuracao", "seguranca", "deploy"]
+aiGenerated: true
+---
+
+## O que é
+
+**Environment variables (variáveis de ambiente)** são pares **chave=valor** definidos fora do código-fonte que configuram o comportamento da aplicação em tempo de execução. Permitem que o **mesmo código** rode em ambientes diferentes (dev, staging, produção) sem modificação.
+
+```bash
+# Definir variáveis de ambiente
+DATABASE_URL=postgresql://localhost:5432/myapp_dev
+API_KEY=sk-abc123
+PORT=3000
+DEBUG=true
+
+# A aplicação lê essas variáveis em tempo de execução
+# e se comporta de acordo com o ambiente
+```
+
+```python
+import os
+
+# Ler variável de ambiente
+db_url = os.environ["DATABASE_URL"]
+debug = os.environ.get("DEBUG", "false") == "true"
+port = int(os.environ.get("PORT", "3000"))
+```
+
+## Por que importa
+
+### Separação de configuração e código
+
+```
+❌ Configuração hardcoded no código:
+
+db = connect("postgresql://user:senha123@prod-server:5432/app")
+# Senha no código-fonte → commitada no Git → exposta para todos
+# Para mudar a senha, precisa alterar código + deploy
+
+✅ Configuração via variáveis de ambiente:
+
+db = connect(os.environ["DATABASE_URL"])
+# Senha está fora do código
+# Mudar senha = alterar a variável, sem tocar no código
+# Cada ambiente tem sua própria variável
+```
+
+### Três problemas que resolve:
+
+```
+1. SEGURANÇA: credenciais fora do código-fonte
+   - API keys, senhas de banco, tokens
+   - Nunca aparecem no repositório Git
+
+2. PORTABILIDADE: mesmo código, múltiplos ambientes
+   - Dev: DATABASE_URL=localhost
+   - Staging: DATABASE_URL=staging-server
+   - Prod: DATABASE_URL=prod-server
+
+3. FLEXIBILIDADE: mudar configuração sem deploy
+   - Aumentar timeout: TIMEOUT=30 → TIMEOUT=60
+   - Ativar feature flag: ENABLE_NEW_UI=true
+   - Não precisa rebuild nem redeploy
+```
+
+## Como funciona
+
+### Onde definir variáveis de ambiente
+
+```
+1. Shell (temporário, dura enquanto o terminal estiver aberto):
+   $ export DATABASE_URL=postgresql://localhost/myapp
+   $ node app.js
+
+2. Arquivo .env (desenvolvimento local):
+   DATABASE_URL=postgresql://localhost/myapp
+   API_KEY=dev-key-123
+   DEBUG=true
+
+3. Docker / docker-compose:
+   environment:
+     - DATABASE_URL=postgresql://db:5432/myapp
+
+4. Cloud / Plataforma de deploy:
+   Cloudflare Pages, Vercel, Heroku, AWS → painel de configuração
+   Kubernetes → ConfigMaps e Secrets
+
+5. CI/CD:
+   GitHub Actions → secrets e variables do repositório
+```
+
+### Arquivo .env (desenvolvimento)
+
+```bash
+# .env — NÃO commitar no Git!
+DATABASE_URL=postgresql://localhost:5432/myapp_dev
+REDIS_URL=redis://localhost:6379
+API_KEY=dev-api-key-não-é-segredo-de-verdade
+PORT=3000
+DEBUG=true
+LOG_LEVEL=debug
+```
+
+```gitignore
+# .gitignore — SEMPRE ignorar .env
+.env
+.env.local
+.env.*.local
+```
+
+A maioria dos frameworks carrega `.env` automaticamente ou com uma biblioteca:
+
+```python
+# Python: python-dotenv
+from dotenv import load_dotenv
+load_dotenv()  # Carrega variáveis do .env para os.environ
+db_url = os.environ["DATABASE_URL"]
+```
+
+```javascript
+// Node.js: dotenv (ou --env-file nativo no Node 20+)
+require('dotenv').config();
+const dbUrl = process.env.DATABASE_URL;
+
+// Node.js 20+: sem biblioteca
+// $ node --env-file=.env app.js
+```
+
+### Variáveis por ambiente
+
+```
+.env.example          ← Template commitado (sem valores reais)
+.env                  ← Valores de desenvolvimento (NÃO commitar)
+.env.test             ← Valores para testes automatizados
+Painel da cloud       ← Valores de produção (nunca no código)
+
+.env.example (commitado no Git):
+DATABASE_URL=postgresql://localhost:5432/myapp
+API_KEY=sua-api-key-aqui
+PORT=3000
+DEBUG=true
+
+Propósito: documentar QUAIS variáveis existem, sem expor valores reais.
+Novo desenvolvedor: copia .env.example → .env e preenche.
+```
+
+### Acessando em diferentes linguagens
+
+```python
+# Python
+import os
+value = os.environ["KEY"]           # Erro se não existir
+value = os.environ.get("KEY", "default")  # Default se não existir
+```
+
+```javascript
+// JavaScript / TypeScript
+const value = process.env.KEY;       // undefined se não existir
+const port = process.env.PORT || 3000;  // Default
+```
+
+```go
+// Go
+value := os.Getenv("KEY")           // String vazia se não existir
+value, exists := os.LookupEnv("KEY")  // Boolean indica se existe
+```
+
+```csharp
+// C#
+var value = Environment.GetEnvironmentVariable("KEY");  // null se não existir
+```
+
+```rust
+// Rust
+let value = std::env::var("KEY").expect("KEY must be set");  // Panic se não existir
+let value = std::env::var("KEY").unwrap_or("default".to_string());
+```
+
+## Na prática
+
+### Configuração típica de aplicação web
+
+```bash
+# Banco de dados
+DATABASE_URL=postgresql://user:pass@host:5432/dbname
+
+# Servidor
+PORT=3000
+HOST=0.0.0.0
+
+# Segurança
+JWT_SECRET=um-segredo-longo-e-aleatório
+SESSION_SECRET=outro-segredo-longo
+
+# APIs externas
+STRIPE_API_KEY=sk_live_xxx
+SENDGRID_API_KEY=SG.xxx
+
+# Feature flags
+ENABLE_NEW_CHECKOUT=true
+MAINTENANCE_MODE=false
+
+# Observabilidade
+LOG_LEVEL=info
+SENTRY_DSN=https://xxx@sentry.io/123
+```
+
+### Docker com variáveis de ambiente
+
+```yaml
+# docker-compose.yml
+services:
+  app:
+    build: .
+    environment:
+      - DATABASE_URL=postgresql://db:5432/myapp
+      - REDIS_URL=redis://redis:6379
+      - NODE_ENV=production
+    env_file:
+      - .env  # Carregar de arquivo
+
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: myapp
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: ${DB_PASSWORD}  # Referencia variável do host
+```
+
+## Quando usar (e quando não usar)
+
+### Sempre use variáveis de ambiente para:
+- **Credenciais:** senhas, API keys, tokens, secrets
+- **URLs de serviços:** banco de dados, cache, APIs externas
+- **Configuração por ambiente:** debug mode, log level, feature flags
+- **Portas e hosts:** PORT, HOST, BIND_ADDRESS
+
+### Não use variáveis de ambiente para:
+- **Dados grandes:** arquivos de configuração complexos (use JSON/YAML)
+- **Lógica de negócio:** regras que mudam frequentemente (use banco/feature flags)
+- **Estruturas aninhadas:** variáveis de ambiente são strings simples
+
+### Alternativas para configuração complexa:
+```
+Variáveis de ambiente: chave=valor simples
+  DATABASE_URL=postgresql://...
+
+Arquivos de config (JSON/YAML): estruturas complexas
+  { "database": { "host": "...", "pool": { "min": 5, "max": 20 } } }
+
+Feature flags (serviço dedicado): configuração dinâmica
+  LaunchDarkly, Unleash → mudar em tempo real sem deploy
+
+Secrets manager (produção): credenciais rotacionadas
+  AWS Secrets Manager, HashiCorp Vault → rotação automática de senhas
+```
+
+## Erros comuns
+
+### 1. Commitar credenciais no Git
+
+```bash
+# ❌ .env commitado no repositório
+git add .env
+git commit -m "add config"
+# Senha agora está no histórico do Git PARA SEMPRE
+# Mesmo se deletar o arquivo depois, o histórico mantém
+
+# ✅ Sempre adicionar .env no .gitignore ANTES do primeiro commit
+echo ".env" >> .gitignore
+# Se já commitou: rotacionar TODAS as credenciais imediatamente
+```
+
+### 2. Não validar variáveis na inicialização
+
+```python
+# ❌ Descobrir que falta variável quando o primeiro request chegar
+@app.route("/api/data")
+def get_data():
+    api_key = os.environ["API_KEY"]  # Crashar em produção!
+
+# ✅ Validar na inicialização — falhar rápido
+def validate_config():
+    required = ["DATABASE_URL", "API_KEY", "JWT_SECRET"]
+    missing = [var for var in required if var not in os.environ]
+    if missing:
+        raise RuntimeError(f"Missing env vars: {', '.join(missing)}")
+
+validate_config()  # Roda ao iniciar — antes de aceitar requests
+```
+
+### 3. Usar valores default inseguros em produção
+
+```python
+# ❌ Default inseguro
+secret = os.environ.get("JWT_SECRET", "default-secret")
+# Se esquecer de configurar em prod → todos os tokens usam "default-secret"
+
+# ✅ Sem default para variáveis de segurança
+secret = os.environ["JWT_SECRET"]  # Erro se não existir = intencional
+```
+
+### 4. Confundir .env com configuração de produção
+
+```
+❌ Subir .env para o servidor de produção
+   → Arquivo com credenciais no filesystem do servidor
+   → Qualquer processo pode ler
+
+✅ Configurar variáveis na plataforma de deploy
+   → Cloudflare/Vercel/AWS: painel de configuração (criptografado)
+   → Docker: env_file ou secrets
+   → Kubernetes: ConfigMaps (não sensível) + Secrets (sensível)
+```

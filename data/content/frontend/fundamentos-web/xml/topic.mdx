@@ -1,0 +1,385 @@
+---
+title: "XML"
+slug: "xml"
+room: "frontend"
+category: "fundamentos-web"
+difficulty: "beginner"
+order: 22
+prerequisites: ["semantic-html"]
+tags: ["markup", "dados", "estrutura", "parsing"]
+aiGenerated: true
+---
+
+## O que é
+
+XML (eXtensible Markup Language) é uma linguagem de marcação para **estruturar, armazenar e transportar dados**. Diferente do HTML que define *como exibir* dados, XML define *o que os dados significam*.
+
+```xml
+<!-- HTML: descreve apresentação -->
+<p class="price">49.90</p>
+
+<!-- XML: descreve significado -->
+<produto>
+  <nome>Camiseta</nome>
+  <preco moeda="BRL">49.90</preco>
+</produto>
+```
+
+Pense em XML como uma **linguagem para criar suas próprias tags**. Enquanto HTML tem tags fixas (`<div>`, `<p>`, `<img>`), XML permite inventar qualquer tag que faça sentido para seus dados. Você define o vocabulário — XML define as regras de sintaxe.
+
+## Por que importa
+
+XML é a base de tecnologias que todo desenvolvedor frontend usa, mesmo sem perceber:
+
+- **SVG** — gráficos vetoriais no navegador são XML puro (`<svg>`, `<path>`, `<circle>`)
+- **RSS/Atom** — feeds de notícias e blogs
+- **XHTML** — versão rigorosa do HTML baseada em XML
+- **Sitemap** — `sitemap.xml` que buscadores como Google leem para indexar páginas
+- **SOAP** — protocolo de APIs que ainda domina bancos, governos e sistemas legados
+- **Configurações** — Android (`AndroidManifest.xml`), Maven (`pom.xml`), `.csproj`, `.plist`
+
+Entender XML ajuda a compreender a **evolução da web**: SGML → HTML → XML → XHTML → HTML5. HTML5 abandonou a rigidez do XML, mas as lições de estruturação de dados permanecem.
+
+Mesmo que JSON domine APIs modernas, XML continua presente em cenários onde **validação rigorosa**, **schemas complexos** e **documentos hierárquicos** são necessários. Ignorar XML é ignorar uma parte significativa do ecossistema web.
+
+## Como funciona
+
+### Anatomia de um documento XML
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<biblioteca>
+  <livro isbn="978-85-333-0227-3">
+    <titulo>Dom Casmurro</titulo>
+    <autor>Machado de Assis</autor>
+    <ano>1899</ano>
+    <generos>
+      <genero>Romance</genero>
+      <genero>Literatura Brasileira</genero>
+    </generos>
+  </livro>
+  <livro isbn="978-85-359-0277-9">
+    <titulo>Grande Sertão: Veredas</titulo>
+    <autor>Guimarães Rosa</autor>
+    <ano>1956</ano>
+  </livro>
+</biblioteca>
+```
+
+### Estrutura em árvore
+
+Todo documento XML forma uma **árvore** — o mesmo conceito do DOM no HTML:
+
+```
+biblioteca (raiz)
+├── livro [isbn="978-85-333-0227-3"]
+│   ├── titulo → "Dom Casmurro"
+│   ├── autor → "Machado de Assis"
+│   ├── ano → "1899"
+│   └── generos
+│       ├── genero → "Romance"
+│       └── genero → "Literatura Brasileira"
+└── livro [isbn="978-85-359-0277-9"]
+    ├── titulo → "Grande Sertão: Veredas"
+    ├── autor → "Guimarães Rosa"
+    └── ano → "1956"
+```
+
+### Regras de bem-formação (well-formedness)
+
+XML é **rigoroso** — um único erro de sintaxe e o parser rejeita o documento inteiro (diferente do HTML, que tenta corrigir erros silenciosamente).
+
+| Regra | Válido | Inválido |
+|---|---|---|
+| Deve ter **um** elemento raiz | `<raiz>...</raiz>` | `<a/><b/>` (duas raízes) |
+| Tags devem fechar | `<nome>João</nome>` | `<nome>João` |
+| Tags são **case-sensitive** | `<Nome>...</Nome>` | `<Nome>...</nome>` |
+| Atributos entre aspas | `id="1"` | `id=1` |
+| Elementos aninhados corretamente | `<a><b></b></a>` | `<a><b></a></b>` |
+| Caracteres especiais escapados | `&lt;` `&amp;` `&gt;` | `<` `&` `>` dentro de texto |
+
+### Caracteres especiais (entidades)
+
+```xml
+<!-- Estes 5 caracteres precisam ser escapados em texto XML: -->
+&lt;    → <   (less than)
+&gt;    → >   (greater than)
+&amp;   → &   (ampersand)
+&quot;  → "   (aspas duplas — dentro de atributos)
+&apos;  → '   (apóstrofo — dentro de atributos)
+
+<!-- Alternativa: CDATA para blocos de texto literal -->
+<codigo><![CDATA[
+  if (x < 10 && y > 5) {
+    return x & y;
+  }
+]]></codigo>
+```
+
+CDATA é útil quando o conteúdo tem muitos caracteres especiais (código-fonte, HTML embutido). O parser ignora tudo dentro de `<![CDATA[...]]>`.
+
+### Namespaces
+
+Quando dois vocabulários XML usam o mesmo nome de tag, namespaces resolvem a ambiguidade:
+
+```xml
+<!-- Sem namespace: "titulo" de livro ou de página? -->
+<titulo>Dom Casmurro</titulo>
+<titulo>Minha Biblioteca Online</titulo>
+
+<!-- Com namespace: sem ambiguidade -->
+<livro:titulo xmlns:livro="http://exemplo.com/livros">Dom Casmurro</livro:titulo>
+<pagina:titulo xmlns:pagina="http://exemplo.com/paginas">Minha Biblioteca</pagina:titulo>
+```
+
+SVG dentro de HTML usa namespaces implicitamente — o navegador sabe que `<svg>` pertence ao namespace SVG e `<div>` ao HTML.
+
+### XML vs HTML: parsing rigoroso vs leniente
+
+```xml
+<!-- Isso é HTML válido (browser corrige): -->
+<p>Parágrafo sem fechar
+<img src="foto.jpg">
+<br>
+<div class=container>
+
+<!-- Em XML, NADA disso funciona: -->
+<!-- Toda tag precisa fechar, atributos precisam de aspas, -->
+<!-- tags vazias precisam de /> -->
+<p>Parágrafo</p>
+<img src="foto.jpg" />
+<br />
+<div class="container"></div>
+```
+
+Essa rigidez é proposital: XML prioriza **previsibilidade** sobre conveniência. Se um documento está malformado, o parser rejeita imediatamente em vez de adivinhar a intenção.
+
+### Parsing: DOM vs SAX
+
+Existem duas estratégias fundamentais para ler XML:
+
+```
+DOM (Document Object Model):
+┌─────────────────────────────────┐
+│ Lê o arquivo inteiro na memória │
+│ Constrói a árvore completa      │
+│ Permite navegação livre         │
+│ Usa mais memória                │
+└─────────────────────────────────┘
+Ideal para: documentos pequenos/médios, quando precisa acessar dados aleatoriamente
+
+SAX (Simple API for XML):
+┌─────────────────────────────────┐
+│ Lê o arquivo sequencialmente    │
+│ Emite eventos (abriu tag,       │
+│   fechou tag, encontrou texto)  │
+│ Usa memória constante           │
+└─────────────────────────────────┘
+Ideal para: arquivos grandes (GBs), quando só precisa extrair dados específicos
+```
+
+No navegador, `DOMParser` usa a abordagem DOM. Para arquivos muito grandes no servidor, SAX ou streaming parsers são preferíveis.
+
+## Na prática
+
+### SVG — XML no frontend diário
+
+```xml
+<!-- SVG é XML válido — por isso a sintaxe é rigorosa -->
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <circle cx="50" cy="50" r="40" fill="#3b82f6" />
+  <text x="50" y="55" text-anchor="middle" fill="white" font-size="14">
+    SVG
+  </text>
+</svg>
+```
+
+### sitemap.xml — SEO
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://meusite.com/</loc>
+    <lastmod>2025-01-15</lastmod>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://meusite.com/sobre</loc>
+    <lastmod>2025-01-10</lastmod>
+    <priority>0.8</priority>
+  </url>
+</urlset>
+```
+
+### RSS Feed
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Meu Blog</title>
+    <link>https://meublog.com</link>
+    <description>Artigos sobre desenvolvimento</description>
+    <item>
+      <title>Entendendo XML</title>
+      <link>https://meublog.com/xml</link>
+      <pubDate>Mon, 15 Jan 2025 10:00:00 GMT</pubDate>
+    </item>
+  </channel>
+</rss>
+```
+
+### Parsing XML no navegador
+
+```javascript
+// DOMParser — transforma string XML em documento navegável
+const xml = `
+<usuarios>
+  <usuario id="1">
+    <nome>Maria</nome>
+    <email>maria@exemplo.com</email>
+  </usuario>
+  <usuario id="2">
+    <nome>João</nome>
+    <email>joao@exemplo.com</email>
+  </usuario>
+</usuarios>`;
+
+const parser = new DOMParser();
+const doc = parser.parseFromString(xml, "application/xml");
+
+// Verificar erros de parsing (XML não perdoa erros)
+const erros = doc.querySelector("parsererror");
+if (erros) {
+  console.error("XML malformado:", erros.textContent);
+}
+
+// Navegar pela árvore — mesma API do HTML DOM
+const usuarios = doc.querySelectorAll("usuario");
+usuarios.forEach(u => {
+  const id = u.getAttribute("id");
+  const nome = u.querySelector("nome").textContent;
+  console.log(`${id}: ${nome}`);
+});
+// 1: Maria
+// 2: João
+```
+
+<CodeTabs />
+
+## Quando usar (e quando não usar)
+
+### Use XML quando:
+- **SVG** — gráficos vetoriais na web (não tem alternativa)
+- **Sitemap/RSS** — padrões que exigem XML
+- **SOAP APIs** — sistemas legados bancários, governamentais, ERP
+- **Documentos complexos** — dados hierárquicos com schemas rigorosos e validação
+- **Configuração** — quando a ferramenta exige XML (Android, Maven, .NET)
+
+### Prefira JSON quando:
+- **APIs REST** — mais leve, parsing nativo em JavaScript
+- **Dados simples** — objetos, listas, key-value
+- **Comunicação frontend ↔ backend** — JSON é o padrão de facto
+- **localStorage/sessionStorage** — armazena strings, JSON serializa fácil
+
+### Comparação direta
+
+| Critério | XML | JSON |
+|---|---|---|
+| Verbosidade | Alta (tags de abertura + fechamento) | Baixa (chaves e colchetes) |
+| Legibilidade | Boa para documentos | Boa para dados |
+| Parsing em JS | `DOMParser` (manual) | `JSON.parse()` (nativo) |
+| Schema/validação | XSD, DTD (muito poderosos) | JSON Schema (mais simples) |
+| Comentários | Sim (`<!-- -->`) | Não (JSON puro) |
+| Tipos de dados | Tudo é texto | String, number, boolean, null, array, object |
+| Namespaces | Sim | Não |
+| Tamanho médio | ~2x maior que JSON equivalente | Referência |
+| Suporte a metadados | Atributos + elementos | Apenas propriedades |
+
+## Erros comuns
+
+### 1. Tratar XML como HTML (e esperar tolerância a erros)
+
+```xml
+<!-- ❌ Funciona em HTML, QUEBRA em XML -->
+<img src="foto.jpg">
+<br>
+<input type="text">
+
+<!-- ✅ XML exige fechamento explícito -->
+<img src="foto.jpg" />
+<br />
+<input type="text" />
+```
+
+Um único erro de sintaxe em XML faz o parser **rejeitar o documento inteiro**. HTML tenta adivinhar — XML não.
+
+### 2. Esquecer de escapar caracteres especiais
+
+```xml
+<!-- ❌ & sozinho é inválido em XML -->
+<empresa>Johnson & Johnson</empresa>
+
+<!-- ✅ Usar entidade -->
+<empresa>Johnson &amp; Johnson</empresa>
+
+<!-- ❌ < em texto confunde o parser -->
+<regra>se x < 10</regra>
+
+<!-- ✅ Escapar ou usar CDATA -->
+<regra>se x &lt; 10</regra>
+<regra><![CDATA[se x < 10]]></regra>
+```
+
+### 3. Ignorar namespaces em SVG
+
+```javascript
+// ❌ Não funciona — SVG precisa do namespace correto
+const circle = document.createElement("circle");
+
+// ✅ Criar elementos SVG com namespace
+const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+circle.setAttribute("cx", "50");
+circle.setAttribute("cy", "50");
+circle.setAttribute("r", "40");
+```
+
+### 4. Confundir case-sensitivity
+
+```xml
+<!-- ❌ Em XML, estas são tags DIFERENTES -->
+<Nome>Maria</nome>  <!-- Erro! Tag de abertura ≠ tag de fechamento -->
+
+<!-- ✅ Case deve ser consistente -->
+<Nome>Maria</Nome>
+<nome>Maria</nome>
+```
+
+HTML é case-insensitive (`<DIV>` = `<div>`). XML não — `<Livro>` e `<livro>` são elementos diferentes.
+
+### 5. Usar XML quando JSON resolve
+
+```xml
+<!-- ❌ XML para dados simples de API é verbosidade desnecessária -->
+<resposta>
+  <usuario>
+    <nome>Maria</nome>
+    <idade>28</idade>
+    <ativo>true</ativo>
+  </usuario>
+</resposta>
+```
+
+```json
+// ✅ JSON: mesma informação, ~60% menos bytes
+{
+  "usuario": {
+    "nome": "Maria",
+    "idade": 28,
+    "ativo": true
+  }
+}
+```
+
+Se você está criando uma API nova sem requisitos de schema complexo, JSON é a escolha pragmática. XML brilha em cenários que realmente precisam de seus recursos (namespaces, validação XSD, documentos mistos).

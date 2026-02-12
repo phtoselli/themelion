@@ -1,0 +1,250 @@
+---
+title: "HTTP Methods (GET, POST, PUT, DELETE)"
+slug: "http-methods"
+room: "frontend"
+category: "fundamentos-web"
+difficulty: "beginner"
+order: 2
+prerequisites: ["http-https"]
+tags: ["verbos", "crud", "semantica"]
+aiGenerated: true
+---
+
+## O que é
+
+HTTP methods (ou verbos HTTP) definem **a intenção** de uma requisição — o que o cliente quer fazer com o recurso. Assim como verbos em linguagem natural (pegar, criar, atualizar, deletar), cada método HTTP comunica uma ação específica.
+
+Os 4 métodos principais mapeiam diretamente para operações **CRUD**:
+
+| Método | Ação | CRUD | Exemplo |
+|---|---|---|---|
+| **GET** | Ler/buscar | Read | Buscar lista de usuários |
+| **POST** | Criar | Create | Criar novo usuário |
+| **PUT/PATCH** | Atualizar | Update | Atualizar email do usuário |
+| **DELETE** | Remover | Delete | Deletar usuário |
+
+## Por que importa
+
+Usar o método correto não é apenas convenção — tem implicações reais:
+
+**Semântica:** o método comunica a intenção para o servidor, proxies, caches e outros intermediários. Um GET nunca deveria ter efeitos colaterais; um POST sempre pode ter.
+
+**Cache:** navegadores e CDNs cacheiam respostas de GET automaticamente. POST nunca é cacheado. Se você usar POST para buscar dados, perde caching gratuito.
+
+**Segurança:** GET não deve modificar dados (senão um crawler indexando sua API pode deletar registros). POST é explicitamente uma ação que modifica estado.
+
+**Idempotência:** imagine apertar o botão do elevador — apertar 1 vez ou 10 vezes tem o mesmo resultado (o elevador vem). GET, PUT e DELETE são assim: repetir a mesma requisição não muda o resultado final. POST não é idempotente — enviar duas vezes pode criar dois registros.
+
+## Como funciona
+
+### GET — Buscar dados
+
+```
+GET /api/users HTTP/1.1
+Host: api.example.com
+Accept: application/json
+```
+
+- **Não tem body** — parâmetros vão na URL (query string)
+- **Idempotente** — buscar 10 vezes retorna o mesmo resultado
+- **Cacheável** — navegadores e CDNs podem cachear
+- **Seguro** (safe) — não modifica nada no servidor
+
+```
+GET /api/users?page=2&limit=10
+GET /api/users/42
+GET /api/products?category=electronics&sort=price
+```
+
+### POST — Criar recurso
+
+```
+POST /api/users HTTP/1.1
+Host: api.example.com
+Content-Type: application/json
+
+{"name": "João", "email": "joao@email.com"}
+```
+
+- **Tem body** — dados do novo recurso
+- **Não idempotente** — enviar 2 vezes cria 2 registros
+- **Não cacheável**
+- **Não seguro** — modifica estado no servidor
+
+Resposta típica:
+```
+HTTP/1.1 201 Created
+Location: /api/users/43
+
+{"id": 43, "name": "João", "email": "joao@email.com"}
+```
+
+### PUT — Substituir recurso inteiro
+
+```
+PUT /api/users/42 HTTP/1.1
+Content-Type: application/json
+
+{"name": "João Silva", "email": "joao@email.com", "age": 29}
+```
+
+- **Substituição completa** — envia todos os campos, mesmo os que não mudaram
+- **Idempotente** — enviar 2 vezes resulta no mesmo estado
+- Se o recurso não existe, pode criar (depende da implementação)
+
+### PATCH — Atualização parcial
+
+```
+PATCH /api/users/42 HTTP/1.1
+Content-Type: application/json
+
+{"email": "novo@email.com"}
+```
+
+- **Atualização parcial** — envia apenas os campos que mudaram
+- Mais eficiente que PUT quando só precisa atualizar 1 campo
+
+**PUT vs PATCH:**
+```
+PUT /users/42   {"name": "João", "email": "novo@email.com", "age": 29}
+                 → Envia TUDO, substitui o recurso inteiro
+
+PATCH /users/42 {"email": "novo@email.com"}
+                 → Envia SÓ o que mudou
+```
+
+### DELETE — Remover recurso
+
+```
+DELETE /api/users/42 HTTP/1.1
+Host: api.example.com
+```
+
+- **Idempotente** — deletar 2 vezes tem o mesmo efeito (recurso não existe)
+- Geralmente sem body
+- Resposta: `204 No Content` ou `200 OK`
+
+### Propriedades dos métodos
+
+| Método | Seguro | Idempotente | Tem Body | Cacheável |
+|---|---|---|---|---|
+| GET | Sim | Sim | Não | Sim |
+| POST | Não | Não | Sim | Não |
+| PUT | Não | Sim | Sim | Não |
+| PATCH | Não | Não* | Sim | Não |
+| DELETE | Não | Sim | Opcional | Não |
+
+**Seguro** = não modifica estado no servidor (apenas leitura)
+**Idempotente** = múltiplas requisições idênticas = mesmo resultado
+*PATCH pode ou não ser idempotente, dependendo de como a API implementa — por isso o asterisco.
+
+### Outros métodos
+
+- **HEAD:** igual ao GET, mas retorna apenas headers (sem body). Útil para verificar se recurso existe ou checar Content-Length antes de baixar.
+- **OPTIONS:** retorna os métodos permitidos para um recurso. Usado automaticamente pelo navegador em CORS preflight requests.
+
+## Na prática
+
+```javascript
+// GET — buscar dados
+fetch('/api/users')
+  .then(res => res.json())
+  .then(users => console.log(users));
+
+// POST — criar recurso
+fetch('/api/users', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ name: 'João', email: 'joao@email.com' })
+});
+
+// PUT — substituir recurso
+fetch('/api/users/42', {
+  method: 'PUT',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ name: 'João Silva', email: 'joao@email.com', age: 29 })
+});
+
+// DELETE — remover recurso
+fetch('/api/users/42', { method: 'DELETE' });
+```
+
+## Quando usar (e quando não usar)
+
+### Use GET para:
+- Buscar dados (listagem, detalhes, pesquisa)
+- Qualquer operação que não modifica estado
+- Dados que podem ser cacheados
+
+### Use POST para:
+- Criar novos recursos
+- Operações que não são idempotentes
+- Uploads de arquivos
+- Ações que não se encaixam em GET/PUT/DELETE (ex: `POST /api/login`)
+
+### Use PUT/PATCH para:
+- Atualizar recursos existentes
+- PUT quando tem o recurso completo
+- PATCH quando quer atualizar campos específicos
+
+### Use DELETE para:
+- Remover recursos
+
+## Erros comuns
+
+### 1. Usar GET para modificar dados
+
+```
+❌ GET /api/users/42/delete     ← GET não deveria ter side effects!
+✅ DELETE /api/users/42          ← Método correto para deletar
+
+# Por que é perigoso: crawlers, prefetch e caches podem disparar GET automaticamente
+# Se GET deleta dados, um crawler pode apagar seu banco inteiro
+```
+
+### 2. Usar POST para tudo
+
+```
+❌ POST /api/getUsers            ← Deveria ser GET
+❌ POST /api/deleteUser/42       ← Deveria ser DELETE
+✅ GET /api/users                ← Buscar dados
+✅ DELETE /api/users/42          ← Deletar recurso
+```
+
+POST para tudo perde: caching automático, semântica clara, idempotência.
+
+### 3. Confundir PUT e PATCH
+
+```json
+// Recurso atual: {"name": "João", "email": "joao@email.com", "age": 28}
+
+// PUT com campo faltando — APAGA o campo!
+// PUT /users/42
+{"name": "João Silva", "email": "joao@email.com"}
+// Resultado: {"name": "João Silva", "email": "joao@email.com"}
+// age foi removido!
+
+// PATCH — atualiza SÓ o que enviou
+// PATCH /users/42
+{"name": "João Silva"}
+// Resultado: {"name": "João Silva", "email": "joao@email.com", "age": 28}
+```
+
+### 4. Enviar dados sensíveis via GET query string
+
+```
+❌ GET /api/login?username=joao&password=123456
+   → Senha fica na URL, visível no histórico, logs, bookmarks
+
+✅ POST /api/login
+   Body: {"username": "joao", "password": "123456"}
+   → Dados no body, não expostos na URL
+```
+
+### 5. Não retornar status code correto
+
+```
+❌ POST /api/users → 200 OK (deveria ser 201 Created)
+❌ DELETE /api/users/42 → 200 OK com body vazio (200 exige body; use 204)
+❌ GET /api/users/999 → 200 OK com body vazio (deveria ser 404 Not Found)
+```

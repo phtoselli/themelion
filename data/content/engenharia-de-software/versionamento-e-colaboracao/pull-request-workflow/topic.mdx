@@ -1,0 +1,208 @@
+---
+title: "Pull Request Workflow"
+slug: "pull-request-workflow"
+room: "engenharia-de-software"
+category: "versionamento-e-colaboracao"
+difficulty: "beginner"
+order: 3
+prerequisites: ["branching-strategies"]
+tags: ["revisao", "colaboracao", "qualidade"]
+aiGenerated: true
+---
+
+## O que é
+
+Um Pull Request (PR) — ou Merge Request (MR) no GitLab — é uma **proposta formal de integrar mudanças** de uma branch para outra. Não é apenas um merge: é um processo que inclui revisão de código, discussão, testes automatizados e aprovação antes da integração.
+
+```
+feature/add-search ──●──●──●──→ Pull Request → Revisão → ✅ Aprovado → Merge para main
+```
+
+O PR é o **checkpoint de qualidade** entre "código escrito" e "código em produção".
+
+## Por que importa
+
+Sem Pull Requests:
+- Código vai para produção sem revisão — bugs passam despercebidos
+- Não há registro de **por que** uma mudança foi feita
+- Novos membros da equipe não aprendem com o código dos outros
+- Padrões de qualidade dependem da disciplina individual
+
+Com Pull Requests:
+- **Revisão de código:** pelo menos uma pessoa verifica cada mudança
+- **Documentação viva:** PRs formam um histórico pesquisável de decisões
+- **Testes automatizados:** CI roda antes do merge (testes, lint, build)
+- **Transferência de conhecimento:** revisores aprendem sobre partes do código que não escreveram
+
+Estudos mostram que code review é uma das práticas mais eficazes para reduzir defeitos em software — mais eficaz até que testes automatizados sozinhos.
+
+## Como funciona
+
+### O ciclo de vida de um PR
+
+```
+1. Criar branch    → Desenvolver na branch
+2. Push            → Enviar para o remoto
+3. Abrir PR        → Descrever mudanças, contexto
+4. CI/CD           → Testes, lint, build automáticos
+5. Revisão         → Colegas revisam código
+6. Feedback        → Discussão, sugestões, correções
+7. Aprovação       → Reviewer aprova
+8. Merge           → Integrar na branch principal
+9. Cleanup         → Deletar branch
+```
+
+### Anatomia de um bom PR
+
+**Título:** curto e descritivo
+```
+✅ "feat: adicionar busca de produtos por categoria"
+❌ "Mudanças"
+❌ "WIP ainda testando"
+```
+
+**Descrição:** contexto, motivação e o que testar
+
+```markdown
+## O que mudou
+- Adicionado endpoint GET /products?category=electronics
+- Adicionado filtro por categoria na listagem de produtos
+- Adicionado índice no banco para a coluna category
+
+## Por que
+Usuários reportaram que não conseguem filtrar produtos.
+Issue: #342
+
+## Como testar
+1. GET /products?category=electronics → deve retornar só eletrônicos
+2. GET /products → deve retornar todos (sem filtro)
+3. GET /products?category=inexistente → deve retornar array vazio
+```
+
+### Tamanho ideal de um PR
+
+| Tamanho | Linhas alteradas | Qualidade da revisão |
+|---|---|---|
+| Pequeno | < 200 linhas | Excelente — revisor foca nos detalhes |
+| Médio | 200-400 linhas | Boa — revisor consegue acompanhar |
+| Grande | 400-1000 linhas | Fraca — revisor começa a "ler por cima" |
+| Enorme | > 1000 linhas | Péssima — revisor aprova sem ler ("LGTM") |
+
+**Regra:** se o PR está grande, quebre em PRs menores e sequenciais. Um PR que adiciona o endpoint, outro que adiciona os testes, outro que adiciona o filtro na UI.
+
+### Como fazer uma boa revisão
+
+**O que verificar:**
+1. **Correção:** o código faz o que propõe fazer?
+2. **Edge cases:** trata erros, valores nulos, limites?
+3. **Performance:** tem loops desnecessários, queries repetitivas ao banco (N+1)?
+4. **Segurança:** valida input, escapa output, trata autenticação?
+5. **Legibilidade:** nomes claros, funções pequenas, sem código morto?
+6. **Testes:** mudanças estão testadas? Testes cobrem edge cases?
+
+**Como dar feedback:**
+```
+✅ "Essa query pode ter N+1 se a lista tiver muitos items.
+    Sugestão: usar eager loading aqui."
+
+❌ "Código ruim."
+❌ "Eu faria diferente." (sem explicar como/por quê)
+```
+
+Feedback deve ser **específico, construtivo e respeitoso**. Foque no código, não na pessoa.
+
+### CI/CD no PR
+
+Antes do merge, pipelines automáticas verificam:
+
+```
+PR aberto → Testes unitários ✅
+           → Testes de integração ✅
+           → Lint/Format ✅
+           → Build ✅
+           → Security scan ✅
+           → Coverage report 📊
+```
+
+Se qualquer check falhar, o merge é bloqueado até a correção.
+
+## Na prática
+
+Fluxo completo via terminal + GitHub CLI:
+
+```bash
+# 1. Criar branch e desenvolver
+git checkout -b feature/add-search
+# (fazer mudanças, commitar)
+
+# 2. Push
+git push -u origin feature/add-search
+
+# 3. Abrir PR via GitHub CLI
+gh pr create \
+  --title "feat: adicionar busca de produtos" \
+  --body "Adiciona endpoint de busca com filtro por categoria. Issue #342"
+
+# 4. Ver status dos checks
+gh pr checks
+
+# 5. Pedir revisão
+gh pr edit --add-reviewer colega1,colega2
+
+# 6. Após aprovação, merge
+gh pr merge --squash --delete-branch
+```
+
+## Quando usar (e quando não usar)
+
+### Sempre use PRs quando:
+- Trabalha em equipe (mesmo que sejam só 2 pessoas)
+- O código vai para produção
+- Quer manter histórico de decisões
+
+### Pode pular PRs quando:
+- Projeto pessoal solo (mas ainda assim é boa prática)
+- Hotfix emergencial (faça o PR retroativo depois)
+- Mudanças triviais (typo no README, atualizar .gitignore)
+
+## Erros comuns
+
+### 1. PR gigante ("mega PR")
+
+```
+PR com 3.000 linhas alteradas, 45 arquivos, 12 features diferentes
+→ Revisor não consegue revisar com qualidade
+→ Aprova sem ler ("LGTM 👍")
+→ Bugs passam para produção
+```
+
+Solução: quebrar em PRs menores de 200-400 linhas.
+
+### 2. Não descrever o contexto
+
+```
+Título: "fix bug"
+Descrição: (vazio)
+
+→ Revisor não sabe o que olhar
+→ Revisão superficial ou demorada
+```
+
+Sempre inclua: o que mudou, por que mudou, como testar.
+
+### 3. Levar feedback para o pessoal
+
+Code review é sobre o **código**, não sobre você. "Essa variável poderia ter um nome mais descritivo" não é um ataque pessoal — é uma sugestão para melhorar o código que vocês compartilham.
+
+### 4. Não responder ao feedback
+
+```
+Revisor: "Essa query pode ter problemas de performance com muitos registros"
+Autor: (silêncio, merge mesmo assim)
+```
+
+Sempre responda ao feedback: concordar e corrigir, discordar e explicar, ou pedir mais contexto.
+
+### 5. Aprovar sem revisar ("rubber stamping")
+
+Se você não tem tempo para revisar, diga. Um "LGTM" sem ler o código é pior do que nenhuma revisão — cria falsa sensação de segurança.

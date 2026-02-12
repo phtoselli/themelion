@@ -1,0 +1,315 @@
+---
+title: "Debugging Sistemático"
+slug: "debugging-sistematico"
+room: "engenharia-de-software"
+category: "soft-skills"
+difficulty: "beginner"
+order: 1
+prerequisites: []
+tags: ["depuracao", "resolucao", "metodo"]
+aiGenerated: true
+---
+
+## O que é
+
+**Debugging sistemático** é um método estruturado para encontrar e corrigir bugs. Ao invés de mudar código aleatoriamente até funcionar ("debugging por sorte"), segue um processo: **reproduzir → isolar → diagnosticar → corrigir → verificar**. É a diferença entre um médico que faz exames antes de receitar e um que chuta o diagnóstico.
+
+```
+❌ Debugging por sorte:
+   "Não funciona" → muda código aleatório → "agora funciona?" → repete
+
+✅ Debugging sistemático:
+   "Não funciona" → reproduzir → isolar onde falha → entender POR QUE
+   → corrigir causa raiz → verificar que corrigiu → prevenir recorrência
+```
+
+## Por que importa
+
+Desenvolvedores gastam **30-50% do tempo debugando**. A diferença entre um dev júnior e um sênior resolvendo bugs não é inteligência — é **método**. Um sênior:
+
+- Reproduz o bug de forma confiável antes de tocar no código
+- Isola o problema em uma área específica (não procura em todo o codebase)
+- Entende a causa raiz (não apenas o sintoma)
+- Corrige uma vez, verifica com teste, e o bug não volta
+
+Um júnior sem método pode gastar horas no mesmo bug que um sênior resolve em minutos — não porque sabe mais, mas porque sabe **onde procurar** e **como eliminar hipóteses**.
+
+## Como funciona
+
+### O processo (5 etapas)
+
+```
+1. REPRODUZIR  → Conseguir fazer o bug acontecer de forma confiável
+2. ISOLAR      → Reduzir o espaço de busca (onde exatamente falha?)
+3. DIAGNOSTICAR → Entender POR QUE está falhando (causa raiz)
+4. CORRIGIR    → Mudar o mínimo necessário para resolver
+5. VERIFICAR   → Confirmar que o bug sumiu e nada mais quebrou
+```
+
+### Etapa 1: Reproduzir
+
+**Não toque no código antes de reproduzir o bug.** Se não consegue reproduzir, não consegue confirmar que corrigiu.
+
+```
+Perguntas para reprodução:
+
+- Quais são os passos exatos para causar o bug?
+- Acontece sempre ou intermitentemente?
+- Acontece em qual ambiente? (dev, staging, prod)
+- Acontece com qual dado? (usuário específico, input específico)
+- Desde quando acontece? (qual commit introduziu?)
+
+Resultado: um passo-a-passo que reproduz o bug 100% das vezes
+```
+
+```bash
+# Ferramenta: git bisect — encontrar qual commit introduziu o bug
+git bisect start
+git bisect bad              # Commit atual tem o bug
+git bisect good abc1234     # Este commit antigo não tinha
+# Git faz busca binária: testa o commit do meio, descarta metade, repete
+# Em 1000 commits, encontra o culpado em ~10 testes (ao invés de testar os 1000)
+```
+
+### Etapa 2: Isolar
+
+Reduza o problema ao menor pedaço de código possível:
+
+```
+Técnicas de isolamento:
+
+1. Divisão binária (binary search no código):
+   - O bug está antes ou depois desta linha?
+   - Comente metade do código e veja se o bug persiste
+   - Se persiste → bug está na metade ativa
+   - Se não → bug estava na metade comentada
+   - Repita: em poucas rodadas você encontra a linha exata (dividir por 2 é muito eficiente)
+
+2. Simplificação de input:
+   - Bug acontece com input grande? Reduza.
+   - Remove campos até achar o mínimo que causa o bug.
+   - JSON com 50 campos → qual campo específico causa o erro?
+
+3. Isolamento de componente:
+   - Chamar a função diretamente, fora do contexto da aplicação
+   - Criar script mínimo que reproduz o bug
+   - Eliminar variáveis: rede? banco? estado? concorrência?
+```
+
+### Etapa 3: Diagnosticar
+
+Entenda **por que** o código se comporta diferente do esperado:
+
+```python
+# Ferramentas de diagnóstico:
+
+# 1. Print/log estratégico
+def process_order(order):
+    print(f"DEBUG: order recebida: {order}")         # O que entrou?
+    total = calculate_total(order.items)
+    print(f"DEBUG: total calculado: {total}")          # Está correto?
+    discount = apply_discount(total, order.coupon)
+    print(f"DEBUG: total com desconto: {discount}")    # Aqui muda?
+    return discount
+
+# 2. Debugger interativo (breakpoint)
+def process_order(order):
+    breakpoint()  # Python: para execução aqui, permite inspecionar variáveis
+    total = calculate_total(order.items)
+    return apply_discount(total, order.coupon)
+
+# 3. Verificação de tipos/valores
+def process_order(order):
+    print(f"type(order.total) = {type(order.total)}")  # float? str? Decimal?
+    print(f"repr(order.total) = {repr(order.total)}")  # '19.90' (string!) vs 19.90 (float)
+```
+
+```
+Debugger interativo vs Print:
+
+Print:
+  ✅ Rápido de adicionar
+  ✅ Funciona em qualquer ambiente
+  ❌ Poluí código, fácil de esquecer
+  ❌ Precisa prever O QUE imprimir
+
+Debugger (breakpoint):
+  ✅ Inspecionar qualquer variável na hora
+  ✅ Executar expressões no contexto
+  ✅ Step-by-step pela execução
+  ❌ Mais lento para configurar
+  ❌ Difícil em ambientes remotos
+
+Regra prática:
+  Bug simples → print
+  Bug complexo → debugger
+  Bug em produção → logs estruturados
+```
+
+### Etapa 4: Corrigir
+
+```
+Regras para correção:
+
+1. Corrija a CAUSA RAIZ, não o sintoma
+   ❌ if result == None: result = 0  (esconde o bug)
+   ✅ Entender por que result é None e corrigir na origem
+
+2. Mude o MÍNIMO necessário
+   ❌ Refatorar 5 arquivos para corrigir 1 bug
+   ✅ Mudar a linha específica que causa o problema
+
+3. Escreva um teste que reproduz o bug ANTES de corrigir
+   - O teste deve FALHAR com o código atual
+   - Corrigir o código → teste PASSA
+   - Teste previne que o bug volte no futuro
+```
+
+### Etapa 5: Verificar
+
+```
+Checklist de verificação:
+
+□ O bug original não acontece mais (reproduzir novamente)
+□ Testes existentes continuam passando
+□ Teste novo cobre o cenário do bug
+□ Nenhum efeito colateral foi introduzido
+□ Edge cases similares foram verificados
+```
+
+## Na prática
+
+### Exemplo completo: debugging de API
+
+```
+Bug report: "POST /api/orders retorna 500 para alguns usuários"
+
+1. REPRODUZIR:
+   - Funciona para user_id=1, falha para user_id=42
+   - Sempre falha para user_id=42
+   - Erro no log: "TypeError: cannot read property 'address' of null"
+
+2. ISOLAR:
+   - O erro está na linha que acessa user.address
+   - user = find_user(42) retorna null? Não, retorna user.
+   - user.address é null? SIM. User 42 não tem endereço cadastrado.
+
+3. DIAGNOSTICAR:
+   - Código assume que todo user tem address: user.address.city
+   - Users sem endereço → address = null → null.city = TypeError
+   - Bug: falta de null check para endereço opcional
+
+4. CORRIGIR:
+   - Adicionar validação: "endereço é obrigatório para fazer pedido"
+   - OU: tratar endereço null com mensagem de erro amigável
+   - Escrever teste: test_create_order_without_address_returns_400
+
+5. VERIFICAR:
+   - POST /api/orders com user_id=42 → retorna 400 "Endereço obrigatório"
+   - POST /api/orders com user_id=1 → continua funcionando (200)
+   - Teste automatizado cobre o cenário
+```
+
+### Ferramentas essenciais
+
+```
+Linguagem     Debugger                    Logs
+Python        pdb, breakpoint(), PyCharm  logging (stdlib)
+JavaScript    Chrome DevTools, VS Code    console.log, winston
+TypeScript    VS Code debugger            console.log, pino
+Go            delve                       log (stdlib), zap
+Rust          rust-gdb, VS Code           log + env_logger
+C#            Visual Studio debugger      ILogger, Serilog
+
+Navegador:
+  Chrome DevTools → Network (requests), Console (erros JS),
+                    Sources (breakpoints), Performance (profiling)
+
+Banco de dados:
+  EXPLAIN ANALYZE → ver plano de execução de queries lentas
+  Logs do banco → queries que estão falhando
+```
+
+## Quando usar (e quando não usar)
+
+### Sempre use debugging sistemático quando:
+- Bug leva mais de **5 minutos** para resolver
+- Bug é **intermitente** (acontece às vezes)
+- Bug está em **código que você não escreveu**
+- Bug envolve **múltiplos componentes** (API + banco + frontend)
+- Bug acontece em **produção** (não pode ficar testando aleatoriamente)
+
+### Debugging "rápido" (sem processo formal) é OK para:
+- Typos óbvios
+- Erro de sintaxe que o editor mostra
+- Bug que você introduziu nos últimos 5 minutos
+- Problema de configuração evidente (variável de ambiente faltando)
+
+## Erros comuns
+
+### 1. Mudar código sem reproduzir o bug primeiro
+
+```
+❌ "Acho que o bug é aqui" → muda código → "parece que funcionou"
+   → Na verdade o bug ainda existe, só não apareceu nesse teste manual
+   → Bug volta em produção
+
+✅ Reproduzir → confirmar que o bug existe → corrigir → confirmar que sumiu
+```
+
+### 2. Corrigir o sintoma ao invés da causa
+
+```python
+# ❌ Esconder o erro
+try:
+    result = process(data)
+except Exception:
+    result = None  # Silenciar QUALQUER erro? Bugs ficam invisíveis!
+
+# ✅ Entender e tratar o erro específico
+try:
+    result = process(data)
+except ValueError as e:
+    logger.warning(f"Dado inválido: {e}")
+    result = default_value
+```
+
+### 3. Não ler a mensagem de erro
+
+```
+Mensagem: "KeyError: 'email' at line 42 in user_service.py"
+
+❌ Ignorar e procurar o bug no código inteiro
+✅ Ir na linha 42 de user_service.py e ver por que a key 'email' não existe
+
+Mensagens de erro são o ponto de partida, não um incômodo.
+Leia a mensagem. Leia o stack trace. A resposta geralmente está lá.
+```
+
+### 4. Debugging por tentativa e erro
+
+```
+❌ Ciclo infinito:
+   "Não funciona" → muda algo aleatório → testa → "Ainda não funciona"
+   → muda outra coisa → testa → "Agora funciona!" → não sabe por quê
+   → Bug volta amanhã porque a "correção" foi por acaso
+
+✅ Método científico:
+   1. Observar o comportamento
+   2. Formar hipótese ("acho que o bug é porque X")
+   3. Testar a hipótese (verificar se X é verdade)
+   4. Se confirmou → corrigir X
+   5. Se não → nova hipótese, repetir
+```
+
+### 5. Não prevenir recorrência
+
+```
+❌ Corrigir o bug e seguir em frente
+   → O mesmo bug (ou variação) reaparece em 3 meses
+
+✅ Corrigir + escrever teste + documentar
+   - Teste automatizado que cobre o cenário
+   - Commit message explicando a causa raiz
+   - Se o bug foi sistêmico, adicionar regra de linter ou validação
+```
