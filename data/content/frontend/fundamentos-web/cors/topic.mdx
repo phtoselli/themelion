@@ -1,0 +1,231 @@
+---
+title: "CORS (Cross-Origin Resource Sharing)"
+slug: "cors"
+room: "frontend"
+category: "fundamentos-web"
+difficulty: "intermediate"
+order: 6
+prerequisites: ["http-https", "http-methods"]
+tags: ["seguranca", "origem", "navegador"]
+aiGenerated: true
+---
+
+## O que é
+
+CORS (Cross-Origin Resource Sharing) é um mecanismo de segurança dos **navegadores** que controla quais sites podem fazer requisições para outros domínios. Por padrão, o navegador **bloqueia** requisições entre origens diferentes — CORS define as regras para permitir exceções.
+
+```
+Origem = protocolo + domínio + porta
+
+https://meusite.com       ← uma origem
+https://api.outrosite.com ← outra origem (domínio diferente)
+http://meusite.com        ← outra origem (protocolo diferente)
+https://meusite.com:8080  ← outra origem (porta diferente)
+```
+
+Quando `https://meusite.com` tenta fazer `fetch('https://api.outrosite.com/data')`, o navegador verifica se `api.outrosite.com` permite requisições de `meusite.com`. Se não permitir, bloqueia.
+
+## Por que importa
+
+Sem CORS (ou a política Same-Origin que ele complementa), qualquer site malicioso poderia:
+
+```javascript
+// Site malicioso: https://hacker.com
+// Usuário está logado no banco: https://meubanco.com
+
+// Se não houvesse Same-Origin Policy, isso funcionaria:
+fetch('https://meubanco.com/api/transferir', {
+    method: 'POST',
+    body: JSON.stringify({ para: 'hacker', valor: 10000 }),
+    credentials: 'include'  // Envia cookies do banco automaticamente
+});
+// O navegador enviaria os cookies de sessão do usuário com a requisição!
+```
+
+CORS é o mecanismo que permite ao servidor `meubanco.com` dizer "só aceito requisições de `meubanco.com`, não de `hacker.com`".
+
+**Na prática,** todo desenvolvedor web encontra CORS quando:
+- Frontend em `localhost:3000` tenta acessar API em `localhost:8080`
+- App em `meusite.com` consome API em `api.meusite.com`
+- Integra com APIs de terceiros
+
+O erro mais comum que todo dev já viu:
+```
+Access to fetch at 'https://api.example.com/data' from origin
+'https://meusite.com' has been blocked by CORS policy.
+```
+
+## Como funciona
+
+### O fluxo CORS
+
+**Requisições simples** (GET, ou POST com Content-Type comum como `text/plain`, `application/x-www-form-urlencoded` ou `multipart/form-data`):
+
+```
+Navegador                                    Servidor
+    │                                            │
+    │── GET /api/data ──────────────────────────→│
+    │   Origin: https://meusite.com              │
+    │                                            │
+    │←─ 200 OK ─────────────────────────────────│
+    │   Access-Control-Allow-Origin: https://meusite.com
+    │                                            │
+    │   ✅ Navegador libera a resposta           │
+```
+
+Se o header `Access-Control-Allow-Origin` não bater com a origem, o navegador descarta a resposta (o servidor recebeu e processou, mas o navegador não entrega ao JavaScript).
+
+**Preflight requests** — para requisições mais "poderosas" (PUT, DELETE, ou com headers customizados como `Authorization`), o navegador primeiro pede permissão ao servidor antes de enviar a requisição real. É como ligar antes de visitar: "posso ir aí fazer X?":
+
+```
+Navegador                                    Servidor
+    │                                            │
+    │── OPTIONS /api/data (preflight) ─────────→│
+    │   Origin: https://meusite.com              │
+    │   Access-Control-Request-Method: DELETE     │
+    │   Access-Control-Request-Headers: Authorization
+    │                                            │
+    │←─ 204 No Content ────────────────────────│
+    │   Access-Control-Allow-Origin: https://meusite.com
+    │   Access-Control-Allow-Methods: GET, POST, DELETE
+    │   Access-Control-Allow-Headers: Authorization
+    │   Access-Control-Max-Age: 86400            │
+    │                                            │
+    │── DELETE /api/data (requisição real) ────→│
+    │   Origin: https://meusite.com              │
+    │   Authorization: Bearer token123           │
+    │                                            │
+    │←─ 200 OK ─────────────────────────────────│
+```
+
+O navegador envia um **OPTIONS** automático antes da requisição real para perguntar "posso fazer DELETE com header Authorization?". Se o servidor autorizar, o navegador prossegue.
+
+### Headers CORS
+
+**Resposta do servidor:**
+
+| Header | Significado |
+|---|---|
+| `Access-Control-Allow-Origin` | Quais origens podem acessar (`*` = todas) |
+| `Access-Control-Allow-Methods` | Quais métodos HTTP são permitidos |
+| `Access-Control-Allow-Headers` | Quais headers o cliente pode enviar |
+| `Access-Control-Allow-Credentials` | Permite enviar cookies (`true`/`false`) |
+| `Access-Control-Max-Age` | Tempo (em segundos) para cachear o preflight |
+| `Access-Control-Expose-Headers` | Quais headers da resposta o JS pode ler |
+
+### Configuração no servidor
+
+```javascript
+// Node.js/Express
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', 'https://meusite.com');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    next();
+});
+```
+
+```python
+# Python/Flask
+@app.after_request
+def add_cors(response):
+    response.headers['Access-Control-Allow-Origin'] = 'https://meusite.com'
+    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+    return response
+```
+
+## Na prática
+
+```
+Cenário: Frontend em localhost:3000, API em localhost:8080
+
+1. Frontend faz fetch('/api/data') → funciona (mesma origem)
+2. Frontend faz fetch('http://localhost:8080/api/data') → CORS error!
+3. Adicionar header no servidor → funciona
+
+Cenário: Produção
+Frontend: https://app.meusite.com
+API: https://api.meusite.com
+
+Subdomínio diferente = origem diferente → precisa de CORS
+```
+
+## Quando usar (e quando não usar)
+
+### CORS é necessário quando:
+- Frontend e API estão em **domínios ou portas diferentes**
+- Consumindo APIs de **terceiros** no frontend
+- **Subdomínios** diferentes (app.site.com vs api.site.com)
+
+### CORS não é necessário quando:
+- Frontend e API no **mesmo domínio e porta**
+- Requisições **server-to-server** (CORS é coisa de navegador)
+- Usando **proxy reverso** que coloca tudo na mesma origem
+
+### `*` vs origem específica:
+
+```
+Access-Control-Allow-Origin: *
+→ Qualquer site pode acessar
+→ Não permite credentials (cookies)
+→ OK para APIs públicas (GitHub, OpenWeather)
+
+Access-Control-Allow-Origin: https://meusite.com
+→ Apenas meusite.com pode acessar
+→ Permite credentials
+→ Necessário para APIs privadas
+```
+
+## Erros comuns
+
+### 1. Achar que CORS é proteção do servidor
+
+CORS protege o **usuário no navegador**, não o servidor. O servidor sempre recebe e processa a requisição — é o **navegador** que bloqueia a resposta de chegar ao JavaScript.
+
+`curl` e Postman ignoram CORS completamente (não são navegadores).
+
+### 2. Usar `*` com credentials
+
+```
+❌ Access-Control-Allow-Origin: *
+   Access-Control-Allow-Credentials: true
+   → Navegador REJEITA! Wildcard + credentials é proibido.
+
+✅ Access-Control-Allow-Origin: https://meusite.com
+   Access-Control-Allow-Credentials: true
+```
+
+### 3. Esquecer do preflight para métodos não-simples
+
+```javascript
+// Isso dispara um preflight automático:
+fetch('/api/data', {
+    method: 'DELETE',                         // Método não-simples
+    headers: { 'Authorization': 'Bearer x' }  // Header não-simples
+});
+
+// Se o servidor não responde ao OPTIONS, a requisição falha
+// Servidor precisa tratar OPTIONS explicitamente
+```
+
+### 4. CORS como substituto de autenticação
+
+```
+❌ "Só meusite.com pode acessar, então não preciso de autenticação"
+   → Qualquer pessoa pode usar curl/Postman para acessar
+
+✅ CORS + autenticação (token/cookie)
+   → CORS protege no navegador, token protege a API
+```
+
+### 5. Debugar CORS no lugar errado
+
+```
+Erro de CORS aparece no FRONTEND (console do navegador)
+Mas a correção é no BACKEND (adicionar headers)
+
+O frontend NÃO pode contornar CORS
+O servidor é quem autoriza via headers
+```

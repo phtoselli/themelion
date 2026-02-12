@@ -1,0 +1,289 @@
+---
+title: "Containers vs VMs"
+slug: "containers-vs-vms"
+room: "devops"
+category: "containerizacao"
+difficulty: "beginner"
+order: 1
+prerequisites: []
+tags: ["isolamento", "virtualizacao", "docker"]
+aiGenerated: true
+---
+
+## O que é
+
+**Containers** e **VMs (Virtual Machines)** são duas formas de **isolar aplicações** em ambientes independentes. A diferença fundamental: VMs virtualizam o **hardware inteiro** (incluindo sistema operacional), enquanto containers virtualizam apenas o **espaço do usuário** (aplicação + dependências), compartilhando o kernel do host.
+
+```
+VM (Virtual Machine):                    Container:
+┌─────────────────────┐                  ┌─────────────────────┐
+│       App A         │                  │       App A         │
+│   Libs/Deps         │                  │   Libs/Deps         │
+│   Guest OS (Linux)  │  ← SO completo   ├─────────────────────┤
+├─────────────────────┤                  │       App B         │
+│       App B         │                  │   Libs/Deps         │
+│   Libs/Deps         │                  └─────────────────────┘
+│   Guest OS (Windows)│  ← Outro SO              │
+├─────────────────────┤              ┌────────────┴────────────┐
+│     Hypervisor      │              │    Container Runtime    │
+├─────────────────────┤              │       (Docker)          │
+│    Host OS          │              ├─────────────────────────┤
+│    Hardware         │              │    Host OS (kernel)     │
+└─────────────────────┘              │    Hardware             │
+                                     └─────────────────────────┘
+
+VM: cada app tem SO completo (GB)
+Container: apps compartilham kernel do host (MB)
+```
+
+## Por que importa
+
+### O problema que ambos resolvem
+
+```
+Sem isolamento:
+  App A precisa de Python 3.8, App B precisa de Python 3.12
+  App A precisa da porta 8080, App B também
+  App A crashou e derrubou o servidor inteiro
+  "Funciona na minha máquina" → não funciona em produção
+
+Com isolamento (VM ou Container):
+  Cada app tem seu próprio ambiente
+  Dependências não conflitam
+  Um crash não afeta os outros
+  Ambiente de dev = staging = produção
+```
+
+### Por que containers dominaram
+
+Containers oferecem os mesmos benefícios de isolamento que VMs, mas com uma fração do overhead:
+
+```
+Métrica          VM              Container
+Boot time        Minutos         Segundos
+Tamanho          GBs (SO inteiro) MBs (apenas app)
+RAM overhead     RAM para cada SO  Compartilha kernel
+Densidade        ~10 VMs/host    ~100 containers/host
+Portabilidade    Imagem grande    Imagem leve
+```
+
+## Como funciona
+
+### VMs: virtualização de hardware
+
+```
+Hypervisor: software que cria e gerencia VMs (pense nele como um "gerente de apartamentos" que divide o hardware em pedaços independentes)
+
+Tipo 1 (bare-metal): roda direto no hardware
+  Exemplos: VMware ESXi, Hyper-V, KVM
+  Usado em: data centers, cloud (AWS EC2, Azure VMs)
+
+Tipo 2 (hosted): roda sobre um SO
+  Exemplos: VirtualBox, VMware Workstation, Parallels
+  Usado em: desenvolvimento local, testes
+
+Cada VM tem:
+  - CPU virtual (vCPU)
+  - RAM dedicada
+  - Disco virtual
+  - SO completo (kernel + userspace)
+  - Rede virtual
+```
+
+### Containers: virtualização de processo
+
+Um container não é uma máquina virtual — é apenas um **processo comum** do Linux que o kernel isola usando três mecanismos. Pense assim: o container é um processo que vive em uma "bolha" onde só enxerga o que foi permitido.
+
+```
+Container = processo isolado no Linux usando 3 features do kernel:
+
+1. Namespaces (paredes invisíveis): cada container acha que está sozinho
+   - Processos: o container não vê os processos do host nem de outros containers
+   - Rede: cada container tem sua própria interface de rede
+   - Arquivos: cada container tem seu próprio sistema de arquivos
+   - Usuários: root dentro do container ≠ root no host
+
+2. Cgroups (limites de consumo): quanto cada container pode usar
+   - CPU: máximo 50% de 1 core
+   - RAM: máximo 512MB
+   - Disco: limite de leitura/escrita
+
+3. Union filesystem (camadas empilhadas): a imagem é montada em camadas
+   - Camada base: ubuntu (150MB)
+   - Camada 2: python instalado (+50MB)
+   - Camada 3: dependências pip (+30MB)
+   - Camada 4: código da aplicação (+5MB)
+   - Vantagem: camadas são compartilhadas entre containers!
+     Se 10 containers usam Python 3.12, a camada é armazenada uma vez só.
+```
+
+### Docker: a ferramenta de containers
+
+```dockerfile
+# Dockerfile: receita para criar uma imagem de container
+
+FROM python:3.12-slim          # Imagem base (já tem Python)
+WORKDIR /app                   # Diretório de trabalho
+COPY requirements.txt .        # Copiar dependências
+RUN pip install -r requirements.txt  # Instalar dependências
+COPY . .                       # Copiar código da aplicação
+EXPOSE 8000                    # Documentar porta
+CMD ["python", "main.py"]      # Comando para iniciar
+```
+
+```bash
+# Construir imagem
+docker build -t minha-app .
+
+# Rodar container
+docker run -p 8000:8000 minha-app
+
+# Resultado:
+# Aplicação rodando em ambiente isolado e reproduzível
+# Mesmo comportamento em qualquer máquina com Docker
+```
+
+### Comparação detalhada
+
+```
+┌──────────────────┬────────────────────┬────────────────────┐
+│    Aspecto       │        VM          │     Container      │
+├──────────────────┼────────────────────┼────────────────────┤
+│ Isolamento       │ Forte (SO separado)│ Bom (namespace)    │
+│ Segurança        │ Mais seguro        │ Menos isolado      │
+│ Performance      │ Overhead do SO     │ Quase nativo       │
+│ Startup          │ Minutos            │ Milissegundos      │
+│ Tamanho          │ GBs               │ MBs                │
+│ SO diferente     │ Sim (Linux + Win)  │ Não (mesmo kernel) │
+│ Portabilidade    │ Formato específico │ OCI standard       │
+│ Orquestração     │ vSphere, OpenStack │ Kubernetes, Swarm  │
+│ Uso em cloud     │ EC2, Azure VMs     │ ECS, GKE, AKS     │
+└──────────────────┴────────────────────┴────────────────────┘
+```
+
+## Na prática
+
+### Workflow com Docker
+
+```
+Desenvolvimento:
+  1. Escrever Dockerfile
+  2. docker build → criar imagem
+  3. docker run → testar localmente
+  4. docker compose → subir app + banco + redis juntos
+
+Deploy:
+  1. Push da imagem para registry (Docker Hub, ECR, GCR)
+  2. Orquestrador (Kubernetes) puxa imagem
+  3. Orquestrador roda N containers
+  4. Load balancer distribui tráfego
+
+Resultado: "funciona na minha máquina" = funciona em produção
+```
+
+### Docker Compose: múltiplos containers
+
+```yaml
+# docker-compose.yml
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://db:5432/myapp
+    depends_on:
+      - db
+
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: myapp
+      POSTGRES_PASSWORD: secret
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:
+```
+
+```bash
+docker compose up      # Sobe app + banco com 1 comando
+docker compose down    # Para tudo
+```
+
+## Quando usar (e quando não usar)
+
+### Use containers quando:
+- **Microserviços:** cada serviço em seu container
+- **CI/CD:** ambiente de teste reproduzível e descartável
+- **Deploy padronizado:** mesma imagem em dev, staging, prod
+- **Escalabilidade horizontal:** subir mais instâncias rapidamente
+- **Desenvolvimento local:** docker compose com banco, cache, etc.
+
+### Use VMs quando:
+- **Isolamento forte necessário:** multi-tenancy, segurança (cada cliente em VM separada)
+- **SO diferente do host:** rodar Windows em host Linux (ou vice-versa)
+- **Aplicações legadas:** software que precisa de SO específico
+- **Compliance:** regulações que exigem isolamento de hardware virtualizado
+
+### Na prática (maioria dos projetos):
+- **Containers (Docker)** para empacotar e rodar a aplicação
+- **VMs (cloud)** como infraestrutura onde os containers rodam
+- EC2 (VM) rodando Kubernetes que gerencia containers — VMs e containers juntos
+
+## Erros comuns
+
+### 1. Container como VM
+
+```dockerfile
+# ❌ Tratar container como VM: instalar tudo, rodar SSH
+FROM ubuntu:22.04
+RUN apt-get update && apt-get install -y \
+    python3 nodejs nginx supervisor openssh-server
+# Container com 3 aplicações + SSH = VM disfarçada
+
+# ✅ 1 processo por container
+FROM python:3.12-slim
+COPY . /app
+CMD ["python", "main.py"]
+# Se precisa de 3 serviços, rode 3 containers
+```
+
+### 2. Imagem pesada desnecessariamente
+
+```dockerfile
+# ❌ Imagem base completa (900MB)
+FROM python:3.12
+
+# ✅ Imagem slim (150MB)
+FROM python:3.12-slim
+
+# ✅✅ Alpine (50MB) — quando compatibilidade não é problema
+FROM python:3.12-alpine
+```
+
+### 3. Dados no container (sem volume)
+
+```bash
+# ❌ Banco de dados rodando sem volume
+docker run postgres
+# Container parou → dados PERDIDOS (container é efêmero!)
+
+# ✅ Montar volume para persistência
+docker run -v db_data:/var/lib/postgresql/data postgres
+# Dados persistem mesmo se o container for destruído
+```
+
+### 4. Confundir imagem com container
+
+```
+Imagem:     template read-only (receita do bolo)
+Container:  instância em execução (bolo pronto)
+
+docker build → cria IMAGEM
+docker run   → cria CONTAINER a partir da imagem
+
+1 imagem → N containers
+Igual a: 1 classe → N objetos (programação)
+```

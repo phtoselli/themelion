@@ -1,0 +1,321 @@
+---
+title: "Integration Testing"
+slug: "integration-testing"
+room: "engenharia-de-software"
+category: "testes"
+difficulty: "beginner"
+order: 2
+prerequisites: ["unit-testing"]
+tags: ["qualidade", "integracao", "sistema"]
+aiGenerated: true
+---
+
+## O que é
+
+**Integration testing (teste de integração)** verifica que **múltiplos componentes funcionam corretamente juntos**. Enquanto testes unitários isolam uma função, testes de integração testam a interação real entre partes do sistema — API com banco de dados, serviço com serviço, módulo com módulo.
+
+```
+Unit test:        função isolada → resultado
+Integration test: request HTTP → controller → service → banco → response
+
+Teste unitário:  "a função calcula desconto corretamente?"
+Teste integração: "quando o usuário faz POST /orders, o pedido é salvo no banco
+                   e o estoque é atualizado?"
+```
+
+## Por que importa
+
+Testes unitários garantem que cada peça funciona isoladamente. Mas peças corretas podem **falhar quando conectadas**:
+
+```
+Função A: converte preço para centavos (int)     ✅ Teste unitário passa
+Função B: salva no banco como DECIMAL             ✅ Teste unitário passa
+A → B: 19.90 → 1990 centavos → banco salva 1990.00 ao invés de 19.90  ❌ Bug!
+
+O bug está na INTEGRAÇÃO, não nas partes individuais.
+```
+
+Problemas que só testes de integração pegam:
+- Queries SQL incorretas (sintaxe OK, lógica errada)
+- Serialização/deserialização entre serviços (JSON mal formado)
+- Configuração de banco errada (constraints, tipos de coluna)
+- Timeouts e erros de rede
+- Race conditions entre processos concorrentes
+
+## Como funciona
+
+### Níveis de integração
+
+```
+Nível 1 — Módulo + Módulo:
+  Testar que dois módulos internos se comunicam corretamente.
+  Ex: service de pedidos + service de estoque
+
+Nível 2 — Aplicação + Banco de Dados:
+  Testar que queries funcionam com dados reais.
+  Ex: repositório salva e recupera entidades corretamente
+
+Nível 3 — API completa:
+  Testar endpoint HTTP de ponta a ponta (sem UI).
+  Ex: POST /users cria usuário e retorna 201
+
+Nível 4 — Serviço + Serviço externo:
+  Testar integração com APIs de terceiros (pagamento, email).
+  Geralmente usa sandbox ou mock do serviço externo.
+```
+
+### Teste de API (o mais comum)
+
+```python
+# Testar endpoint real da aplicação
+def test_create_user(client, db):
+    # Arrange
+    payload = {"name": "João", "email": "joao@email.com"}
+
+    # Act: request HTTP real para a aplicação
+    response = client.post("/api/users", json=payload)
+
+    # Assert: resposta HTTP
+    assert response.status_code == 201
+    data = response.json()
+    assert data["name"] == "João"
+    assert "id" in data
+
+    # Assert: dado foi persistido no banco
+    user = db.query(User).filter_by(email="joao@email.com").first()
+    assert user is not None
+    assert user.name == "João"
+```
+
+### Teste de repositório/banco
+
+```python
+# Testar que a camada de dados funciona com banco real
+def test_find_users_by_city(db):
+    # Arrange: inserir dados no banco de teste
+    db.add(User(name="João", city="São Paulo"))
+    db.add(User(name="Maria", city="São Paulo"))
+    db.add(User(name="Pedro", city="Rio"))
+    db.commit()
+
+    # Act: executar query real
+    users = user_repository.find_by_city("São Paulo")
+
+    # Assert
+    assert len(users) == 2
+    assert all(u.city == "São Paulo" for u in users)
+```
+
+### Setup e teardown
+
+Testes de integração precisam de ambiente controlado:
+
+```python
+# Fixture: banco de teste limpo para cada teste
+@pytest.fixture
+def db():
+    # Setup: criar banco de teste
+    engine = create_engine("postgresql://localhost/myapp_test")
+    Base.metadata.create_all(engine)
+    session = Session(engine)
+
+    yield session  # Teste executa aqui
+
+    # Teardown: limpar tudo
+    session.rollback()
+    Base.metadata.drop_all(engine)
+```
+
+```
+Estratégias de limpeza:
+
+1. Rollback (mais rápido):
+   - Cada teste roda dentro de uma transação
+   - No final, faz rollback ao invés de commit
+   - Dados nunca são persistidos
+
+2. Truncate (mais limpo):
+   - Após cada teste, TRUNCATE em todas as tabelas
+   - Mais lento, mas garante estado limpo
+
+3. Banco descartável (mais isolado):
+   - Criar banco novo para cada suite de testes
+   - Docker facilita: subir PostgreSQL em container
+   - Destruir após os testes
+```
+
+### Diferença prática: unit vs integration
+
+```python
+# UNIT TEST: mock do repositório
+def test_create_order_calculates_total():
+    repo = Mock()
+    product = Product(id=1, price=50.00)
+    repo.find_product.return_value = product
+
+    order = create_order(product_id=1, quantity=3, repo=repo)
+
+    assert order.total == 150.00  # Testa LÓGICA de cálculo
+
+# INTEGRATION TEST: banco real
+def test_create_order_persists_to_database(client, db):
+    db.add(Product(id=1, name="Mouse", price=50.00, stock=10))
+    db.commit()
+
+    response = client.post("/api/orders", json={
+        "product_id": 1,
+        "quantity": 3
+    })
+
+    assert response.status_code == 201
+
+    # Verifica que o pedido foi salvo
+    order = db.query(Order).first()
+    assert order.total == 150.00
+
+    # Verifica que o estoque foi atualizado
+    product = db.query(Product).get(1)
+    assert product.stock == 7  # 10 - 3
+```
+
+## Na prática
+
+### Ferramentas comuns
+
+```
+Python:      pytest + httpx/TestClient (FastAPI) ou Django TestCase
+TypeScript:  Vitest/Jest + supertest (Express) ou testing module (NestJS)
+C#:          xUnit + WebApplicationFactory (ASP.NET)
+Go:          testing + httptest (stdlib)
+Rust:        cargo test + actix-test ou rocket::local::Client
+Java:        JUnit + SpringBootTest + Testcontainers
+```
+
+### Docker para dependências
+
+```yaml
+# docker-compose.test.yml
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: myapp_test
+      POSTGRES_PASSWORD: test
+    ports:
+      - "5433:5432"  # Porta diferente da dev
+
+  redis:
+    image: redis:7
+    ports:
+      - "6380:6379"
+```
+
+```bash
+# CI pipeline
+docker compose -f docker-compose.test.yml up -d
+npm run test:integration
+docker compose -f docker-compose.test.yml down
+```
+
+### Pirâmide de testes
+
+```
+        /  \          E2E Tests (poucos, lentos, frágeis)
+       /    \         Testam fluxos completos do usuário
+      /______\
+     /        \       Integration Tests (médios)
+    /          \      Testam componentes juntos
+   /____________\
+  /              \    Unit Tests (muitos, rápidos, estáveis)
+ /________________\   Testam lógica isolada
+
+Proporção ideal:
+  70% unit tests
+  20% integration tests
+  10% E2E tests
+```
+
+## Quando usar (e quando não usar)
+
+### Sempre teste integração em:
+- **Endpoints de API:** request → banco → response
+- **Queries complexas:** JOINs, agregações, filtros compostos
+- **Fluxos críticos:** pagamento, autenticação, criação de recursos
+- **Integrações com terceiros:** APIs de pagamento (sandbox), email
+
+### Não precisa de teste de integração para:
+- **Lógica pura:** cálculos, validações, transformações (unit test basta)
+- **UI/Layout:** testes visuais ou E2E são mais adequados
+- **Cada permutação:** teste as integrações críticas, não todas as combinações
+
+## Erros comuns
+
+### 1. Testes dependentes entre si
+
+```python
+# ❌ test_2 depende do dado criado em test_1
+def test_1_create_user(client):
+    client.post("/api/users", json={"name": "João"})
+
+def test_2_find_user(client):
+    response = client.get("/api/users/1")  # Assume que test_1 rodou antes!
+    assert response.json()["name"] == "João"
+
+# ✅ Cada teste cria seus próprios dados
+def test_find_user(client, db):
+    db.add(User(id=1, name="João"))
+    db.commit()
+
+    response = client.get("/api/users/1")
+    assert response.json()["name"] == "João"
+```
+
+### 2. Não limpar dados entre testes
+
+```python
+# ❌ Dados acumulam entre testes
+def test_count_users(client, db):
+    db.add(User(name="João"))
+    db.commit()
+    # Se outro teste já inseriu 3 users, count será 4!
+    assert db.query(User).count() == 1  # FALHA
+
+# ✅ Limpar banco antes/depois de cada teste
+@pytest.fixture(autouse=True)
+def clean_db(db):
+    yield
+    db.rollback()  # Ou TRUNCATE
+```
+
+### 3. Testar tudo como integração
+
+```
+❌ 500 testes de integração, cada um acessando banco
+   → Suite leva 10 minutos para rodar
+   → Desenvolvedores param de rodar testes localmente
+
+✅ 400 testes unitários + 100 testes de integração
+   → Unit tests: 5 segundos
+   → Integration tests: 2 minutos
+   → Desenvolvedores rodam unit tests a cada save
+```
+
+### 4. Dados hardcoded que quebram com o tempo
+
+```python
+# ❌ Data hardcoded
+def test_recent_orders(client, db):
+    db.add(Order(created_at="2024-01-15"))
+    response = client.get("/api/orders/recent")  # "Últimos 30 dias"
+    assert len(response.json()) == 1
+    # Funciona em janeiro 2024, falha em março 2024!
+
+# ✅ Data relativa
+from datetime import datetime, timedelta
+
+def test_recent_orders(client, db):
+    yesterday = datetime.now() - timedelta(days=1)
+    db.add(Order(created_at=yesterday))
+    response = client.get("/api/orders/recent")
+    assert len(response.json()) == 1
+```

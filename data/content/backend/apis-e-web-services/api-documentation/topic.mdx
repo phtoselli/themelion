@@ -1,0 +1,245 @@
+---
+title: "API Documentation"
+slug: "api-documentation"
+room: "backend"
+category: "apis-e-web-services"
+difficulty: "beginner"
+order: 6
+prerequisites: ["restful-principles"]
+tags: ["documentacao", "openapi", "contrato"]
+aiGenerated: true
+---
+
+## O que é
+
+API Documentation é a **documentação formal** que descreve como usar uma API: quais endpoints existem, que parâmetros aceitam, que respostas retornam, como autenticar, e quais erros podem ocorrer. É o "manual de instruções" que permite outros desenvolvedores integrar com sua API sem ler o código-fonte.
+
+```
+Sem documentação: "Como eu crio um usuário? Que campos preciso enviar? Que formato?"
+Com documentação:
+
+POST /api/users
+  Body:
+    - name (string, obrigatório): Nome completo
+    - email (string, obrigatório): Email válido
+    - age (integer, opcional): Idade (1-150)
+  Response 201:
+    { "id": 42, "name": "João", "email": "joao@email.com" }
+  Response 400:
+    { "error": { "code": "VALIDATION_ERROR", "message": "..." } }
+```
+
+## Por que importa
+
+Uma API sem documentação é uma API que ninguém usa (ou usa errado):
+
+- **Desenvolvedores externos** não sabem como integrar → não usam
+- **Equipe interna** esquece os detalhes → bugs de integração
+- **Novos membros** precisam ler o código para entender → onboarding lento
+- **Frontend + Backend** discordam sobre o contrato → bugs em produção
+
+Boa documentação reduz tickets de suporte, acelera integrações e serve como **contrato** entre quem produz e quem consome a API.
+
+## Como funciona
+
+### OpenAPI (Swagger)
+
+O padrão mais usado para documentar APIs REST. Define a API em formato YAML/JSON que pode ser renderizado como documentação interativa:
+
+```yaml
+openapi: 3.0.0
+info:
+  title: Users API
+  version: 1.0.0
+
+paths:
+  /api/users:
+    get:
+      summary: Listar usuários
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Lista de usuários
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+
+    post:
+      summary: Criar usuário
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUser'
+      responses:
+        '201':
+          description: Usuário criado
+        '400':
+          description: Dados inválidos
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+    CreateUser:
+      type: object
+      required: [name, email]
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+```
+
+### O que documentar para cada endpoint
+
+```
+1. URL e método:          POST /api/users
+2. Descrição:             Criar um novo usuário
+3. Autenticação:          Bearer token (obrigatório)
+4. Parâmetros de URL:     /api/users/:id
+5. Query parameters:      ?page=1&sort=name
+6. Request body:          { name: string, email: string }
+7. Response (sucesso):    201 Created + body
+8. Response (erros):      400, 401, 409 + mensagens
+9. Exemplos:              Request + Response reais
+10. Rate limiting:        100 req/min
+```
+
+### Documentação por código vs manual
+
+**Gerada do código (preferível):**
+```python
+# FastAPI: gera OpenAPI automaticamente dos type hints
+@app.post("/api/users", response_model=User, status_code=201)
+async def create_user(user: CreateUserRequest):
+    """Criar um novo usuário no sistema."""
+    ...
+
+# Documentação gerada em /docs (Swagger UI)
+```
+
+**Manual (necessário quando geração não é possível):**
+- Markdown em repositório
+- Wiki (Confluence, Notion)
+- Plataformas especializadas (Readme.com, Postman)
+
+### Boas práticas
+
+**Exemplos reais, não abstratos:**
+```
+❌ "Envie os dados do usuário no body"
+✅ curl -X POST https://api.example.com/users \
+     -H "Content-Type: application/json" \
+     -d '{"name": "João", "email": "joao@email.com"}'
+```
+
+**Listar todos os erros possíveis:**
+```
+400 Bad Request:
+  - MISSING_FIELD: "O campo 'email' é obrigatório"
+  - INVALID_FORMAT: "Formato de email inválido"
+409 Conflict:
+  - DUPLICATE_EMAIL: "Email já cadastrado"
+```
+
+**Changelog para breaking changes:**
+```
+v2.0.0 (2024-01-15):
+  BREAKING: Campo 'name' dividido em 'first_name' e 'last_name'
+  NOVO: Endpoint GET /api/users/search
+  DEPRECATED: GET /api/users?search=... (use /api/users/search)
+```
+
+## Na prática
+
+Checklist mínimo de documentação:
+
+```
+□ Visão geral (o que a API faz, base URL)
+□ Autenticação (como obter e enviar token)
+□ Cada endpoint documentado (método, URL, parâmetros, respostas)
+□ Exemplos de request/response para cada endpoint
+□ Códigos de erro e suas mensagens
+□ Rate limiting (limites e headers)
+□ Versionamento (como funciona, versão atual)
+```
+
+## Quando usar (e quando não usar)
+
+### Documente sempre que:
+- Outra pessoa (ou equipe) consome a API
+- A API será usada por mais de 1 mês
+- Existe contrato frontend ↔ backend
+
+### Pode pular documentação formal quando:
+- Protótipo descartável (mas mesmo assim, um README básico ajuda)
+- API interna consumida apenas pelo próprio desenvolvedor (mas cuidado — você em 3 meses não lembrará)
+
+## Erros comuns
+
+### 1. Documentação desatualizada
+
+```
+Documentação: POST /api/users aceita "username"
+Código: POST /api/users aceita "name"
+→ Integração falha, horas perdidas debugando
+```
+
+Solução: gerar documentação do código (OpenAPI, type hints) — se o código muda, a doc muda junto.
+
+### 2. Sem exemplos
+
+```
+❌ "Envie um JSON com os dados do usuário"
+(Quais campos? Que formato? Que headers?)
+
+✅ Exemplo completo com request e response
+```
+
+### 3. Não documentar erros
+
+```
+❌ "Pode retornar erro 400"
+(Quando? Qual mensagem? Que campo causou?)
+
+✅ Lista completa de erros com códigos e mensagens
+```
+
+### 4. Documentação só para o happy path
+
+```
+❌ Documenta apenas: "POST /users → 201 Created"
+(E se enviar email duplicado? E se faltar campo? E sem autenticação?)
+
+✅ Documenta: 201, 400, 401, 409, 422 com exemplos
+```
+
+### 5. Não versionar a documentação
+
+Quando a API muda, a documentação antiga deve continuar acessível para clientes que ainda usam a versão anterior.

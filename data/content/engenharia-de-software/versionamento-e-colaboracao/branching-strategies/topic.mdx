@@ -1,0 +1,212 @@
+---
+title: "Branching Strategies"
+slug: "branching-strategies"
+room: "engenharia-de-software"
+category: "versionamento-e-colaboracao"
+difficulty: "beginner"
+order: 2
+prerequisites: ["git-fundamentals"]
+tags: ["branches", "fluxo", "colaboracao"]
+aiGenerated: true
+---
+
+## O que é
+
+Branching strategies são **convenções que definem como uma equipe cria, nomeia e integra branches** em um repositório Git. Uma branch é uma linha paralela de desenvolvimento — permite trabalhar em funcionalidades novas sem afetar o código estável.
+
+```
+main:     ──●──●──●──────────●── (código estável, sempre funcional)
+              \              /
+feature:       ●──●──●──●──●    (desenvolvimento isolado)
+```
+
+## Por que importa
+
+Sem uma estratégia definida:
+- Desenvolvedores criam branches com nomes aleatórios (`my-stuff`, `test123`)
+- Ninguém sabe qual branch é a "oficial"
+- Merges causam conflitos massivos porque branches divergiram por semanas
+- Deploys saem de branches desconhecidas com código não revisado
+
+Com uma estratégia:
+- Todo mundo sabe de onde criar branches e para onde enviar merges
+- Código chega em produção de forma previsível
+- Conflitos são menores (branches de vida curta)
+- Revisão de código é natural (Pull Requests)
+
+## Como funciona
+
+### Trunk-Based Development (mais simples)
+
+Todos os desenvolvedores trabalham diretamente na branch principal (`main`/`trunk`), usando branches de vida **muito curta** (horas, no máximo 1-2 dias):
+
+```
+main: ──●──●──●──●──●──●──●──●──●── (todos commitam aqui)
+           \  /     \  /
+            ●        ●    (branches de 1-2 commits, mescladas rapidamente)
+```
+
+**Regras:**
+- Branches duram no máximo 1-2 dias
+- Merge para main várias vezes ao dia
+- Feature flags (chaves liga/desliga no código que escondem funcionalidades incompletas dos usuários) para código inacabado
+- CI/CD roda em cada merge para main
+
+**Quando usar:** equipes maduras com boa cobertura de testes e CI/CD robusto.
+
+### GitHub Flow (simples e popular)
+
+Apenas duas "camadas": `main` (sempre deployável) e feature branches:
+
+```
+main:      ──●──●──────────●──●──────────●── (sempre deployável)
+                \          /     \       /
+feature/login:   ●──●──●──●      \     /
+                                  \   /
+feature/search:                    ●─●
+```
+
+**Regras:**
+1. `main` está sempre em estado deployável
+2. Criar branch a partir de `main` para qualquer mudança
+3. Commitar na branch e abrir Pull Request
+4. Após revisão e aprovação, merge para `main`
+5. Deploy imediato após merge
+
+**Quando usar:** maioria dos projetos web, SaaS, equipes de qualquer tamanho.
+
+### Git Flow (mais complexo)
+
+Branches com papéis específicos:
+
+```
+main:      ──●────────────────────●──── (releases em produção)
+              \                  / \
+release:       \    ●──●──●──●──   \
+                \  /                 \
+develop: ──●──●──●──●──●──●──●──●──●── (integração contínua)
+              \     /     \     /
+feature/a:     ●──●        \   /
+                            \ /
+feature/b:                   ●
+```
+
+**Branches:**
+- `main`: código em produção
+- `develop`: integração de features
+- `feature/*`: funcionalidades novas (branch de develop)
+- `release/*`: preparação para release (freeze de features)
+- `hotfix/*`: correções urgentes em produção (branch de main)
+
+**Quando usar:** projetos com releases versionadas (mobile apps, bibliotecas, software com ciclo de release formal).
+
+### Comparação
+
+| Aspecto | Trunk-Based | GitHub Flow | Git Flow |
+|---|---|---|---|
+| Complexidade | Baixa | Baixa | Alta |
+| Branches de vida longa | Não | Não | Sim (develop) |
+| Melhor para | CI/CD contínuo | SaaS, web apps | Releases versionadas |
+| Frequência de deploy | Contínua | Após cada merge | Por release |
+| Tamanho de equipe | Qualquer | Qualquer | Médio-grande |
+
+## Na prática
+
+Fluxo típico com GitHub Flow:
+
+```bash
+# 1. Criar branch a partir de main
+git checkout main
+git pull origin main
+git checkout -b feature/add-search
+
+# 2. Desenvolver (commits pequenos e frequentes)
+git add src/search.py
+git commit -m "feat: adicionar busca por título"
+
+git add src/search.py tests/test_search.py
+git commit -m "test: adicionar testes de busca"
+
+# 3. Enviar para o remoto
+git push -u origin feature/add-search
+
+# 4. Abrir Pull Request (via GitHub/GitLab)
+# → Revisão de código pela equipe
+# → CI roda testes automaticamente
+
+# 5. Após aprovação, merge para main
+# (geralmente via interface web)
+
+# 6. Limpar branch local
+git checkout main
+git pull origin main
+git branch -d feature/add-search
+```
+
+## Quando usar (e quando não usar)
+
+### GitHub Flow — use quando:
+- Deploy contínuo (SaaS, web apps)
+- Equipe quer simplicidade
+- Não precisa manter múltiplas versões em produção
+
+### Git Flow — use quando:
+- Releases versionadas (v1.0, v1.1, v2.0)
+- Apps mobile (precisam passar por App Store review)
+- Múltiplas versões em produção simultaneamente
+
+### Trunk-Based — use quando:
+- Equipe tem maturidade alta e testes automatizados
+- Quer deploy contínuo com máxima velocidade
+- Feature flags são viáveis no projeto
+
+## Erros comuns
+
+### 1. Branch de vida longa (semanas/meses)
+
+```
+main:     ──●──●──●──●──●──●──●──●──●── (evoluindo)
+              \
+feature:       ●──●──●──●──●──●──●──●    (divergiu muito!)
+```
+
+Quanto mais tempo a branch fica aberta, maior o risco de conflitos no merge. Regra: se a branch tem mais de 3-5 dias, algo está errado — quebre a feature em partes menores.
+
+### 2. Não atualizar a branch com main
+
+```bash
+# ❌ Nunca puxar mudanças de main = conflitos gigantes no merge
+git checkout feature/my-feature
+# (trabalha por 2 semanas sem atualizar)
+
+# ✅ Atualizar regularmente
+git checkout feature/my-feature
+git rebase main  # ou git merge main
+```
+
+### 3. Commitar direto na main
+
+```bash
+# ❌ Sem revisão, sem testes antes do merge
+git checkout main
+git add . && git commit -m "nova feature"
+git push
+
+# ✅ Sempre via branch + Pull Request
+git checkout -b feature/nova-feature
+# ... desenvolver, commitar, push, abrir PR
+```
+
+### 4. Nomes de branches sem padrão
+
+```bash
+# ❌ Sem padrão
+git checkout -b "my stuff"
+git checkout -b fix
+git checkout -b asdf
+
+# ✅ Padrão consistente: tipo/descricao
+git checkout -b feature/add-user-search
+git checkout -b fix/login-timeout
+git checkout -b chore/update-dependencies
+```

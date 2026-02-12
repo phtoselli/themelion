@@ -2,6 +2,7 @@ import { useNavigation } from "@client/contexts/navigation-context";
 import { useLocale } from "@client/hooks/use-locale";
 import { useIsMobile } from "@client/hooks/use-media-query";
 import { useTheme } from "@client/hooks/use-theme";
+import { getActiveRoadmap } from "@client/lib/active-roadmap";
 import { exportProgress, importProgress } from "@client/lib/progress";
 import { Sheet, SheetContent } from "@client/shared/components/ui/sheet";
 import { getNavItems } from "@client/shared/constants/navigation";
@@ -63,12 +64,10 @@ export const AppSidebar = () => {
 
 	useEffect(() => {
 		if (pathname === "/home") setActiveSection("home");
-		else if (
-			pathname === "/rooms" ||
-			pathname.startsWith("/room/") ||
-			pathname.startsWith("/topic/")
-		)
+		else if (pathname === "/rooms" || pathname.startsWith("/room/"))
 			setActiveSection("rooms");
+		else if (pathname.startsWith("/topic/"))
+			setActiveSection(getActiveRoadmap() ? "roadmaps" : "rooms");
 		else if (pathname.startsWith("/roadmap")) setActiveSection("roadmaps");
 		else if (pathname.startsWith("/projects")) setActiveSection("projects");
 	}, [pathname, setActiveSection]);

@@ -64,8 +64,7 @@ themelion/
 │   ├── i18n/                      # Internacionalização
 │   │   ├── index.ts               # Config, tipos e exports
 │   │   └── locales/               # Arquivos de tradução por idioma
-│   │       ├── pt-BR.ts           # Português (Brasil) — idioma padrão
-│   │       └── en.ts              # English — placeholder para futuro
+│   │       └── pt-BR.ts           # Português (Brasil) — idioma único
 │   ├── assets/                    # Assets estáticos
 │   └── styles/                    # Estilos globais
 │
@@ -232,23 +231,22 @@ type ProgressMap = Record<string, TopicProgress>; // key = slug do tópico
 src/i18n/
 ├── index.ts                # Config, tipos, exports
 └── locales/
-    ├── pt-BR.ts            # Português (Brasil) — idioma padrão
-    └── en.ts               # English — placeholder para tradução futura
+    └── pt-BR.ts            # Português (Brasil) — idioma único
 ```
 
 ### Como funciona
 
-- O idioma padrão é `pt-BR`.
+- O idioma é `pt-BR` e é o único suportado no momento.
 - Todas as strings da UI devem ser definidas nos arquivos de locale em `src/i18n/locales/`.
-- O tipo `Locale` é exportado de `pt-BR.ts` e serve como contrato: qualquer novo idioma deve implementar a mesma estrutura.
-- `en.ts` importa o tipo `Locale` de `pt-BR.ts` e implementa todas as keys.
+- O tipo `Locale` é exportado de `pt-BR.ts` e serve como contrato.
+- **NÃO criar arquivos de locale para outros idiomas.** A internacionalização para outros idiomas será implementada no futuro, quando decidido.
 
-### Como adicionar um novo idioma
+### IMPORTANTE: Sem conteúdo em inglês
 
-1. Criar `src/i18n/locales/<locale-code>.ts` (ex: `es.ts`, `fr.ts`).
-2. Importar o tipo `Locale` de `pt-BR.ts`.
-3. Exportar um objeto que satisfaça o tipo `Locale`.
-4. Registrar o novo locale em `src/i18n/index.ts` (adicionar ao `locales` e `localeNames`).
+- **NÃO gerar, criar ou implementar nenhum conteúdo em inglês.** A aplicação é exclusivamente em português (pt-BR) por enquanto.
+- **NÃO criar** arquivos de locale para inglês ou qualquer outro idioma.
+- **NÃO adicionar** traduções, strings ou conteúdo em inglês em nenhum lugar do projeto.
+- A estrutura de i18n existe para facilitar a adição futura de idiomas, mas **nenhum idioma além de pt-BR deve ser implementado até que seja explicitamente solicitado.**
 
 ### Organização das keys
 
@@ -273,7 +271,7 @@ As traduções são organizadas por contexto:
 
 - **Nunca** deixar strings hardcoded em componentes. Toda string visível ao usuário deve estar nos arquivos de locale.
 - Strings que são funções (com parâmetros dinâmicos) usam arrow functions: `(count: number) => \`...\``.
-- O arquivo `pt-BR.ts` é a fonte de verdade para o tipo `Locale`. Qualquer nova key adicionada lá será cobrada em todos os outros idiomas pelo TypeScript.
+- O arquivo `pt-BR.ts` é a fonte de verdade para o tipo `Locale`.
 
 ## Registry (Planejamento de Conteúdo)
 

@@ -1,0 +1,272 @@
+---
+title: "Async/Await"
+slug: "async-await"
+room: "backend"
+category: "concorrencia-e-paralelismo"
+difficulty: "intermediate"
+order: 6
+prerequisites: ["promises-futures"]
+tags: ["sintaxe", "legibilidade", "fluxo"]
+aiGenerated: true
+---
+
+## O que é
+
+`async/await` é uma **sintaxe mais amigável** (o que programadores chamam de "açúcar sintático") para trabalhar com Promises/Futures. Permite escrever código assíncrono com a **mesma aparência de código síncrono**. Em vez de encadear `.then()`, você usa `await` para "pausar" a execução até o resultado estar pronto.
+
+```javascript
+// Com Promises (.then chain)
+function getUser(id) {
+    return fetch(`/api/users/${id}`)
+        .then(res => res.json())
+        .then(user => {
+            return fetch(`/api/users/${user.id}/orders`)
+                .then(res => res.json());
+        });
+}
+
+// Com async/await (mesmo comportamento, mais legível)
+async function getUser(id) {
+    const res = await fetch(`/api/users/${id}`);
+    const user = await res.json();
+    const ordersRes = await fetch(`/api/users/${user.id}/orders`);
+    return await ordersRes.json();
+}
+```
+
+**Importante:** `async/await` não é um modelo novo de concorrência — é a mesma coisa que Promises, com sintaxe diferente. Por baixo dos panos, `await` desempacota uma Promise.
+
+## Por que importa
+
+Legibilidade é a principal vantagem. Código assíncrono com await parece e lê como código síncrono — o que reduz erros, facilita debugging e torna o fluxo de dados óbvio.
+
+Tratamento de erros também melhora drasticamente:
+
+```javascript
+// Promises: .catch() separado do fluxo
+fetchUser()
+    .then(user => fetchOrders(user.id))
+    .then(orders => processOrders(orders))
+    .catch(err => handleError(err));  // Qual operação falhou?
+
+// async/await: try/catch padrão
+try {
+    const user = await fetchUser();
+    const orders = await fetchOrders(user.id);
+    await processOrders(orders);
+} catch (err) {
+    // Stack trace mostra exatamente onde falhou
+    handleError(err);
+}
+```
+
+## Como funciona
+
+### async marca uma função como assíncrona
+
+```javascript
+// Uma função async SEMPRE retorna uma Promise
+async function getData() {
+    return 42;
+}
+getData(); // Promise { 42 }
+getData().then(value => console.log(value)); // 42
+
+// Equivalente a:
+function getData() {
+    return Promise.resolve(42);
+}
+```
+
+### await pausa a execução até a Promise resolver
+
+```javascript
+async function example() {
+    console.log('1. Antes do await');
+    const data = await fetchData();  // Pausa aqui até resolver
+    console.log('2. Depois do await:', data);
+    return data;
+}
+
+// "Pausa" significa: a thread é liberada para outras tarefas
+// NÃO é bloqueio — outras funções/requisições continuam rodando
+```
+
+### Execução paralela com await
+
+```javascript
+// ❌ Sequencial: uma operação por vez
+async function slow() {
+    const a = await fetchA();  // 200ms
+    const b = await fetchB();  // 300ms
+    const c = await fetchC();  // 150ms
+    // Total: 650ms
+}
+
+// ✅ Paralelo: inicia todas, depois espera
+async function fast() {
+    const [a, b, c] = await Promise.all([
+        fetchA(),  // 200ms ]
+        fetchB(),  // 300ms ] Simultâneas
+        fetchC(),  // 150ms ]
+    ]);
+    // Total: 300ms
+}
+```
+
+### Tratamento de erros
+
+```javascript
+// try/catch para erros específicos
+async function processOrder(orderId) {
+    try {
+        const order = await getOrder(orderId);
+        const payment = await processPayment(order);
+        await sendConfirmation(order, payment);
+    } catch (err) {
+        if (err.code === 'NOT_FOUND') {
+            return { error: 'Pedido não encontrado' };
+        }
+        if (err.code === 'PAYMENT_FAILED') {
+            await notifyAdmin(err);
+            return { error: 'Falha no pagamento' };
+        }
+        throw err; // Re-throw erros inesperados
+    }
+}
+```
+
+### Loops com await
+
+```javascript
+// Sequencial: um item por vez
+for (const url of urls) {
+    const data = await fetch(url);  // Espera cada um
+    results.push(data);
+}
+
+// Paralelo: todos ao mesmo tempo
+const results = await Promise.all(
+    urls.map(url => fetch(url))
+);
+
+// Paralelo com limite de concorrência
+async function fetchBatch(urls, batchSize = 5) {
+    const results = [];
+    for (let i = 0; i < urls.length; i += batchSize) {
+        const batch = urls.slice(i, i + batchSize);
+        const batchResults = await Promise.all(batch.map(fetch));
+        results.push(...batchResults);
+    }
+    return results;
+}
+```
+
+## Na prática
+
+<CodeTabs />
+
+## Quando usar (e quando não usar)
+
+### Use async/await quando:
+- Código assíncrono sequencial com dependências entre etapas
+- Tratamento de erro precisa de contexto (try/catch com stack trace)
+- Legibilidade é prioridade
+
+### Use .then() quando:
+- Chain simples de 1-2 operações
+- Precisa de transformações inline rápidas
+- Misturar com código que já usa Promises
+
+### Use callbacks quando:
+- Event handlers (DOM events)
+- APIs legadas que esperam callback
+
+## Erros comuns
+
+### 1. await em loop sequencial (quando poderia ser paralelo)
+
+```javascript
+// ❌ 10 requests sequenciais: 10 × 200ms = 2000ms
+for (const id of ids) {
+    const user = await fetchUser(id);
+    users.push(user);
+}
+
+// ✅ 10 requests paralelas: max(200ms) = 200ms
+const users = await Promise.all(ids.map(id => fetchUser(id)));
+```
+
+### 2. Esquecer o await
+
+```javascript
+// ❌ Sem await: data é uma Promise, não o valor!
+async function process() {
+    const data = fetch('/api/data');  // Promise, não Response!
+    console.log(data);  // Promise { <pending> }
+}
+
+// ✅ Com await
+async function process() {
+    const data = await fetch('/api/data');
+    console.log(data);  // Response
+}
+```
+
+### 3. await no top-level sem async
+
+```javascript
+// ❌ SyntaxError (em Node.js sem top-level await)
+const data = await fetchData();
+
+// ✅ Opção 1: IIFE — uma função anônima que se executa imediatamente
+(async () => {
+    const data = await fetchData();
+})();
+
+// ✅ Opção 2: ES modules com top-level await (Node.js 14.8+)
+// Em arquivo .mjs ou com "type": "module" no package.json
+const data = await fetchData(); // Funciona!
+```
+
+### 4. try/catch que engole erros
+
+```javascript
+// ❌ Catch genérico que esconde o erro
+async function process() {
+    try {
+        await riskyOperation();
+    } catch (err) {
+        console.log('Erro');  // Qual erro? Onde? Sem informação!
+    }
+}
+
+// ✅ Log completo + re-throw se necessário
+async function process() {
+    try {
+        await riskyOperation();
+    } catch (err) {
+        console.error('Falha em riskyOperation:', err.message, err.stack);
+        throw err;  // Re-throw para quem chamou tratar
+    }
+}
+```
+
+### 5. Misturar .then() com await desnecessariamente
+
+```javascript
+// ❌ Confuso: mistura de estilos
+async function getData() {
+    const res = await fetch('/api/data');
+    return res.json().then(data => {  // .then() dentro de async?
+        return data.items;
+    });
+}
+
+// ✅ Consistente: só await
+async function getData() {
+    const res = await fetch('/api/data');
+    const data = await res.json();
+    return data.items;
+}
+```

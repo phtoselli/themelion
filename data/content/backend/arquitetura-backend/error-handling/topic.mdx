@@ -1,0 +1,258 @@
+---
+title: "Error Handling"
+slug: "error-handling"
+room: "backend"
+category: "arquitetura-backend"
+difficulty: "beginner"
+order: 26
+prerequisites: []
+tags: ["excecoes", "tratamento", "resiliencia"]
+aiGenerated: true
+---
+
+## O que é
+
+Error handling (tratamento de erros) é o conjunto de técnicas para **detectar, comunicar e recuperar de situações anormais** durante a execução de um programa. Em vez de deixar o programa crashar, você antecipa cenários de falha e define o que fazer.
+
+```python
+# ❌ Sem error handling: programa crasham com traceback incompreensível
+data = json.loads(user_input)  # Se input inválido → crash
+
+# ✅ Com error handling: programa trata gracefully
+try:
+    data = json.loads(user_input)
+except json.JSONDecodeError:
+    return {"error": "JSON inválido"}, 400
+```
+
+## Por que importa
+
+Todo software vai falhar em algum momento — rede cai, banco fica indisponível, usuário envia dados inválidos, disco enche. A diferença entre software amador e profissional é **como lida com falhas**:
+
+- **Sem error handling:** "500 Internal Server Error" sem contexto, usuário perdido, desenvolvedor sem pistas
+- **Com error handling:** mensagem clara para o usuário, log detalhado para o desenvolvedor, sistema se recupera automaticamente quando possível
+
+## Como funciona
+
+### Try/Catch (exceções)
+
+O modelo mais comum — usado em Python, JavaScript, Java, C#:
+
+```python
+try:
+    # Código que pode falhar
+    result = divide(a, b)
+    save_to_db(result)
+except ZeroDivisionError:
+    # Erro específico
+    return "Divisão por zero"
+except DatabaseError as e:
+    # Outro erro específico com contexto
+    log.error(f"Falha no banco: {e}")
+    return "Erro interno, tente novamente"
+except Exception as e:
+    # Catch-all para erros inesperados
+    log.critical(f"Erro não esperado: {e}")
+    raise  # Re-raise para não esconder o erro
+finally:
+    # SEMPRE executa (limpeza)
+    close_connection()
+```
+
+### Erros como valores (Go, Rust)
+
+Algumas linguagens não usam exceções — retornam erros como valores:
+
+```go
+// Go: retorna (resultado, erro)
+func divide(a, b float64) (float64, error) {
+    if b == 0 {
+        return 0, errors.New("divisão por zero")
+    }
+    return a / b, nil
+}
+
+result, err := divide(10, 0)
+if err != nil {
+    log.Printf("Erro: %v", err)
+    return
+}
+```
+
+```rust
+// Rust: Result<T, E>
+fn divide(a: f64, b: f64) -> Result<f64, String> {
+    if b == 0.0 {
+        return Err("divisão por zero".to_string());
+    }
+    Ok(a / b)
+}
+
+match divide(10.0, 0.0) {
+    Ok(result) => println!("Resultado: {}", result),
+    Err(e) => println!("Erro: {}", e),
+}
+```
+
+### Tipos de erros
+
+**Erros recuperáveis** (o programa pode continuar):
+- Input inválido do usuário → retornar mensagem de erro
+- Timeout de rede → retry
+- Arquivo não encontrado → criar ou usar default
+
+**Erros irrecuperáveis** (o programa deve parar):
+- Memória insuficiente → crash graceful
+- Corrupção de dados → parar e alertar
+- Configuração crítica faltando → não iniciar
+
+### Hierarquia de erros em APIs
+
+```
+Erros do cliente (4xx):
+├── Validação falhou (400/422)
+├── Não autenticado (401)
+├── Sem permissão (403)
+├── Não encontrado (404)
+└── Conflito/duplicata (409)
+
+Erros do servidor (5xx):
+├── Bug no código (500)
+├── Serviço externo indisponível (502/503)
+└── Timeout (504)
+```
+
+### Padrão para respostas de erro em APIs
+
+```json
+{
+    "error": {
+        "code": "VALIDATION_ERROR",
+        "message": "Dados inválidos",
+        "details": [
+            { "field": "email", "message": "Formato de email inválido" },
+            { "field": "age", "message": "Deve ser maior que 0" }
+        ]
+    }
+}
+```
+
+## Na prática
+
+<CodeTabs />
+
+## Quando usar (e quando não usar)
+
+### Use try/catch para:
+- **Operações de I/O** — rede, disco, banco de dados
+- **Parsing** — JSON, XML, entrada do usuário
+- **Código de terceiros** — bibliotecas que podem lançar exceções
+
+### Não use try/catch para:
+- **Fluxo de controle normal** — if/else é mais claro
+- **Validação previsível** — valide antes ao invés de tentar e falhar
+- **Tudo** — try/catch genérico esconde bugs
+
+```python
+# ❌ Exceção como fluxo de controle
+try:
+    user = users[user_id]
+except KeyError:
+    user = create_user(user_id)
+
+# ✅ Verificar antes
+if user_id in users:
+    user = users[user_id]
+else:
+    user = create_user(user_id)
+```
+
+## Erros comuns
+
+### 1. Catch genérico que esconde bugs
+
+```python
+# ❌ Esconde TODO tipo de erro — inclusive bugs reais
+try:
+    process_data(data)
+except Exception:
+    pass  # Silencioso! Se houver um TypeError, você nunca saberá
+
+# ✅ Catch específico
+try:
+    process_data(data)
+except ValueError as e:
+    log.warning(f"Dados inválidos: {e}")
+except ConnectionError as e:
+    log.error(f"Falha de conexão: {e}")
+    retry()
+# TypeError, AttributeError etc. propagam naturalmente (são bugs, não erros esperados)
+```
+
+### 2. Não logar informação suficiente
+
+```python
+# ❌ Log sem contexto
+except Exception:
+    log.error("Erro")  # Qual erro? Onde? Com que dados?
+
+# ✅ Log com contexto completo
+except Exception as e:
+    log.error(f"Falha ao processar pedido {order_id}: {e}", exc_info=True)
+    # exc_info=True inclui stack trace completo
+```
+
+### 3. Retornar mensagem de erro interna para o usuário
+
+```python
+# ❌ Expõe detalhes internos (segurança + UX ruim)
+except DatabaseError as e:
+    return {"error": str(e)}
+    # "psycopg2.OperationalError: connection to server refused"
+
+# ✅ Mensagem amigável para o usuário, detalhes no log
+except DatabaseError as e:
+    log.error(f"DB error: {e}")  # Detalhes para o dev
+    return {"error": "Serviço temporariamente indisponível"}, 503  # Mensagem para o usuário
+```
+
+### 4. Não fazer cleanup (resource leak)
+
+```python
+# ❌ Se der erro, arquivo fica aberto
+file = open('data.txt')
+data = file.read()
+process(data)  # Se falhar, file.close() nunca executa
+file.close()
+
+# ✅ Context manager garante cleanup
+with open('data.txt') as file:
+    data = file.read()
+    process(data)
+# Arquivo fechado automaticamente, mesmo com erro
+```
+
+### 5. Retry sem espera entre tentativas
+
+Se uma API falhou, tentar novamente imediatamente milhares de vezes só piora a situação — você acaba sobrecarregando o servidor que já está com problemas.
+
+A solução é o **exponential backoff** (espera crescente): a cada tentativa que falha, você espera mais tempo antes de tentar de novo. Assim o servidor tem tempo de se recuperar.
+
+```python
+# ❌ Retry infinito sem delay — bombardeia o servidor
+while True:
+    try:
+        result = call_api()
+        break
+    except ConnectionError:
+        pass  # Tenta de novo imediatamente!
+
+# ✅ Retry com espera crescente (exponential backoff)
+for attempt in range(5):
+    try:
+        result = call_api()
+        break
+    except ConnectionError:
+        delay = 2 ** attempt  # Espera: 1s, 2s, 4s, 8s, 16s (dobra a cada tentativa)
+        time.sleep(delay)
+```

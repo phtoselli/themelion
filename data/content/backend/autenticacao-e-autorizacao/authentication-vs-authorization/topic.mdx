@@ -1,0 +1,197 @@
+---
+title: "Authentication vs Authorization"
+slug: "authentication-vs-authorization"
+room: "backend"
+category: "autenticacao-e-autorizacao"
+difficulty: "beginner"
+order: 1
+prerequisites: ["http-https"]
+tags: ["identidade", "permissao", "seguranca"]
+aiGenerated: true
+---
+
+## O que é
+
+**Authentication** (autenticação) responde: **"Quem é você?"** — verificar a identidade do usuário (login com email/senha, biometria, OAuth). Você pode ver a abreviação **AuthN** em documentações.
+
+**Authorization** (autorização) responde: **"O que você pode fazer?"** — verificar se o usuário autenticado tem permissão para acessar um recurso ou executar uma ação. Abreviação comum: **AuthZ**.
+
+```
+Authentication: Porteiro verifica seu crachá → "OK, você é o João"
+Authorization:  Porteiro verifica seu nível de acesso → "João pode entrar no andar 3, mas não no andar 5"
+```
+
+São conceitos diferentes que trabalham juntos: primeiro você autentica (prova quem é), depois o sistema autoriza (verifica o que pode fazer).
+
+## Por que importa
+
+Confundir autenticação com autorização causa falhas de segurança graves:
+
+- **Sem authentication:** qualquer pessoa acessa o sistema
+- **Sem authorization:** todo usuário autenticado tem acesso admin
+- **Confundir os dois:** verificar apenas se o usuário está logado sem checar permissões
+
+```python
+# ❌ Verifica autenticação mas não autorização
+@app.delete("/api/users/{id}")
+def delete_user(id, current_user):
+    if not current_user:           # Authentication ✅
+        return 401, "Não autenticado"
+    db.delete_user(id)             # Authorization ❌ Qualquer logado pode deletar!
+
+# ✅ Verifica ambos
+@app.delete("/api/users/{id}")
+def delete_user(id, current_user):
+    if not current_user:
+        return 401, "Não autenticado"       # Authentication
+    if current_user.role != "admin":
+        return 403, "Sem permissão"          # Authorization
+    db.delete_user(id)
+```
+
+## Como funciona
+
+### Authentication — provando identidade
+
+**Fatores de autenticação:**
+
+| Fator | Tipo | Exemplo |
+|---|---|---|
+| Algo que você **sabe** | Conhecimento | Senha, PIN, resposta secreta |
+| Algo que você **tem** | Posse | Celular (SMS/TOTP), smart card, chave física |
+| Algo que você **é** | Biometria | Impressão digital, reconhecimento facial |
+
+**MFA (Multi-Factor Authentication):** combinar 2+ fatores. Senha (sabe) + código do celular (tem) = muito mais seguro que senha sozinha.
+
+**Métodos comuns de autenticação web:**
+1. **Session-based:** servidor cria sessão após login, cookie identifica
+2. **Token-based (JWT):** servidor gera token assinado, cliente envia em cada request
+3. **OAuth 2.0:** delegar autenticação para provedor externo (Google, GitHub)
+4. **API Keys:** chave estática para identificar aplicações (não usuários)
+
+### Authorization — verificando permissões
+
+Existem diferentes formas de organizar permissões. O mais comum e recomendado para começar é o **RBAC** (controle por papéis):
+
+**RBAC (Role-Based Access Control) — controle por papéis:**
+```
+Roles:
+  admin   → CRUD em tudo
+  editor  → criar, editar conteúdo
+  viewer  → apenas ler
+
+Usuário João: role = editor
+  GET /api/posts     → ✅ Permitido
+  POST /api/posts    → ✅ Permitido
+  DELETE /api/users  → ❌ Proibido (precisa ser admin)
+```
+
+**ABAC (Attribute-Based Access Control) — controle por atributos** (mais flexível, usado em sistemas complexos):
+```
+Regras baseadas em atributos:
+  "Usuário pode editar post SE é o autor do post"
+  "Usuário pode acessar recurso SE está no mesmo departamento"
+  "Operação permitida SE horário é comercial"
+```
+
+**ACL (Access Control List) — lista de permissões por recurso** (permissões específicas para cada item):
+```
+Recurso: /api/documents/42
+  João: read, write
+  Maria: read
+  Carlos: (sem acesso)
+```
+
+### Fluxo completo
+
+```
+1. Usuário envia credenciais
+   POST /api/login { email: "joao@email.com", password: "123" }
+
+2. Servidor AUTENTICA (verifica identidade)
+   ✅ Email existe + senha confere → gera token/sessão
+
+3. Usuário faz requisição autenticada
+   GET /api/admin/users
+   Authorization: Bearer eyJhbGci...
+
+4. Servidor AUTORIZA (verifica permissões)
+   Token válido? ✅
+   Usuário tem role admin? ❌ → 403 Forbidden
+```
+
+## Na prática
+
+```
+401 Unauthorized = Problema de AUTHENTICATION
+  → "Quem é você? Faça login primeiro."
+  → Ação: redirecionar para tela de login
+
+403 Forbidden = Problema de AUTHORIZATION
+  → "Eu sei quem você é, mas você NÃO TEM PERMISSÃO."
+  → Ação: mostrar mensagem de acesso negado
+```
+
+## Quando usar (e quando não usar)
+
+### Sempre use authentication para:
+- Qualquer área que mostra dados específicos do usuário
+- Operações que modificam dados (POST, PUT, DELETE)
+- Acesso a informações sensíveis
+
+### Sempre use authorization para:
+- Funcionalidades admin (gerenciar usuários, configurações)
+- Dados de outros usuários (um user não pode ver dados de outro)
+- Operações destrutivas (deletar, banir)
+
+### Skip authentication quando:
+- Páginas públicas (landing page, blog público, documentação)
+- APIs públicas sem dados sensíveis
+
+## Erros comuns
+
+### 1. Só verificar autenticação (sem autorização)
+
+```python
+# ❌ Qualquer usuário logado pode acessar qualquer recurso
+if user.is_authenticated:
+    return get_any_user_data(requested_user_id)
+
+# ✅ Verificar se pode acessar ESTE recurso específico
+if user.is_authenticated and (user.id == requested_user_id or user.is_admin):
+    return get_user_data(requested_user_id)
+```
+
+### 2. Authorization no frontend apenas
+
+```javascript
+// ❌ Esconder botão não é segurança!
+{user.role === 'admin' && <button>Deletar</button>}
+// Qualquer pessoa pode chamar a API diretamente:
+// curl -X DELETE /api/users/42 -H "Authorization: Bearer token"
+
+// ✅ Sempre validar no BACKEND
+@app.delete("/api/users/{id}")
+def delete_user(id, current_user):
+    if current_user.role != "admin":
+        return 403  # Backend é a fonte de verdade
+```
+
+### 3. Confundir 401 e 403
+
+```
+401 = NÃO AUTENTICADO → "Faça login" (não sabe quem é)
+403 = NÃO AUTORIZADO  → "Sem permissão" (sabe quem é, mas não pode)
+```
+
+### 4. Hardcoding de permissões
+
+```python
+# ❌ Permissões espalhadas pelo código
+if user.email == "admin@empresa.com":
+    allow_delete()
+
+# ✅ Sistema de roles/permissões configurável
+if user.has_permission("users:delete"):
+    allow_delete()
+```

@@ -6,7 +6,15 @@ import { PageSkeleton } from "@client/modules/layout/components/skeletons";
 import { PillBadge } from "@client/shared/components/pill-badge";
 import { getRoomIcon } from "@client/shared/utils/helpers/room-icons";
 import "@client/styles/pages/home.css";
-import { ArrowRight, BookOpen, Code2, FolderKanban, Layers, Map as MapIcon, Sparkles } from "lucide-react";
+import {
+	ArrowRight,
+	BookOpen,
+	Code2,
+	FolderKanban,
+	Layers,
+	Map as MapIcon,
+	Sparkles,
+} from "lucide-react";
 import { useEffect, useMemo } from "react";
 import { Link } from "react-router";
 

@@ -1,0 +1,234 @@
+---
+title: "Box Model"
+slug: "box-model"
+room: "frontend"
+category: "css-fundamentals"
+difficulty: "beginner"
+order: 1
+prerequisites: ["semantic-html"]
+tags: ["css", "layout", "dimensoes"]
+aiGenerated: true
+---
+
+## O que é
+
+Cada elemento HTML é uma **caixa retangular**. O Box Model define como essa caixa é composta: **content** (conteúdo) + **padding** (espaço interno) + **border** (borda) + **margin** (espaço externo).
+
+```
+┌─────────────────────────────── margin ──────────────────────────┐
+│                                                                  │
+│   ┌──────────────────────── border ───────────────────────────┐  │
+│   │                                                            │  │
+│   │   ┌──────────────── padding ──────────────────────────┐   │  │
+│   │   │                                                    │   │  │
+│   │   │   ┌──────────── content ─────────────────────┐    │   │  │
+│   │   │   │                                           │    │   │  │
+│   │   │   │         Texto ou elemento filho           │    │   │  │
+│   │   │   │                                           │    │   │  │
+│   │   │   └───────────────────────────────────────────┘    │   │  │
+│   │   │                                                    │   │  │
+│   │   └────────────────────────────────────────────────────┘   │  │
+│   │                                                            │  │
+│   └────────────────────────────────────────────────────────────┘  │
+│                                                                  │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+## Por que importa
+
+Sem entender o Box Model, todo layout CSS vira tentativa e erro:
+
+```css
+/* "Coloquei width: 100% mas tá vazando da tela!" */
+.element {
+    width: 100%;
+    padding: 20px;     /* Adiciona 40px à largura total */
+    border: 2px solid; /* Adiciona 4px à largura total */
+}
+/* Largura real: 100% + 40px + 4px = vaza! */
+```
+
+Entender Box Model é pré-requisito para qualquer layout CSS — Flexbox, Grid, posicionamento.
+
+## Como funciona
+
+### As 4 camadas
+
+**Content:** o conteúdo do elemento (texto, imagem, elementos filhos). Controlado por `width` e `height`.
+
+**Padding:** espaço entre o conteúdo e a borda. Transparente, mas recebe o `background` do elemento.
+```css
+padding: 20px;           /* Todos os lados */
+padding: 10px 20px;      /* Vertical | Horizontal */
+padding: 10px 20px 30px; /* Top | Horizontal | Bottom */
+padding: 10px 20px 30px 40px; /* Top | Right | Bottom | Left (sentido horário) */
+```
+
+**Border:** a borda visível ao redor do padding.
+```css
+border: 2px solid #333;
+border-radius: 8px;      /* Cantos arredondados */
+```
+
+**Margin:** espaço externo entre este elemento e os vizinhos. Transparente, não recebe background.
+```css
+margin: 20px;
+margin: 0 auto;          /* Centralizar horizontalmente */
+```
+
+### content-box vs border-box
+
+Imagine uma moldura para um quadro. `content-box` é como se "200px" fosse só o quadro — a moldura e o vidro são adicionados por fora, aumentando o tamanho final. `border-box` é como se "200px" fosse o tamanho total com moldura inclusa.
+
+**`content-box`** (padrão do CSS):
+
+`width` e `height` definem apenas o **conteúdo**. Padding e border são adicionados por fora:
+
+```css
+.box {
+    box-sizing: content-box; /* padrão */
+    width: 200px;
+    padding: 20px;
+    border: 2px solid;
+}
+/* Largura TOTAL: 200 + 20 + 20 + 2 + 2 = 244px */
+```
+
+**`border-box`** (recomendado):
+
+`width` e `height` incluem padding e border. O conteúdo encolhe para caber:
+
+```css
+.box {
+    box-sizing: border-box;
+    width: 200px;
+    padding: 20px;
+    border: 2px solid;
+}
+/* Largura TOTAL: 200px (conteúdo: 200 - 40 - 4 = 156px) */
+```
+
+**Regra universal (use em todo projeto):**
+```css
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+```
+
+Essa regra aplica border-box em todos os elementos e nos pseudo-elementos (elementos decorativos que o CSS pode criar, como setas e indicadores). É uma convenção padrão — copie para todo projeto.
+
+### Margin collapse
+
+Quando duas margens verticais se encontram, elas **colapsam** — a maior vence. É como duas pessoas numa fila: se uma quer 30cm de distância e a outra quer 20cm, a distância final é 30cm (não 50cm).
+
+```css
+.element-a { margin-bottom: 30px; }
+.element-b { margin-top: 20px; }
+
+/* Espaço entre A e B: 30px (NÃO 50px) */
+/* A margem maior (30px) absorve a menor (20px) */
+```
+
+Margin collapse **não acontece** horizontalmente, nem dentro de elementos Flexbox ou Grid.
+
+### Largura e altura computadas
+
+```
+DevTools → Elements → Computed → mostra o Box Model visual
+
+Exemplo:
+┌──── margin: 10px ────┐
+│ ┌── border: 2px ──┐  │
+│ │ ┌ padding: 8px ┐│  │
+│ │ │ content:     ││  │
+│ │ │ 200 × 100    ││  │
+│ │ └──────────────┘│  │
+│ └─────────────────┘  │
+└──────────────────────┘
+
+Total width (border-box): 200px
+Total width (content-box): 200 + 16 + 4 = 220px
+```
+
+## Na prática
+
+Abra o DevTools em qualquer elemento e veja o Box Model na aba "Computed". Cada camada é colorida diferente:
+- Content: azul
+- Padding: verde
+- Border: amarelo
+- Margin: laranja
+
+## Quando usar (e quando não usar)
+
+### Padding vs Margin:
+
+| Use padding quando | Use margin quando |
+|---|---|
+| Espaço **dentro** do elemento | Espaço **entre** elementos |
+| Background deve cobrir o espaço | Espaço deve ser transparente |
+| Clique deve funcionar no espaço | Espaço é "zona morta" |
+
+```css
+/* Padding: botão com área clicável maior */
+.button {
+    padding: 12px 24px; /* Área clicável inclui o padding */
+}
+
+/* Margin: espaço entre cards */
+.card {
+    margin-bottom: 16px; /* Separação entre cards */
+}
+```
+
+## Erros comuns
+
+### 1. Não usar border-box
+
+```css
+/* ❌ content-box (padrão): larguras imprevisíveis */
+.sidebar { width: 300px; padding: 20px; }
+/* Largura real: 340px! Quebra o layout */
+
+/* ✅ border-box: largura é o que você define */
+* { box-sizing: border-box; }
+.sidebar { width: 300px; padding: 20px; }
+/* Largura real: 300px */
+```
+
+### 2. Não entender margin collapse
+
+```css
+/* h1 tem margin-bottom: 20px, p tem margin-top: 16px */
+/* Espaço entre eles: 20px (NÃO 36px) */
+
+/* Se quiser 36px de espaço, use padding no container ou gap em flex */
+```
+
+### 3. Margin negativa sem entender
+
+```css
+/* Margin negativa puxa o elemento na direção oposta */
+.element { margin-top: -20px; }
+/* O elemento sobe 20px, possivelmente sobrepondo o anterior */
+/* Use com cuidado — pode causar sobreposição inesperada */
+```
+
+### 4. Width: 100% + padding/border sem border-box
+
+```css
+/* ❌ Sem border-box: vaza do container */
+.full-width {
+    width: 100%;
+    padding: 16px;
+    border: 1px solid;
+}
+/* Largura real: 100% + 32px + 2px → scroll horizontal */
+
+/* ✅ Com border-box: cabe perfeitamente */
+.full-width {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 16px;
+    border: 1px solid;
+}
+```

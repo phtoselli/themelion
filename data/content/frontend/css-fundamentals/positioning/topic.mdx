@@ -1,0 +1,241 @@
+---
+title: "CSS Positioning"
+slug: "positioning"
+room: "frontend"
+category: "css-fundamentals"
+difficulty: "beginner"
+order: 3
+prerequisites: ["box-model"]
+tags: ["posicao", "layout", "camadas"]
+aiGenerated: true
+---
+
+## O que é
+
+CSS Positioning controla **onde um elemento é renderizado** na página e **como ele interage com os outros elementos**. A propriedade `position` define **a partir de onde** o elemento é posicionado.
+
+Existem 5 valores:
+
+```css
+position: static;    /* Padrão — fluxo normal do documento */
+position: relative;  /* Deslocado da posição original, mas ocupa espaço */
+position: absolute;  /* Removido do fluxo, posicionado em relação ao ancestor posicionado */
+position: fixed;     /* Removido do fluxo, fixo na viewport */
+position: sticky;    /* Híbrido: normal até scroll, depois fixa */
+```
+
+## Por que importa
+
+Positioning resolve cenários que Flexbox e Grid não cobrem diretamente:
+- Menus dropdown que sobrepõem conteúdo
+- Navbar fixa no topo durante scroll
+- Badges de notificação posicionados no canto de um ícone
+- Modais e overlays que cobrem a página
+- Tooltips posicionados junto ao elemento de referência
+
+## Como funciona
+
+### static (padrão)
+
+O elemento segue o **fluxo normal** do documento (o "fluxo normal" é a forma padrão do navegador: blocos aparecem um embaixo do outro, elementos inline ficam lado a lado). `top`, `right`, `bottom`, `left` e `z-index` não têm efeito.
+
+```css
+.element {
+    position: static; /* Padrão, não precisa declarar */
+}
+```
+
+### relative
+
+O elemento permanece no fluxo normal (ocupa seu espaço original), mas pode ser **deslocado visualmente** com `top`, `right`, `bottom`, `left`:
+
+```css
+.element {
+    position: relative;
+    top: 10px;    /* Move 10px para baixo da posição original */
+    left: 20px;   /* Move 20px para a direita da posição original */
+}
+```
+
+```
+Posição original    Com relative top:10 left:20
+┌──────┐
+│      │            ┌──────┐
+│  A   │            │  A   │ (espaço original preservado)
+│      │            │      │
+└──────┘            └──────┘
+[B continua aqui]   [B continua aqui — não é afetado]
+```
+
+**Uso principal:** criar contexto de posicionamento para filhos `absolute`.
+
+### absolute
+
+O elemento é **removido do fluxo** (não ocupa espaço) e posicionado em relação ao **ancestor posicionado mais próximo** (o elemento pai, avô, ou bisavô mais próximo que tenha `position` definido). Se não houver nenhum, posiciona em relação ao `<html>`.
+
+```css
+.parent {
+    position: relative; /* Cria contexto de posicionamento */
+}
+.child {
+    position: absolute;
+    top: 0;
+    right: 0;
+    /* Posicionado no canto superior direito do .parent */
+}
+```
+
+```
+┌────────────── .parent (relative) ──────────────┐
+│                                     ┌─────────┐│
+│                                     │  .child  ││ (absolute, top:0 right:0)
+│                                     └─────────┘│
+│                                                 │
+│  Conteúdo do parent ignora .child               │
+│  (absolute remove do fluxo)                     │
+└─────────────────────────────────────────────────┘
+```
+
+**Usos comuns:** badges, tooltips, dropdowns, overlays.
+
+### fixed
+
+Similar ao absolute, mas posicionado em relação à **viewport** (janela do navegador). Não se move com scroll.
+
+```css
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;    /* width: 100% da viewport */
+    z-index: 100;
+}
+```
+
+O elemento fica "grudado" na tela enquanto o usuário faz scroll.
+
+### sticky
+
+Comporta-se como `relative` até atingir um **threshold de scroll**, então fica fixo (como `fixed`):
+
+```css
+.section-header {
+    position: sticky;
+    top: 0; /* Fixa no topo quando scroll alcança */
+}
+```
+
+```
+Antes do scroll:         Depois do scroll:
+┌──────────────┐         ┌──────────────┐
+│  Header      │         │  Header (sticky, fixo no topo)
+│──────────────│         │──────────────│
+│  Conteúdo    │         │  Conteúdo    │
+│  ...         │         │  (scrollando)│
+└──────────────┘         └──────────────┘
+```
+
+**Requisito:** precisa de pelo menos um valor de offset (`top`, `bottom`, `left`, `right`). Sem ele, sticky não funciona.
+
+### z-index (empilhamento)
+
+Quando elementos se sobrepõem, `z-index` controla qual fica na frente (valor maior = mais na frente):
+
+```css
+.behind  { position: relative; z-index: 1; }
+.in-front { position: relative; z-index: 10; }
+.modal    { position: fixed; z-index: 1000; }
+```
+
+`z-index` só funciona em elementos com `position` diferente de `static`.
+
+**Stacking context:** um elemento com `z-index` cria um contexto de empilhamento. Filhos não podem "escapar" do z-index do pai, mesmo com z-index: 999999. Pense em andares de um prédio: cada andar (stacking context) tem seus próprios cômodos. Um móvel no 2o andar nunca fica acima de um cômodo no 3o andar, não importa o quão alto ele seja dentro do seu andar.
+
+## Na prática
+
+**Badge de notificação:**
+```css
+.icon-wrapper {
+    position: relative; /* Contexto para o badge */
+    display: inline-block;
+}
+.badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: red;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+```
+
+## Quando usar (e quando não usar)
+
+| Cenário | Posicionamento |
+|---|---|
+| Layout geral (linhas/colunas) | Flexbox / Grid (não position) |
+| Navbar fixa no topo | `fixed` |
+| Header de seção que gruda no scroll | `sticky` |
+| Badge/tooltip sobre um elemento | `absolute` + pai `relative` |
+| Modal/overlay cobrindo a página | `fixed` |
+| Deslocamento visual pequeno | `relative` |
+
+### Regra prática:
+Use Flexbox/Grid para **layout**. Use `position` para **sobreposição e posicionamento preciso**.
+
+## Erros comuns
+
+### 1. absolute sem pai relative
+
+```css
+/* ❌ Sem pai posicionado — posiciona em relação ao html/body */
+.badge { position: absolute; top: 0; right: 0; }
+/* O badge vai para o canto da PÁGINA, não do elemento pai */
+
+/* ✅ Pai com relative */
+.parent { position: relative; }
+.badge { position: absolute; top: 0; right: 0; }
+```
+
+### 2. Fixed quebrando com transform
+
+```css
+/* ❌ Um ancestor com transform cria novo contexto */
+.parent { transform: translateX(0); }
+.child { position: fixed; } /* Não é mais relativo à viewport! */
+/* Fica relativo ao .parent com transform */
+```
+
+### 3. sticky sem overflow ou sem espaço
+
+```css
+/* ❌ Sticky dentro de container com overflow: hidden */
+.container { overflow: hidden; }
+.sticky { position: sticky; top: 0; }
+/* NÃO funciona — overflow escondido impede sticky */
+
+/* ❌ Sticky sem espaço para scrollar */
+.wrapper { height: auto; } /* Se o wrapper não tiver mais altura que o sticky, não tem para onde scrollar */
+```
+
+### 4. Guerra de z-index
+
+```css
+/* ❌ Escalar z-index indefinidamente */
+.dropdown { z-index: 100; }
+.modal    { z-index: 9999; }
+.tooltip  { z-index: 99999; }
+.overlay  { z-index: 999999; }
+/* Sem sistema, vira caos */
+
+/* ✅ Sistema de camadas definido */
+/* z-index: 10   — dropdowns */
+/* z-index: 100  — modais */
+/* z-index: 1000 — tooltips */
+```

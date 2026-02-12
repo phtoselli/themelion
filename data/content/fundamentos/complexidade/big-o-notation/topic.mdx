@@ -1,0 +1,311 @@
+---
+title: "Big O Notation"
+slug: "big-o-notation"
+room: "fundamentos"
+category: "complexidade"
+difficulty: "beginner"
+order: 1
+prerequisites: []
+tags: ["performance", "analise", "tempo"]
+aiGenerated: true
+---
+
+## O que é
+
+Big O Notation é uma linguagem matemática que descreve **como o tempo de execução ou uso de memória de um algoritmo cresce** conforme o tamanho da entrada (n) aumenta. Não mede segundos — mede a **taxa de crescimento**.
+
+`O(n)` significa "no pior caso, o tempo cresce **proporcionalmente** ao tamanho da entrada". Se dobrar a entrada, dobra o tempo.
+
+## Por que importa
+
+A diferença entre um algoritmo O(n) e O(n²) não é acadêmica — é a diferença entre "roda em 1 milissegundo" e "roda em 16 minutos".
+
+Imagine que você tem uma lista de nomes e precisa encontrar um específico. Com um algoritmo O(n), você olha nome por nome -- se a lista tem 1.000 nomes, são no máximo 1.000 verificações. Rápido.
+
+Agora imagine que para cada nome, você precisa compará-lo com todos os outros (como verificar duplicatas). Isso é O(n²): 1.000 nomes gerando 1.000 x 1.000 = 1 milhão de comparações. Com 1 milhão de nomes, são 1 trilhão de comparações — o suficiente para travar seu programa por minutos.
+
+E existe ainda pior: algoritmos O(2ⁿ), onde cada item adicionado **dobra** o trabalho. Com apenas 30 itens, já são mais de 1 bilhão de operações. Com 1.000 itens, o número é tão absurdo que nem todos os computadores do mundo juntos resolveriam.
+
+Para dar uma noção concreta de como isso escala:
+
+| n (tamanho da lista) | O(n) -- olha um por um | O(n²) -- compara cada par | O(2ⁿ) -- testa todas as combinações |
+|---|---|---|---|
+| 10 | 10 operações | 100 operações | 1.024 operações |
+| 1.000 | 1.000 operações | 1 milhão de operações | impossível de calcular |
+| 1.000.000 | 1 milhão (~1ms) | 1 trilhão (~16 minutos) | impossível |
+
+*(Um computador moderno faz cerca de 1 bilhão de operações por segundo.)*
+
+Um desenvolvedor que não entende Big O:
+- Escreve código que funciona com 100 registros mas trava com 100.000
+- Não sabe explicar por que "ficou lento"
+- Não consegue comparar soluções objetivamente
+
+Um desenvolvedor que entende:
+- Prevê gargalos antes de rodar o código
+- Escolhe o algoritmo certo para cada situação
+- Comunica trade-offs com a equipe usando linguagem precisa
+
+## Como funciona
+
+### A ideia central: ignorar constantes, focar no crescimento
+
+Big O descarta constantes e termos menores porque, para entradas grandes, eles se tornam irrelevantes.
+
+Para entender, imagine que um algoritmo faz o seguinte para processar uma lista de `n` itens: 3 comparações para cada par de itens (3 vezes n vezes n = 3n²), mais 5 operações por item (5n), mais 100 operações fixas de preparação. No total: `3n² + 5n + 100` operações. Quando `n` é grande (tipo 10.000), o que importa é o `n²` — o resto vira insignificante. Por isso simplificamos para `O(n²)`.
+
+```
+3n² + 5n + 100 → O(n²)
+```
+
+Veja como, conforme `n` cresce, o termo `n²` vai dominando o tempo total:
+
+| n | 3n² | 5n | 100 | Total | n² domina? |
+|---|---|---|---|---|---|
+| 10 | 300 | 50 | 100 | 450 | 67% |
+| 100 | 30.000 | 500 | 100 | 30.600 | 98% |
+| 10.000 | 300.000.000 | 50.000 | 100 | 300.050.100 | 99.98% |
+
+Quando `n = 10.000`, o `3n²` sozinho responde por 99.98% do tempo total. Por isso a gente ignora o `5n` e o `100`.
+
+### As classes de complexidade (da melhor à pior)
+
+**O(1) — Constante:**
+Tempo não depende do tamanho da entrada.
+```python
+def get_first(arr):
+    return arr[0]  # Sempre 1 operação, mesmo com 1 bilhão de elementos
+```
+
+**O(log n) — Logarítmica:**
+A cada passo, descarta metade do problema. Extremamente eficiente.
+```python
+# Busca binária: array de 1 bilhão → máximo 30 comparações
+# Porque log₂(1.000.000.000) ≈ 30
+```
+
+**O(n) — Linear:**
+Tempo cresce proporcionalmente à entrada. Precisa olhar cada elemento uma vez.
+```python
+def find_max(arr):
+    max_val = arr[0]
+    for val in arr:      # Percorre todos os n elementos
+        if val > max_val:
+            max_val = val
+    return max_val
+```
+
+**O(n log n) — Eficiente para ordenação:**
+É a velocidade dos melhores algoritmos de ordenação (como quando você pede para o Python ordenar uma lista com `sorted()`). Para 1 milhão de itens, faz cerca de 20 milhões de operações — muito melhor que o 1 trilhão do O(n²).
+```python
+# Merge Sort, Quick Sort (caso médio), Heap Sort
+# 1 milhão de elementos: ~20 milhões de operações
+```
+
+**O(n²) — Quadrática:**
+Loops aninhados. Para cada elemento, processa todos os outros.
+```python
+# Verificar duplicatas (ingênuo)
+for i in range(len(arr)):          # n vezes
+    for j in range(i+1, len(arr)): # até n-1 vezes
+        if arr[i] == arr[j]:       # total: n(n-1)/2 = O(n²)
+            return True
+```
+
+**O(2ⁿ) — Exponencial:**
+Dobra a cada elemento adicionado. Inviável para n > 30.
+```python
+# Fibonacci recursivo (sem guardar resultados já calculados)
+def fib(n):
+    if n <= 1: return n
+    return fib(n-1) + fib(n-2)  # Cada chamada pode gerar 2 novas
+# fib(40) → ~2 bilhões de chamadas redundantes (complexidade ~O(2ⁿ))
+```
+
+**O(n!) — Fatorial:**
+Permutações. Cresce mais rápido que exponencial. Imagine um entregador que precisa visitar 20 endereços e quer encontrar a rota mais curta testando **todas as ordens possíveis**. São mais de 2 quintilhões de rotas — mesmo o computador mais rápido do mundo levaria milhares de anos.
+```python
+# Caixeiro viajante (força bruta): testar todas as rotas possíveis
+# 20 cidades → 20! = 2.432.902.008.176.640.000 rotas
+# Mesmo 1 bilhão de rotas por segundo levaria mais de 77 anos
+```
+
+### Analisando complexidade: contar os loops
+
+**Regra prática:** conte os loops aninhados e como eles dependem de `n`.
+
+```python
+# 1 loop = O(n)
+for i in range(n):
+    print(i)
+
+# 2 loops aninhados = O(n²)
+for i in range(n):
+    for j in range(n):
+        print(i, j)
+
+# Loop que divide = O(log n)
+i = n
+while i > 1:
+    i = i // 2  # Divide por 2 a cada iteração
+
+# Loop dentro de loop que divide = O(n log n)
+for i in range(n):        # O(n)
+    j = n
+    while j > 1:          # O(log n)
+        j = j // 2
+```
+
+### Melhor caso, caso médio e pior caso
+
+Big O mede o **pior caso** — o cenário mais pessimista.
+
+Exemplo com busca linear:
+```python
+def search(arr, target):
+    for i, val in enumerate(arr):
+        if val == target:
+            return i
+    return -1
+
+# Melhor caso: O(1) — target é o primeiro elemento
+# Caso médio: O(n/2) = O(n) — target está no meio
+# Pior caso: O(n) — target não existe ou é o último
+```
+
+Quando dizemos "busca linear é O(n)", estamos falando do **pior caso**.
+
+Existe também a **análise amortizada**, que calcula o custo médio ao longo de muitas operações. Pense assim: é como pagar um plano anual — você paga R$1200 de uma vez (caro naquele mês), mas dividindo por 12 meses são R$100/mês. O custo "amortizado" é baixo. Da mesma forma, adicionar um elemento a uma lista dinâmica é O(1) amortizado — ocasionalmente custa O(n) quando precisa realocar memória, mas na média de muitas operações, cada uma custa O(1).
+
+### Complexidade de espaço
+
+Big O também mede **memória extra** usada pelo algoritmo (além da entrada):
+
+```python
+# O(1) espaço: usa variáveis fixas
+def sum_array(arr):
+    total = 0           # 1 variável
+    for val in arr:
+        total += val
+    return total
+
+# O(n) espaço: cria estrutura proporcional à entrada
+def duplicate(arr):
+    copy = []           # Cresce com n
+    for val in arr:
+        copy.append(val)
+    return copy
+
+# O(n) espaço (recursão): cada chamada ocupa espaço na memória
+# A "pilha de chamadas" funciona como uma pilha de pratos: cada vez que
+# uma função chama a si mesma, um "prato" é empilhado. Com n chamadas,
+# são n "pratos" na memória.
+def factorial(n):
+    if n <= 1: return 1
+    return n * factorial(n - 1)  # n chamadas empilhadas na memória
+```
+
+## Na prática
+
+<CodeTabs />
+
+## Quando usar (e quando não usar)
+
+### Use Big O para:
+
+**1. Comparar algoritmos antes de implementar**
+```
+Problema: encontrar duplicatas em array de 1M elementos
+
+Opção A (dois loops): O(n²) = 1 trilhão de ops → ~16 minutos
+Opção B (hash set): O(n) = 1 milhão de ops → ~1ms
+
+Decisão: Opção B, sem hesitar.
+```
+
+**2. Prever escalabilidade**
+```
+Sistema atual: 10.000 usuários, resposta em 100ms (O(n²) interno)
+Próximo ano: 100.000 usuários
+Previsão: 100ms × (100.000/10.000)² = 10.000ms = 10 segundos
+Ação: refatorar para O(n log n) antes de escalar
+```
+
+**3. Comunicar trade-offs na equipe**
+"Essa solução é O(n) em tempo mas O(n) em espaço. A alternativa é O(n log n) em tempo mas O(1) em espaço. Com 10GB de dados e 4GB de RAM, a segunda é melhor."
+
+### Limitações (quando Big O não conta a história toda):
+
+**1. Constantes importam para n pequeno**
+```
+O(n) com constante 1000 vs O(n²) com constante 1:
+- n = 10: 10.000 vs 100 → O(n²) ganha
+- n = 100: 100.000 vs 10.000 → O(n²) ainda ganha
+- n = 10.000: 10M vs 100M → O(n) começa a ganhar
+```
+
+**2. Dados próximos na memória são mais rápidos de acessar**
+Funciona como ler páginas seguidas de um livro: é muito mais rápido do que pular para páginas aleatórias. Um array (dados lado a lado na memória) pode ser 10-100x mais rápido que uma linked list (dados espalhados pela memória) mesmo com a mesma complexidade O(n), porque o processador carrega blocos de dados vizinhos de uma vez.
+
+**3. Big O ignora operações de I/O**
+Um algoritmo O(n) que faz 1 milhão de leituras em disco pode ser mais lento que O(n²) que roda 100% em memória RAM.
+
+## Erros comuns
+
+### 1. Achar que O(n) é sempre "rápido" e O(n²) é sempre "lento"
+
+Depende do tamanho da entrada:
+- O(n²) com n = 50 → 2.500 ops → instantâneo
+- O(n) com n = 10 bilhões → 10 bilhões de ops → pode ser lento
+
+**Para n pequeno (< 1000), a complexidade quase não importa.** Use o código mais legível.
+
+### 2. Ignorar complexidade escondida em funções built-in
+
+```python
+# Parece O(n), mas é O(n²)
+arr = [1, 2, 3, ..., 100000]
+for val in arr:            # O(n)
+    if val in arr:         # O(n) — busca linear!
+        pass
+# Total: O(n) × O(n) = O(n²)
+
+# Correção: usar set para lookup O(1)
+seen = set(arr)            # O(n) para construir
+for val in arr:            # O(n)
+    if val in seen:        # O(1)
+        pass
+# Total: O(n) + O(n) = O(n)
+```
+
+### 3. Confundir O(1) com "instantâneo"
+
+O(1) significa "tempo constante", não "rápido". Um algoritmo O(1) pode levar 10 segundos — mas sempre levará 10 segundos, independente do tamanho da entrada.
+
+### 4. Esquecer que recursão usa memória
+
+```python
+# Parece O(n) tempo e O(1) espaço, mas usa O(n) espaço na pilha de chamadas
+def sum_recursive(arr, i=0):
+    if i >= len(arr): return 0
+    return arr[i] + sum_recursive(arr, i + 1)  # n chamadas empilhadas na memória
+```
+
+A pilha de chamadas funciona como uma pilha de pratos: cada chamada recursiva empilha mais uma. Com entradas grandes, essa pilha pode estourar a memória do programa.
+
+### 5. Multiplicar quando deveria somar
+
+```python
+# Loops independentes: SOMA
+for i in range(n):     # O(n)
+    print(i)
+for j in range(m):     # O(m)
+    print(j)
+# Total: O(n + m), NÃO O(n × m)
+
+# Loops aninhados: MULTIPLICAÇÃO
+for i in range(n):     # O(n)
+    for j in range(m): # O(m)
+        print(i, j)
+# Total: O(n × m)
+```

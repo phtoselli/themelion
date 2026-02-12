@@ -1,0 +1,252 @@
+---
+title: "Hash Tables / Hash Maps"
+slug: "hash-tables"
+room: "fundamentos"
+category: "estruturas-de-dados"
+difficulty: "intermediate"
+order: 5
+prerequisites: ["arrays"]
+tags: ["hashing", "colisoes", "lookup"]
+aiGenerated: true
+---
+
+## O que é
+
+Imagine uma biblioteca com 1 milhão de livros. Buscar um livro percorrendo prateleira por prateleira é O(n) — inviável. Mas se você tiver um sistema que transforma o título do livro em um número de prateleira exato, você vai direto ao livro em O(1). Esse sistema é uma **hash table**.
+
+Hash table (ou hash map, dicionário, mapa associativo) é uma estrutura de dados que associa **chaves** a **valores** usando uma **função hash** para calcular o índice onde o valor será armazenado. O resultado: lookup, inserção e remoção em **O(1) caso médio**.
+
+## Por que importa
+
+Hash tables resolvem o problema fundamental de **busca por chave** — e quase todo sistema real precisa disso:
+
+```python
+# Sem hash table: buscar usuário por email em 1M de registros
+# O(n) — percorrer todos até encontrar
+for user in users:
+    if user.email == "john@example.com":
+        return user  # Até 1 milhão de comparações
+
+# Com hash table: O(1) direto
+users["john@example.com"]  # 1 operação, sempre
+```
+
+Hash tables estão em toda parte:
+- **Bancos de dados:** índices para busca rápida
+- **Caches:** Redis, Memcached — armazenam pares chave-valor
+- **Compiladores:** tabela de símbolos (variáveis, funções)
+- **Roteamento:** DNS (domínio → IP), load balancers
+- **Deduplicação:** detectar duplicatas em O(n) ao invés de O(n²)
+- **Contagem de frequência:** contar palavras, votos, eventos
+
+## Como funciona
+
+### A função hash
+
+Uma função hash transforma qualquer chave em um **número inteiro** (o índice do array interno):
+
+```
+hash("João")  →  847362  →  847362 % 10  →  2 (índice)
+hash("Maria") →  293847  →  293847 % 10  →  7 (índice)
+hash("Pedro") →  519284  →  519284 % 10  →  4 (índice)
+```
+
+O array interno (chamado **bucket array** — cada posição é um "compartimento") armazena os valores nas posições calculadas:
+
+```
+Índice:  [0]    [1]    [2]       [3]    [4]       [5]    [6]    [7]       [8]    [9]
+Valor:   null   null   "João"    null   "Pedro"   null   null   "Maria"   null   null
+```
+
+**Propriedades de uma boa função hash:**
+1. **Determinística:** mesma chave sempre gera mesmo hash
+2. **Uniforme:** distribui chaves uniformemente pelos buckets
+3. **Rápida:** calcular o hash deve ser O(1)
+
+### Colisões
+
+Quando duas chaves diferentes geram o mesmo índice, temos uma **colisão**:
+
+```
+hash("João")  % 10 = 2
+hash("Ana")   % 10 = 2  ← colisão!
+```
+
+Colisões são inevitáveis: se você tem mais chaves possíveis do que espaços disponíveis, em algum momento duas chaves vão cair no mesmo espaço.
+
+**Resolução por encadeamento (chaining):**
+
+Cada compartimento, em vez de guardar um único valor, guarda uma lista de valores. Assim, quando duas chaves caem no mesmo lugar, as duas ficam armazenadas ali, uma atrás da outra:
+
+```
+Índice:  [0]    [1]    [2]                  [3]    [4]
+Valor:   null   null   [João→28, Ana→34]    null   [Pedro→22]
+```
+
+Para buscar "Ana": calcular hash → ir ao bucket 2 → percorrer a lista até achar "Ana".
+
+**Resolução por endereçamento aberto (open addressing):**
+
+Em vez de usar listas, essa abordagem funciona como chegar em um estacionamento e encontrar a vaga ocupada — você simplesmente tenta a próxima vaga até achar uma livre:
+
+```
+hash("João") = 2 → bucket 2 está vazio → colocar aqui
+hash("Ana")  = 2 → bucket 2 ocupado → tentar 3 → vazio → colocar aqui
+```
+
+### Load factor e rehashing
+
+Imagine que você tem um armário com 10 gavetas e já guardou 8 coisas (80% cheio). Nesse ponto, fica difícil achar as coisas. Então você compra um armário com 20 gavetas e reorganiza tudo. Isso é o "rehashing".
+
+O **load factor** (fator de carga) é a razão entre o número de elementos e o tamanho do array:
+
+```
+load_factor = n_elementos / n_buckets
+```
+
+Quando o load factor ultrapassa um limiar (geralmente 0.75), a hash table faz **rehashing**: cria um array maior (geralmente 2x) e recalcula os hashes de todos os elementos.
+
+```
+Antes (load factor = 0.8):
+[A] [B] [C] [D] [ ] [ ] [ ] [ ] [ ] [ ]  ← 8 elementos em 10 buckets
+
+Rehashing (load factor = 0.4):
+[A] [ ] [B] [ ] [C] [ ] [ ] [D] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ]
+                                              ← 8 elementos em 20 buckets
+```
+
+Rehashing é O(n), mas acontece raramente — custo amortizado: **O(1) por operação**.
+
+### Complexidade das operações
+
+| Operação | Caso médio | Pior caso | Por quê |
+|---|---|---|---|
+| **Inserção** | O(1) | O(n) | Na maioria das vezes é instantâneo. Mas se por azar todas as chaves caem no mesmo compartimento, precisa percorrer tudo. |
+| **Busca** | O(1) | O(n) | Calcula o hash e vai direto ao compartimento. Se muitas chaves colidiram, precisa comparar uma por uma. |
+| **Remoção** | O(1) | O(n) | Mesmo raciocínio da busca: encontrar é a parte custosa, remover em si é rápido. |
+| **Espaço** | O(n) | O(n) | O espaço cresce proporcionalmente ao número de elementos armazenados. |
+
+O pior caso O(n) acontece quando **todas** as chaves colidem no mesmo bucket — isso é raro com boas funções hash.
+
+## Na prática
+
+<CodeTabs />
+
+## Quando usar (e quando não usar)
+
+### Use hash tables quando:
+
+**1. Lookup por chave é a operação principal**
+```python
+# Cache de resultados: O(1) lookup
+cache = {}
+def get_user(user_id):
+    if user_id in cache:      # O(1)
+        return cache[user_id]
+    user = fetch_from_db(user_id)
+    cache[user_id] = user
+    return user
+```
+
+**2. Contagem de frequência**
+```python
+# Contar palavras em um texto: O(n)
+freq = {}
+for word in text.split():
+    freq[word] = freq.get(word, 0) + 1
+```
+
+**3. Detecção de duplicatas**
+```python
+# O(n) ao invés de O(n²)
+seen = set()  # Set = hash table sem valores
+for item in data:
+    if item in seen:  # O(1)
+        print(f"Duplicata: {item}")
+    seen.add(item)
+```
+
+**4. Agrupar dados por chave**
+```python
+# Agrupar alunos por turma
+from collections import defaultdict
+turmas = defaultdict(list)
+for aluno in alunos:
+    turmas[aluno.turma].append(aluno)
+```
+
+### Não use hash tables quando:
+
+**1. Precisa de dados ordenados**
+Hash tables não mantêm ordem. Se você precisa iterar em ordem:
+- Use `TreeMap` (árvore balanceada): O(log n) por operação, mas ordenado
+- Use array ordenado + busca binária: O(log n) busca, O(n) inserção
+
+**2. Precisa de buscar por intervalos (range queries)**
+
+Hash table não organiza os dados em ordem, então para buscar "todos os usuários com idade entre 20 e 30", precisa olhar todos os valores um por um. Uma estrutura ordenada (como uma árvore balanceada) consegue pular direto para o intervalo desejado.
+
+**3. Memória é restrita**
+Hash tables usam mais memória que arrays (overhead do hashing, buckets vazios, listas de colisão). Se memória é crítica (embedded, mobile), considere alternativas mais compactas.
+
+**4. Chaves não são hasheáveis**
+Tipos mutáveis (listas, dicts em Python) não podem ser chaves de hash table — se o conteúdo mudar, o hash muda e o elemento se perde.
+
+## Erros comuns
+
+### 1. Usar objeto mutável como chave
+
+```python
+# ❌ Listas são mutáveis — se mudarem, o hash muda e a busca falha
+d = {}
+key = [1, 2, 3]
+d[key] = "valor"   # TypeError: unhashable type: 'list'
+
+# ✅ Use tupla (imutável) como chave
+d[(1, 2, 3)] = "valor"
+```
+
+### 2. Assumir que a ordem é garantida
+
+```python
+# Python 3.7+: dicts mantêm ordem de inserção (detalhe de implementação)
+# Mas isso NÃO é verdade em todas as linguagens
+# Go maps: ordem aleatória a cada iteração
+# Java HashMap: sem garantia de ordem
+```
+
+Se precisa de ordem garantida, use estrutura explícita (`OrderedDict`, `TreeMap`).
+
+### 3. Função hash ruim causando colisões em massa
+
+```python
+# ❌ Hash que retorna sempre o mesmo valor = todas as chaves no mesmo bucket
+def bad_hash(key):
+    return 42  # Toda busca vira O(n)
+
+# ✅ Hash que distribui uniformemente
+# Use as funções built-in da linguagem (Python: hash(), Java: hashCode())
+```
+
+### 4. Não pré-alocar quando o tamanho é conhecido
+
+```python
+# ❌ Múltiplos rehashings ao crescer gradualmente
+d = {}
+for i in range(1_000_000):
+    d[i] = i  # Rehash em ~750k, ~375k, ~187k, etc.
+
+# ✅ Pré-alocar (quando possível)
+d = dict.fromkeys(range(1_000_000))  # Aloca de uma vez
+```
+
+### 5. Complexidade escondida em comparações de chaves
+
+```python
+# Hash table com strings longas como chave:
+# O hash é O(1)? Não — calcular hash de string é O(len(string))
+# Se suas chaves são strings de 10.000 caracteres,
+# cada operação tem custo O(10.000), não O(1)
+```
+
+A complexidade O(1) assume que calcular o hash e comparar chaves é O(1) — verdade para inteiros, mas não para strings longas.

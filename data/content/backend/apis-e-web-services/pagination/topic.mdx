@@ -1,0 +1,217 @@
+---
+title: "Pagination"
+slug: "pagination"
+room: "backend"
+category: "apis-e-web-services"
+difficulty: "beginner"
+order: 5
+prerequisites: ["restful-principles"]
+tags: ["lista", "performance", "api"]
+aiGenerated: true
+---
+
+## O que é
+
+Pagination (paginação) é a técnica de **dividir uma coleção grande de dados em páginas menores**. Em vez de retornar 1 milhão de registros de uma vez (lento, consome memória, trava a UI), retorna 20-100 por vez, com controles para navegar entre páginas.
+
+```
+GET /api/products                → 1.000.000 produtos (❌ lento, perigoso)
+GET /api/products?page=1&limit=20 → 20 produtos + metadados (✅ rápido)
+```
+
+## Por que importa
+
+Sem paginação:
+- **Backend:** query retorna milhões de registros → memória esgota, timeout
+- **Rede:** transferir 100MB de JSON → lento, timeout
+- **Frontend:** renderizar 1 milhão de elementos → navegador trava
+
+Com paginação:
+- Cada requisição retorna dados suficientes para uma tela
+- Tempo de resposta consistente independente do tamanho total
+- Usuário vê resultados instantaneamente, carrega mais conforme navega
+
+## Como funciona
+
+### Offset-based pagination (mais comum)
+
+Usa `page` + `limit` (ou `offset` + `limit`) para selecionar uma janela:
+
+```
+GET /api/products?page=1&limit=20  → itens 1-20
+GET /api/products?page=2&limit=20  → itens 21-40
+GET /api/products?page=3&limit=20  → itens 41-60
+
+Internamente: SELECT * FROM products LIMIT 20 OFFSET 40
+```
+
+**Resposta padrão:**
+```json
+{
+    "data": [
+        { "id": 41, "name": "Produto A" },
+        { "id": 42, "name": "Produto B" }
+    ],
+    "meta": {
+        "page": 3,
+        "per_page": 20,
+        "total": 1000,
+        "total_pages": 50
+    }
+}
+```
+
+**Problema com offset grande:**
+```sql
+SELECT * FROM products LIMIT 20 OFFSET 999980
+-- O banco precisa PULAR 999.980 registros antes de retornar 20
+-- Quanto maior o offset, mais lento (a lentidão cresce proporcionalmente ao número de registros)
+```
+
+### Cursor-based pagination (mais eficiente)
+
+Usa um cursor (geralmente o ID ou timestamp do último item) para buscar os próximos:
+
+```
+GET /api/products?limit=20                        → primeiros 20
+GET /api/products?limit=20&after=cursor_abc123    → próximos 20 após cursor
+```
+
+```json
+{
+    "data": [
+        { "id": 41, "name": "Produto A" },
+        { "id": 42, "name": "Produto B" }
+    ],
+    "cursors": {
+        "after": "eyJpZCI6NDJ9",
+        "has_next": true
+    }
+}
+```
+
+**Internamente:**
+```sql
+SELECT * FROM products WHERE id > 42 ORDER BY id LIMIT 20
+-- Usa índice direto, sem pular registros — velocidade constante independente da posição
+```
+
+### Comparação
+
+| Aspecto | Offset-based | Cursor-based |
+|---|---|---|
+| Performance | Degrada com offset alto | Constante |
+| "Pular para página 50" | Sim | Não (sequencial) |
+| Dados adicionados/removidos | Pode pular/repetir itens | Consistente |
+| Simplicidade | Mais simples | Mais complexo |
+| Ideal para | Poucos dados, UX com páginas | Muitos dados, scroll infinito |
+
+### Keyset pagination
+
+Variante de cursor-based usando valores reais (não cursores opacos):
+
+```
+GET /api/products?sort=price&last_price=29.99&last_id=42&limit=20
+
+SELECT * FROM products
+WHERE (price, id) > (29.99, 42)
+ORDER BY price, id
+LIMIT 20
+```
+
+## Na prática
+
+Implementação básica em uma API:
+
+```python
+# Offset-based
+@app.get("/api/products")
+def list_products(page: int = 1, per_page: int = 20):
+    offset = (page - 1) * per_page
+    products = db.query(Product).offset(offset).limit(per_page).all()
+    total = db.query(Product).count()
+
+    return {
+        "data": products,
+        "meta": {
+            "page": page,
+            "per_page": per_page,
+            "total": total,
+            "total_pages": ceil(total / per_page)
+        }
+    }
+```
+
+## Quando usar (e quando não usar)
+
+### Offset-based quando:
+- Dataset pequeno/médio (< 100.000 registros)
+- Usuário precisa navegar para páginas específicas
+- Interface com "Página 1, 2, 3..."
+
+### Cursor-based quando:
+- Dataset grande (> 100.000 registros)
+- Scroll infinito (feeds, timelines)
+- Dados mudam frequentemente (novos itens inseridos)
+- Performance é crítica
+
+### Sem paginação quando:
+- Dataset pequeno e fixo (< 100 itens)
+- Dados precisam ser carregados de uma vez (dropdowns, configurações)
+
+## Erros comuns
+
+### 1. Não limitar o tamanho máximo da página
+
+```python
+# ❌ Usuário pode pedir per_page=1000000
+GET /api/products?per_page=1000000  → retorna tudo, mata o servidor
+
+# ✅ Limitar o máximo
+per_page = min(request.per_page, 100)  # Máximo 100 por página
+```
+
+### 2. Não retornar metadados de paginação
+
+```json
+// ❌ Sem metadados: frontend não sabe se há mais páginas
+{ "data": [...] }
+
+// ✅ Com metadados
+{ "data": [...], "meta": { "total": 1000, "page": 1, "total_pages": 50 } }
+```
+
+### 3. Offset-based com dados mutáveis
+
+```
+Página 1: [A, B, C, D, E] (offset 0)
+— Alguém deleta A —
+Página 2: [F, G, H, I, J] (offset 5)
+— Mas E foi pulado! O offset 5 agora começa de F, não de F-depois-de-E
+
+Cursor-based não tem esse problema: "me dê itens depois de E"
+```
+
+### 4. Esquecer de paginar no frontend
+
+```javascript
+// ❌ Buscar TODOS os dados e paginar no frontend
+const allProducts = await fetch('/api/products');  // 1 milhão de registros!
+const page = allProducts.slice(0, 20);
+
+// ✅ Paginar no backend
+const page = await fetch('/api/products?page=1&limit=20');  // 20 registros
+```
+
+### 5. COUNT(*) em tabelas grandes
+
+```sql
+-- ❌ COUNT(*) com filtros em tabela de 10M registros = lento
+SELECT COUNT(*) FROM products WHERE category = 'electronics'
+-- Pode levar segundos
+
+-- Alternativas:
+-- 1. Cachear o total
+-- 2. Estimar com EXPLAIN
+-- 3. Não retornar total exato (use "has_next" ao invés de "total_pages")
+```

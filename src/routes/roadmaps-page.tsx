@@ -27,7 +27,10 @@ interface GroupedRoadmaps {
 	roadmaps: typeof roadmaps;
 }
 
-function groupRoadmapsByLevel(list: typeof roadmaps, t: ReturnType<typeof useLocale>["t"]): GroupedRoadmaps[] {
+function groupRoadmapsByLevel(
+	list: typeof roadmaps,
+	t: ReturnType<typeof useLocale>["t"],
+): GroupedRoadmaps[] {
 	const grouped: Record<RoadmapLevel, typeof roadmaps> = {
 		junior: [],
 		pleno: [],

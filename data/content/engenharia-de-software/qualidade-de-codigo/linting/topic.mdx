@@ -1,0 +1,282 @@
+---
+title: "Linting e Formatação"
+slug: "linting"
+room: "engenharia-de-software"
+category: "qualidade-de-codigo"
+difficulty: "beginner"
+order: 1
+prerequisites: []
+tags: ["qualidade", "padronizacao", "automacao"]
+aiGenerated: true
+---
+
+## O que é
+
+**Linting** é a análise estática de código para detectar **erros, bugs potenciais e violações de estilo** antes de executar o programa. Um **linter** lê o código-fonte, aplica regras configuráveis e reporta problemas. **Formatação** é o subconjunto que cuida da aparência visual do código — indentação, espaçamento, quebras de linha.
+
+```javascript
+// Linter detecta bugs ANTES de rodar:
+
+let x = 10;
+if (x = 5) { }        // ⚠️ Atribuição ao invés de comparação (deveria ser ===)
+
+const unused = 42;     // ⚠️ Variável declarada mas nunca usada
+
+console.log(name);     // ⚠️ 'name' não foi definido — vai dar ReferenceError
+
+function add(a, b) {
+    return a + b
+    console.log("done") // ⚠️ Código inalcançável após return
+}
+```
+
+## Por que importa
+
+### Linting: prevenir bugs
+
+Linters detectam categorias inteiras de erros **sem executar o código**:
+- Variáveis não declaradas ou não usadas
+- Comparações que são sempre true/false
+- Código inalcançável
+- Imports inexistentes
+- Padrões conhecidos de bugs (ex: `==` ao invés de `===` em JavaScript)
+
+Encontrar esses problemas em code review é lento e falho. Humanos cansam, linters não.
+
+### Formatação: eliminar discussões inúteis
+
+Sem formatador automático, equipes gastam tempo discutindo:
+- Tabs ou espaços?
+- Ponto e vírgula no final?
+- Onde quebrar a linha?
+- Chaves na mesma linha ou na próxima?
+
+Com formatador configurado, o debate acaba: **a ferramenta decide**, o código é formatado automaticamente, e o time foca no que importa — lógica e arquitetura.
+
+## Como funciona
+
+### Linting (análise estática)
+
+O linter lê o código, transforma em uma estrutura organizada que a ferramenta consegue "entender" (chamada AST — uma espécie de mapa do código, onde cada variável, função e operação tem seu lugar) e aplica regras sobre essa estrutura:
+
+```
+Código fonte → Parser → AST → Regras → Relatório de problemas
+
+Exemplo de regra: "no-unused-vars"
+1. Percorrer todas as declarações de variáveis no AST
+2. Para cada variável, verificar se é referenciada em algum lugar
+3. Se não → reportar warning/error
+```
+
+### Formatação (estilo visual)
+
+O formatador lê o código, reconstrói a formatação baseado em regras de estilo e reescreve o arquivo:
+
+```
+Antes (formatação inconsistente):
+const x=1;const y   = 2
+if(x){console.log(   "ok")}
+
+Depois (formatação automática):
+const x = 1;
+const y = 2;
+if (x) {
+  console.log("ok");
+}
+```
+
+O formatador **não muda a lógica** — apenas a aparência. O código antes e depois faz exatamente a mesma coisa.
+
+### Configuração
+
+Linters e formatadores são configurados por arquivo na raiz do projeto:
+
+```json
+// Exemplo: configuração de linter (simplificado)
+{
+  "rules": {
+    "no-unused-vars": "error",     // Erro: variável não usada
+    "no-console": "warn",          // Warning: console.log em produção
+    "eqeqeq": "error",            // Erro: usar == ao invés de ===
+    "indent": ["error", 2],        // Erro: indentação deve ser 2 espaços
+    "max-line-length": ["warn", 100] // Warning: linha > 100 caracteres
+  }
+}
+```
+
+```
+Níveis de severidade:
+
+"off"   → regra desativada
+"warn"  → warning (não bloqueia, mas aparece no relatório)
+"error" → erro (bloqueia commit/CI se configurado)
+```
+
+### Integração no workflow
+
+```
+1. Editor (tempo real):
+   Linter roda enquanto você digita → sublinha erros no editor
+   Formatador roda ao salvar → formata automaticamente
+
+2. Pre-commit hook:
+   Antes de cada commit, roda linter + formatador
+   Se houver erros → commit é barrado
+
+3. CI/CD (pull request):
+   Pipeline roda linter em cada PR
+   Se houver erros → PR não pode ser mergeado
+
+Quanto antes detectar, mais barato corrigir.
+Editor > Pre-commit > CI > Code Review > Produção
+```
+
+### Autofix
+
+A maioria dos linters pode **corrigir automaticamente** problemas simples:
+
+```bash
+# Corrigir automaticamente o que for possível
+npx biome check --fix .              # Biome
+npx eslint --fix .                   # ESLint
+python -m black .                    # Black (Python)
+go fmt ./...                         # Go (formatação built-in)
+cargo fmt                            # Rust (formatação built-in)
+
+# Problemas que autofix resolve:
+# - Formatação (indentação, espaçamento)
+# - Imports não ordenados
+# - Ponto e vírgula faltando/sobrando
+# - == → === (quando seguro)
+
+# Problemas que autofix NÃO resolve:
+# - Lógica incorreta
+# - Variáveis com nomes ruins
+# - Arquitetura
+```
+
+## Na prática
+
+### Ferramentas por linguagem
+
+```
+JavaScript/TypeScript:
+  Linter:     ESLint, Biome
+  Formatador: Prettier, Biome
+  Biome = linter + formatador (mais rápido, substitui ESLint + Prettier)
+
+Python:
+  Linter:     Ruff, Flake8, Pylint
+  Formatador: Black, Ruff
+  Type checker: mypy, Pyright
+
+Go:
+  Linter:     golangci-lint (agregador de vários linters)
+  Formatador: gofmt (built-in, TODOS os projetos Go usam)
+
+Rust:
+  Linter:     clippy (built-in)
+  Formatador: rustfmt (built-in)
+
+C#:
+  Linter:     Roslyn Analyzers
+  Formatador: dotnet format
+```
+
+### Exemplo de setup mínimo (projeto TypeScript)
+
+```json
+// biome.json
+{
+  "formatter": {
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 100
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true
+    }
+  }
+}
+```
+
+```json
+// package.json — scripts
+{
+  "scripts": {
+    "lint": "biome check .",
+    "format": "biome format --write .",
+    "check": "biome check --fix ."
+  }
+}
+```
+
+## Quando usar (e quando não usar)
+
+### Sempre use:
+- **Linter:** em qualquer projeto com mais de 1 pessoa (ou que vá durar mais de 1 semana)
+- **Formatador:** em qualquer projeto — elimina discussões de estilo definitivamente
+
+### Regras recomendadas:
+- Comece com o preset **recommended/default** da ferramenta
+- Desative regras que não fazem sentido para o projeto (com comentário explicando por quê)
+- Adicione regras específicas conforme a equipe identifica padrões de bugs
+
+### Evite:
+- **Regras muito opinativas** sem consenso da equipe (ex: forçar estilo funcional)
+- **Customização excessiva** — quanto mais próximo do default, menos conflito
+- **Ignorar warnings sistematicamente** — se ignora tudo, a ferramenta perde valor
+
+## Erros comuns
+
+### 1. Não configurar no CI
+
+```
+❌ Linter existe mas só roda localmente
+   → Desenvolvedor esquece de rodar
+   → Código com erros entra no repositório
+
+✅ Linter como etapa obrigatória do CI
+   → PR só pode ser mergeado se linter passar
+   → Impossível pular
+```
+
+### 2. Desativar regras ao invés de corrigir
+
+```javascript
+// ❌ Silenciar o linter ao invés de corrigir
+// eslint-disable-next-line no-unused-vars
+const importantVariable = calculateValue();  // Mas nunca usa!
+
+// ✅ Corrigir: usar a variável ou remover
+const result = calculateValue();
+processResult(result);
+```
+
+Desativar regras é válido em **casos excepcionais** com comentário explicando por quê. Se está desativando a mesma regra em muitos lugares, reconsidere se a regra faz sentido para o projeto.
+
+### 3. Formatação inconsistente no time
+
+```
+❌ Cada desenvolvedor com configuração diferente no editor
+   → Diffs cheios de mudanças de formatação
+   → Dificulta code review (mudanças reais misturadas com formatação)
+
+✅ Configuração versionada no repositório + format on save
+   → Todos usam a mesma configuração
+   → Diffs mostram apenas mudanças reais
+```
+
+### 4. Linter muito restritivo
+
+```
+❌ 200 regras ativas, metade controversa
+   → Desenvolvedores gastam mais tempo satisfazendo o linter do que codando
+   → "Desativa esse linter" vira frase comum
+
+✅ Preset recommended + ajustes mínimos
+   → Regras que a comunidade concorda que previnem bugs
+   → Equipe aceita porque faz sentido
+```
