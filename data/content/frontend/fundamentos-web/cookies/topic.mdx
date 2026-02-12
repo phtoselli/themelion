@@ -1,0 +1,193 @@
+---
+title: "Cookies"
+slug: "cookies"
+room: "frontend"
+category: "fundamentos-web"
+difficulty: "beginner"
+order: 7
+prerequisites: ["http-https"]
+tags: ["persistencia", "sessao", "autenticacao"]
+aiGenerated: true
+---
+
+## O que é
+
+Cookies são **pequenos fragmentos de texto** que o servidor envia ao navegador e que o navegador armazena e reenvia automaticamente em cada requisição subsequente ao mesmo domínio. São o mecanismo original da web para tornar HTTP stateful — permitir que o servidor "lembre" de um cliente entre requisições.
+
+```
+1ª requisição (login):
+Cliente → POST /login {"user": "joao", "pass": "123"}
+Servidor → 200 OK + Set-Cookie: session=abc123; HttpOnly; Secure
+
+2ª requisição (e todas as próximas ao mesmo domínio):
+Cliente → GET /dashboard
+          Cookie: session=abc123    ← navegador envia AUTOMATICAMENTE
+Servidor → 200 OK (sabe que é o João porque reconhece session=abc123)
+```
+
+## Por que importa
+
+HTTP é stateless — cada requisição é independente. Sem cookies (ou mecanismo equivalente), o servidor não saberia que as requisições 1, 2 e 3 são do mesmo usuário. Você teria que fazer login a cada clique.
+
+Cookies são usados para:
+- **Autenticação:** manter sessão do usuário logado
+- **Preferências:** idioma, tema, moeda
+- **Tracking/Analytics:** identificar visitantes (controverso, regulado por GDPR/LGPD)
+- **Carrinho de compras:** manter itens entre páginas
+
+## Como funciona
+
+### Criando cookies (servidor → navegador)
+
+O servidor envia o header `Set-Cookie` na resposta HTTP:
+
+```
+HTTP/1.1 200 OK
+Set-Cookie: session_id=abc123; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=86400
+Set-Cookie: theme=dark; Path=/; Max-Age=31536000
+```
+
+### Enviando cookies (navegador → servidor)
+
+O navegador anexa automaticamente todos os cookies válidos para o domínio:
+
+```
+GET /dashboard HTTP/1.1
+Host: meusite.com
+Cookie: session_id=abc123; theme=dark
+```
+
+### Atributos de segurança
+
+Os 4 atributos mais importantes para proteger seus cookies:
+
+| Atributo | O que faz | Quando usar |
+|---|---|---|
+| `HttpOnly` | JavaScript não pode acessar (`document.cookie` não vê) | **Sempre** para cookies de sessão |
+| `Secure` | Só enviado via HTTPS | **Sempre** em produção |
+| `SameSite=Strict` | Só enviado em requisições do mesmo site | Proteção máxima contra CSRF |
+| `SameSite=Lax` | Enviado em navegação top-level, não em requests cross-site | Bom equilíbrio (padrão) |
+| `SameSite=None` | Enviado em qualquer contexto (requer Secure) | APIs cross-site |
+| `Max-Age` | Tempo de vida em segundos | Controlar expiração |
+| `Expires` | Data de expiração absoluta | Alternativa ao Max-Age |
+| `Path` | Limita a quais paths o cookie se aplica | Geralmente `/` |
+| `Domain` | Define domínio e subdomínios que recebem o cookie | Compartilhar entre subdomínios |
+
+### Cookies de sessão vs persistentes
+
+**Sessão** (sem Max-Age/Expires):
+```
+Set-Cookie: session=abc123
+→ Expira quando o navegador fecha
+```
+
+**Persistente** (com Max-Age/Expires):
+```
+Set-Cookie: theme=dark; Max-Age=31536000
+→ Dura 1 ano (31.536.000 segundos)
+```
+
+### Acessando cookies no JavaScript
+
+```javascript
+// Ler cookies (apenas os que NÃO são HttpOnly)
+console.log(document.cookie);
+// "theme=dark; lang=pt-BR"
+
+// Criar cookie
+document.cookie = "preference=compact; Path=/; Max-Age=86400";
+
+// "Deletar" cookie (setar expiração no passado)
+document.cookie = "preference=; Path=/; Max-Age=0";
+```
+
+**Nota:** `document.cookie` é uma API estranha — parece uma string simples mas `=` funciona como "adicionar/atualizar" ao invés de "substituir tudo".
+
+### Limites
+
+| Limite | Valor |
+|---|---|
+| Tamanho por cookie | ~4KB |
+| Cookies por domínio | ~50-180 (varia por navegador) |
+| Total por navegador | ~3.000+ |
+
+## Na prática
+
+Configuração segura para cookie de sessão:
+
+```
+Set-Cookie: session_id=abc123;
+  Path=/;
+  HttpOnly;         ← JS não acessa (proteção contra XSS — quando alguém injeta código malicioso no seu site)
+  Secure;           ← Só HTTPS (proteção contra interceptação)
+  SameSite=Lax;     ← Proteção contra CSRF (quando um site malicioso faz requisições usando seus cookies)
+  Max-Age=86400;    ← Expira em 24h
+```
+
+## Quando usar (e quando não usar)
+
+### Use cookies para:
+- **Sessões de autenticação** — mecanismo padrão, enviado automaticamente
+- **Preferências do usuário** — dados pequenos que o servidor precisa ler
+- **Tracking server-side** — quando o servidor precisa do identificador
+
+### Não use cookies para:
+- **Dados grandes** — limite de 4KB por cookie; use localStorage
+- **Dados que só o frontend precisa** — use localStorage (não sobrecarrega headers)
+- **Dados sensíveis sem criptografia** — cookies viajam em headers HTTP; use HttpOnly + Secure
+
+### Cookies vs localStorage vs sessionStorage
+
+| Aspecto | Cookie | localStorage | sessionStorage |
+|---|---|---|---|
+| Capacidade | ~4KB | ~5-10MB | ~5-10MB |
+| Enviado ao servidor | Sim (automático) | Não | Não |
+| Expiração | Configurável | Nunca | Aba fechou |
+| Acessível via JS | Parcial (HttpOnly) | Sim | Sim |
+| Uso principal | Auth, sessão | Dados do frontend | Dados temporários |
+
+## Erros comuns
+
+### 1. Cookie de sessão sem HttpOnly
+
+```
+❌ Set-Cookie: session=abc123
+   → Vulnerável a XSS: script malicioso pode roubar via document.cookie
+
+✅ Set-Cookie: session=abc123; HttpOnly
+   → JavaScript não consegue acessar
+```
+
+### 2. Cookie sem Secure em produção
+
+```
+❌ Set-Cookie: session=abc123 (sem Secure)
+   → Enviado via HTTP, pode ser interceptado em Wi-Fi público
+
+✅ Set-Cookie: session=abc123; Secure
+   → Só enviado via HTTPS
+```
+
+### 3. Não configurar SameSite (CSRF)
+
+```
+❌ Set-Cookie: session=abc123 (sem SameSite)
+   → Site malicioso pode disparar requisições com seu cookie
+
+✅ Set-Cookie: session=abc123; SameSite=Lax
+   → Cookie só enviado em navegação normal, não em requests cross-site
+```
+
+### 4. Armazenar dados sensíveis em texto puro
+
+```
+❌ Set-Cookie: user=joao;password=123456
+   → Qualquer extensão de navegador pode ler
+
+✅ Set-Cookie: session_id=abc123; HttpOnly; Secure
+   → Servidor guarda os dados; cookie é só um identificador opaco
+```
+
+### 5. Não considerar LGPD/GDPR
+
+Cookies de tracking (analytics, publicidade) requerem **consentimento explícito** do usuário em muitos países. Cookies essenciais (sessão, preferências) geralmente não precisam, mas vale consultar as regulações locais.

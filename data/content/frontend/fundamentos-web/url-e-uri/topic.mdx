@@ -1,0 +1,353 @@
+---
+title: "URL e URI"
+slug: "url-e-uri"
+room: "frontend"
+category: "fundamentos-web"
+difficulty: "beginner"
+order: 24
+prerequisites: ["http-https"]
+tags: ["endereco", "roteamento", "encoding", "query-string"]
+aiGenerated: true
+---
+
+## O que é
+
+URL (Uniform Resource Locator) é o **endereço completo de um recurso na web** — inclui onde ele está e como acessá-lo. URI (Uniform Resource Identifier) é o conceito mais amplo: qualquer string que identifica um recurso. Na prática, quase toda URI que você encontra na web é uma URL.
+
+```
+URI (identificador genérico)
+├── URL (identificador + localização + acesso)
+│   └── https://themelion.dev/topicos/arrays?tab=python#exemplos
+└── URN (identificador por nome, sem localização)
+    └── urn:isbn:978-85-333-0227-3
+```
+
+Pense assim: **URI é o conceito, URL é a implementação**. Todo URL é um URI, mas nem todo URI é um URL. No dia a dia, quando alguém diz "URI", quase sempre está falando de um URL.
+
+## Por que importa
+
+URLs são o **sistema de endereçamento da web**. Todo recurso acessível tem um URL — páginas, APIs, imagens, scripts, estilos. Frontend developers trabalham com URLs constantemente:
+
+- **Roteamento SPA** — `window.location`, History API, React Router
+- **Fetch/API calls** — construir URLs com query parameters
+- **Links e navegação** — `<a href="...">`, `window.open()`
+- **Query parameters** — filtros, paginação, busca (`?page=2&sort=nome`)
+- **Fragmentos** — scroll para seções (`#sobre`), roteamento client-side
+- **SEO** — URLs amigáveis, canonical URLs, redirects
+- **Deep linking** — compartilhar estado da aplicação via URL
+
+Não entender URLs leva a bugs sutis: query params mal codificados que quebram em certos caracteres, fragmentos que não funcionam como esperado, URLs relativas que resolvem errado.
+
+## Como funciona
+
+### Anatomia completa de um URL
+
+```
+https://usuario:senha@api.exemplo.com:8443/v2/produtos?categoria=livros&ordem=preco#resultados
+└─┬──┘ └─────┬─────┘ └──────┬───────┘└┬─┘└────┬────┘└──────────────┬───────────────┘└───┬────┘
+scheme   userinfo         host      port   path              query                   fragment
+```
+
+| Componente | Exemplo | Descrição |
+|---|---|---|
+| **Scheme** | `https` | Protocolo de acesso (http, https, ftp, mailto, tel, data) |
+| **Userinfo** | `usuario:senha` | Credenciais (raro e desencorajado por segurança) |
+| **Host** | `api.exemplo.com` | Domínio ou IP do servidor |
+| **Port** | `8443` | Porta (80 para HTTP, 443 para HTTPS são implícitas) |
+| **Path** | `/v2/produtos` | Caminho hierárquico até o recurso |
+| **Query** | `?categoria=livros&ordem=preco` | Parâmetros chave=valor, separados por `&` |
+| **Fragment** | `#resultados` | Referência dentro do documento (client-side apenas) |
+
+### Path: caminhos hierárquicos
+
+```
+/produtos                    → lista de produtos
+/produtos/42                 → produto com ID 42
+/produtos/42/avaliacoes      → avaliações do produto 42
+/produtos/42/avaliacoes/7    → avaliação 7 do produto 42
+```
+
+Paths seguem uma hierarquia lógica. Cada segmento (separado por `/`) refina o recurso. Essa estrutura é a base de REST APIs e roteamento em SPAs.
+
+### Query string: parâmetros
+
+```
+?chave=valor                       → parâmetro simples
+?nome=Maria&cidade=São+Paulo       → múltiplos parâmetros (& separa)
+?tags=js&tags=ts&tags=python       → mesmo parâmetro repetido (array)
+?q=                                → valor vazio (válido)
+?debug                             → sem valor (válido, indica flag)
+```
+
+Query parameters começam com `?` e são pares `chave=valor` separados por `&`. Não definem hierarquia — definem **filtros, opções ou estado**.
+
+### Fragment: referência client-side
+
+```
+https://meusite.com/docs#instalacao
+                            └──┬──┘
+                          fragment
+
+Regra fundamental: o fragment NUNCA é enviado ao servidor.
+O navegador o utiliza apenas localmente.
+```
+
+Fragmentos são usados para:
+- Scroll automático para um elemento com `id="instalacao"`
+- Roteamento client-side em SPAs (ex: `#/dashboard/users`)
+- Armazenar estado temporário que não precisa ir ao servidor
+
+### URL encoding (percent-encoding)
+
+URLs só podem conter caracteres ASCII seguros. Caracteres especiais precisam ser **codificados** no formato `%XX` (onde XX é o código hexadecimal do byte UTF-8):
+
+```
+Caractere  │ Codificado │ Por quê
+───────────┼────────────┼─────────────────────────
+espaço     │ %20 ou +   │ Espaços não são permitidos em URLs
+&          │ %26        │ & separa parâmetros
+=          │ %3D        │ = separa chave de valor
+?          │ %3F        │ ? inicia query string
+#          │ %23        │ # inicia fragment
+/          │ %2F        │ / separa segmentos de path
+ã          │ %C3%A3     │ Não-ASCII (2 bytes UTF-8)
+€          │ %E2%82%AC  │ Não-ASCII (3 bytes UTF-8)
+```
+
+```javascript
+// encodeURIComponent — codifica TUDO exceto: A-Z a-z 0-9 - _ . ! ~ * ' ( )
+encodeURIComponent("São Paulo & Rio")
+// "S%C3%A3o%20Paulo%20%26%20Rio"
+
+// encodeURI — codifica caracteres não-ASCII, mas PRESERVA: : / ? # [ ] @ ! $ & ' ( ) * + , ; =
+encodeURI("https://site.com/busca?q=São Paulo")
+// "https://site.com/busca?q=S%C3%A3o%20Paulo"
+// Note: ? e = foram preservados (são parte da estrutura do URL)
+```
+
+### URLs absolutos vs relativos
+
+```
+URL absoluto (caminho completo):
+https://meusite.com/blog/artigos/xml.html
+
+URLs relativos (resolvidos contra a URL base):
+./imagens/foto.jpg     → https://meusite.com/blog/artigos/imagens/foto.jpg
+../sobre.html          → https://meusite.com/blog/sobre.html
+/contato               → https://meusite.com/contato
+//cdn.site.com/lib.js  → https://cdn.site.com/lib.js (herda o scheme)
+```
+
+Regras de resolução:
+- `./` — relativo ao diretório atual
+- `../` — sobe um nível
+- `/` — relativo à raiz do domínio
+- `//` — relativo ao protocolo (protocol-relative)
+
+### A URL API no navegador
+
+```javascript
+// Construir e manipular URLs de forma segura
+const url = new URL("https://loja.com/produtos");
+
+url.searchParams.set("categoria", "livros");
+url.searchParams.set("ordem", "preço");
+url.searchParams.append("tag", "javascript");
+url.searchParams.append("tag", "frontend");
+url.hash = "resultados";
+
+url.toString();
+// "https://loja.com/produtos?categoria=livros&ordem=pre%C3%A7o&tag=javascript&tag=frontend#resultados"
+// Note: "preço" foi automaticamente codificado para "pre%C3%A7o"
+
+// Ler componentes
+url.hostname;     // "loja.com"
+url.pathname;     // "/produtos"
+url.search;       // "?categoria=livros&ordem=pre%C3%A7o&tag=javascript&tag=frontend"
+url.hash;         // "#resultados"
+
+// Iterar sobre parâmetros
+for (const [chave, valor] of url.searchParams) {
+  console.log(`${chave}: ${valor}`);
+}
+// categoria: livros
+// ordem: preço
+// tag: javascript
+// tag: frontend
+```
+
+### Data URIs
+
+Data URIs embutem dados **diretamente no URL**, sem requisição de rede:
+
+```
+data:[mediatype][;base64],dados
+
+data:text/plain;charset=utf-8,Olá mundo
+data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...
+data:text/html,<h1>Título</h1>
+```
+
+Útil para imagens pequenas (ícones, placeholders) — evita uma requisição HTTP. Mas o base64 aumenta o tamanho em ~33%, então imagens grandes devem ser arquivos separados.
+
+## Na prática
+
+### Construindo URLs para API calls
+
+```javascript
+// ❌ Concatenação manual — frágil e propenso a erros
+const url = "/api/busca?q=" + termoBusca + "&page=" + pagina;
+// Se termoBusca = "C# & Java", o URL quebra
+
+// ✅ URL API — encoding automático e seguro
+const url = new URL("/api/busca", window.location.origin);
+url.searchParams.set("q", termoBusca);
+url.searchParams.set("page", pagina);
+fetch(url);
+```
+
+### Lendo parâmetros da URL atual
+
+```javascript
+// URL: https://loja.com/busca?q=typescript&categoria=livros&page=2
+const params = new URLSearchParams(window.location.search);
+
+params.get("q");           // "typescript"
+params.get("categoria");   // "livros"
+params.get("page");        // "2" (sempre string!)
+params.get("inexistente"); // null
+params.has("q");           // true
+```
+
+### Roteamento SPA com fragmentos
+
+```javascript
+// Hash-based routing (mais antigo, mas simples)
+// https://app.com/#/dashboard
+// https://app.com/#/usuarios/42
+
+window.addEventListener("hashchange", () => {
+  const rota = window.location.hash.slice(1); // remove o #
+  renderizarRota(rota);
+});
+
+// History API (moderno, URLs limpos)
+// https://app.com/dashboard
+// https://app.com/usuarios/42
+
+history.pushState(null, "", "/dashboard");
+window.addEventListener("popstate", () => {
+  renderizarRota(window.location.pathname);
+});
+```
+
+<CodeTabs />
+
+## Quando usar (e quando não usar)
+
+### Path params vs query params
+
+```
+Path params — identificam um recurso específico:
+/usuarios/42              ← "me dê o usuário 42"
+/produtos/camiseta-azul   ← "me dê este produto"
+
+Query params — filtram, ordenam ou modificam a resposta:
+/produtos?cor=azul&tamanho=M    ← "filtre produtos"
+/busca?q=typescript&page=2      ← "busque com paginação"
+```
+
+**Regra prática:** se remover o parâmetro e o recurso não faz sentido, é path param. Se o recurso existe independente do parâmetro, é query param.
+
+### Fragmentos: quando usar
+
+- **Scroll para seção** — `#instalacao` rola até `<h2 id="instalacao">`
+- **Estado client-side** — dados que não precisam ir ao servidor
+- **Tabs/acordeões** — `#aba-configuracoes`
+
+### Fragmentos: quando NÃO usar
+
+- **Estado que precisa ser persistido no servidor** — use query params
+- **Informação sensível** — fragmentos aparecem no histórico do navegador
+- **SEO** — buscadores geralmente ignoram fragmentos
+
+## Erros comuns
+
+### 1. Não codificar caracteres especiais em query params
+
+```javascript
+// ❌ "São Paulo" e "&" quebram o URL
+const url = `/busca?cidade=São Paulo&tipo=café & chá`;
+// O navegador interpreta "café " como valor e "chá" como novo parâmetro
+
+// ✅ Usar URLSearchParams
+const params = new URLSearchParams({ cidade: "São Paulo", tipo: "café & chá" });
+const url = `/busca?${params}`;
+// "/busca?cidade=S%C3%A3o+Paulo&tipo=caf%C3%A9+%26+ch%C3%A1"
+```
+
+### 2. Confundir encodeURI com encodeURIComponent
+
+```javascript
+// encodeURI — para URLs COMPLETOS (preserva estrutura)
+encodeURI("https://site.com/busca?q=olá mundo");
+// "https://site.com/busca?q=ol%C3%A1%20mundo" ✅
+
+// encodeURIComponent — para VALORES individuais (codifica tudo)
+encodeURIComponent("https://site.com/busca?q=olá mundo");
+// "https%3A%2F%2Fsite.com%2Fbusca%3Fq%3Dol%C3%A1%20mundo" ← destruiu a estrutura!
+
+// Regra: use encodeURIComponent para valores de parâmetros
+const url = `/redirect?destino=${encodeURIComponent("https://outro.com/pagina?id=1")}`;
+```
+
+### 3. Assumir que fragmentos são enviados ao servidor
+
+```javascript
+// URL: https://site.com/api/dados#secao-2
+//
+// O que o servidor recebe: https://site.com/api/dados
+// O # e tudo depois NÃO são enviados na requisição HTTP
+//
+// Se você precisa enviar "secao-2" ao servidor, use query param:
+// https://site.com/api/dados?secao=secao-2
+```
+
+### 4. Double-encoding
+
+```javascript
+// ❌ Codificar algo que já foi codificado
+const valor = encodeURIComponent("São Paulo"); // "S%C3%A3o%20Paulo"
+const url = encodeURI(`/busca?q=${valor}`);
+// /busca?q=S%25C3%25A3o%2520Paulo ← %25 é o encoding de %, %20 virou %2520
+
+// ✅ Codificar uma vez só
+const params = new URLSearchParams({ q: "São Paulo" });
+const url = `/busca?${params}`;
+```
+
+### 5. Montar query strings manualmente
+
+```javascript
+// ❌ Frágil, esquece edge cases
+const url = `/api?nome=${nome}&cidade=${cidade}`;
+// E se nome contém & ou =? Quebra tudo.
+
+// ✅ URLSearchParams cuida de tudo
+const params = new URLSearchParams({ nome, cidade });
+const url = `/api?${params}`;
+```
+
+### 6. Trailing slashes inconsistentes
+
+```
+https://site.com/blog   e   https://site.com/blog/
+são URLs DIFERENTES para o servidor.
+
+Isso pode causar:
+- Redirecionamentos desnecessários (301)
+- Conteúdo duplicado para SEO
+- Cache miss (navegador cacheia como recursos separados)
+
+Escolha um padrão (com ou sem /) e mantenha consistência.
+```

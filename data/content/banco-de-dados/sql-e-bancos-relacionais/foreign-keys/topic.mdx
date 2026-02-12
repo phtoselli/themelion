@@ -1,0 +1,181 @@
+---
+title: "Foreign Keys"
+slug: "foreign-keys"
+room: "banco-de-dados"
+category: "sql-e-bancos-relacionais"
+difficulty: "beginner"
+order: 2
+prerequisites: ["primary-keys"]
+tags: ["relacao", "integridade", "referencia"]
+aiGenerated: true
+---
+
+## O que é
+
+Uma **Foreign Key (chave estrangeira)** é uma coluna que **referencia a primary key de outra tabela**, criando uma relação entre elas. O banco garante que o valor da FK sempre aponta para um registro existente — impossível criar um pedido para um usuário que não existe.
+
+```sql
+CREATE TABLE orders (
+    id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES users(id),  -- FK: aponta para users.id
+    total DECIMAL(10,2)
+);
+
+INSERT INTO orders (user_id, total) VALUES (42, 199.90);  -- ✅ user 42 existe
+INSERT INTO orders (user_id, total) VALUES (9999, 50.00); -- ❌ ERRO: user 9999 não existe
+```
+
+## Por que importa
+
+Foreign keys garantem **integridade referencial** — a certeza de que relações entre tabelas são válidas. Sem FKs, seu banco pode ter:
+- Pedidos de clientes que não existem
+- Comentários em posts deletados
+- Itens referenciando categorias fantasmas
+
+O banco se torna inconsistente, e a aplicação precisa tratar (ou ignorar) dados órfãos.
+
+## Como funciona
+
+### Criando foreign keys
+
+```sql
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100)
+);
+
+CREATE TABLE orders (
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    total DECIMAL(10,2),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+```
+
+### ON DELETE / ON UPDATE
+
+O que acontece quando o registro referenciado é deletado ou atualizado?
+
+```sql
+FOREIGN KEY (user_id) REFERENCES users(id)
+    ON DELETE CASCADE      -- Deleta orders quando user é deletado
+    ON DELETE SET NULL      -- Seta user_id = NULL
+    ON DELETE RESTRICT      -- Impede deletar user se tem orders (padrão)
+    ON DELETE SET DEFAULT   -- Seta valor default
+
+    ON UPDATE CASCADE       -- Atualiza FK quando PK muda
+```
+
+| Ação | Comportamento | Quando usar |
+|---|---|---|
+| **RESTRICT** | Impede deletar pai | Dados críticos (pedidos) |
+| **CASCADE** | Deleta filhos junto | Dados dependentes (comentários) |
+| **SET NULL** | FK vira NULL | Referência opcional (assigned_to) |
+
+### Exemplo visual
+
+```
+users                    orders
+┌────┬─────────┐        ┌────┬─────────┬────────┐
+│ id │  name   │        │ id │ user_id │ total  │
+├────┼─────────┤        ├────┼─────────┼────────┤
+│  1 │ João    │←───────│  1 │    1    │ 199.90 │
+│  2 │ Maria   │←───┬───│  2 │    2    │  49.90 │
+│  3 │ Pedro   │    └───│  3 │    2    │  89.90 │
+└────┴─────────┘        └────┴─────────┴────────┘
+
+FK: orders.user_id → users.id
+Maria tem 2 pedidos, Pedro tem 0
+Deletar Maria com CASCADE → deleta pedidos 2 e 3
+Deletar Maria com RESTRICT → erro (tem pedidos)
+```
+
+## Na prática
+
+```sql
+-- Cenário: blog com posts e comentários
+CREATE TABLE posts (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(200),
+    content TEXT
+);
+
+CREATE TABLE comments (
+    id SERIAL PRIMARY KEY,
+    post_id INT NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
+    author VARCHAR(100),
+    body TEXT
+);
+
+-- Deletar post → deleta comentários automaticamente
+DELETE FROM posts WHERE id = 1;
+-- Todos os comments com post_id = 1 são removidos
+```
+
+## Quando usar (e quando não usar)
+
+### Sempre use FKs quando:
+- Existe relação real entre dados (user → orders, post → comments)
+- Integridade de dados é importante
+- Banco relacional (PostgreSQL, MySQL)
+
+### Pode pular FKs quando:
+- **Performance extrema** (high-write): FKs adicionam overhead em INSERT/DELETE
+- **Bancos NoSQL:** não suportam FKs nativamente (integridade na aplicação)
+- **Data warehouses:** dados já validados, FKs seriam overhead
+
+## Erros comuns
+
+### 1. Não definir FK (confiar na aplicação)
+
+```sql
+-- ❌ Sem FK: aplicação pode inserir user_id inválido
+CREATE TABLE orders (
+    user_id INT  -- Sem REFERENCES → banco não valida
+);
+-- Se a aplicação tiver bug, dados órfãos aparecem
+
+-- ✅ Com FK: banco garante
+CREATE TABLE orders (
+    user_id INT REFERENCES users(id)
+);
+```
+
+### 2. CASCADE acidental em dados críticos
+
+```sql
+-- ❌ CASCADE em tabela financeira
+FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+-- Deletar user → deleta TODOS os pedidos, faturas, pagamentos!
+
+-- ✅ RESTRICT para dados que não devem ser perdidos
+FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE RESTRICT
+-- Forçar soft-delete ou desativação ao invés de deleção
+```
+
+### 3. Ciclo de referências
+
+```sql
+-- ❌ A referencia B, B referencia A
+CREATE TABLE teams (
+    id SERIAL PRIMARY KEY,
+    leader_id INT REFERENCES users(id)
+);
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    team_id INT REFERENCES teams(id)
+);
+-- Qual criar primeiro? Deadlock de inserção!
+
+-- ✅ Quebrar ciclo: uma FK pode ser NULL ou inserir em etapas
+```
+
+### 4. FK sem índice
+
+```sql
+-- FK cria constraint mas NÃO cria índice automaticamente (em alguns bancos)
+-- JOINs e cascades em FKs sem índice são LENTOS
+
+-- ✅ Criar índice explicitamente
+CREATE INDEX idx_orders_user_id ON orders(user_id);
+```

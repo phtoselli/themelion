@@ -1,0 +1,181 @@
+---
+title: "Session-Based Authentication"
+slug: "session-based-auth"
+room: "backend"
+category: "autenticacao-e-autorizacao"
+difficulty: "beginner"
+order: 2
+prerequisites: ["authentication-vs-authorization", "cookies"]
+tags: ["sessao", "cookie", "servidor"]
+aiGenerated: true
+---
+
+## O que é
+
+Session-based authentication é um modelo onde o servidor **cria e mantém uma sessão** para cada usuário logado. Após o login, o servidor gera um **session ID** aleatório, armazena os dados da sessão (server-side), e envia o ID ao navegador via cookie. Em cada requisição seguinte, o navegador envia o cookie automaticamente e o servidor identifica o usuário.
+
+```
+1. Login:
+   Cliente → POST /login {email, senha}
+   Servidor → Cria sessão: {id: "abc123", user_id: 42, role: "admin"}
+            → Armazena na memória/banco/Redis
+            → Set-Cookie: session_id=abc123; HttpOnly; Secure
+
+2. Requisições seguintes:
+   Cliente → GET /dashboard (Cookie: session_id=abc123 — automático)
+   Servidor → Busca sessão "abc123" → encontra user_id: 42
+            → Retorna dados do dashboard do João
+```
+
+## Por que importa
+
+Session-based auth é o modelo **mais tradicional e mais seguro por padrão** para aplicações web renderizadas no servidor. O session ID no cookie é:
+- **Opaco:** não contém dados do usuário (diferente de JWT)
+- **Revogável:** servidor pode invalidar a sessão instantaneamente
+- **Automático:** navegador envia cookie sem JavaScript
+
+## Como funciona
+
+### Fluxo completo
+
+```
+                  Servidor
+                  ┌──────────────────┐
+                  │ Session Store:    │
+                  │ "abc123" → {      │
+                  │   user_id: 42,    │
+                  │   role: "admin",  │
+                  │   expires: ...    │
+                  │ }                 │
+                  └──────────────────┘
+
+Login:
+Cliente ──POST /login──→ Servidor verifica credenciais
+                         Cria sessão no store
+Cliente ←─Set-Cookie───  session_id=abc123
+
+Request:
+Cliente ──GET /data────→ Cookie: session_id=abc123
+                         Busca sessão no store → user_id=42
+Cliente ←─200 OK───────  Dados do user 42
+
+Logout:
+Cliente ──POST /logout─→ Cookie: session_id=abc123
+                         Remove sessão do store
+Cliente ←─Set-Cookie───  session_id=; Max-Age=0 (expira cookie)
+```
+
+### Onde armazenar sessões
+
+| Storage | Prós | Contras |
+|---|---|---|
+| **Memória** | Rápido, simples | Perde tudo se reiniciar; não escala (1 servidor) |
+| **Redis** | Rápido, compartilhável, TTL nativo | Infraestrutura extra |
+| **Banco de dados** | Persistente, auditável | Mais lento, precisa limpar expiradas |
+
+Para produção, **Redis** é a escolha mais comum: rápido, permite TTL automático, e compartilhado entre múltiplos servidores.
+
+### Segurança do cookie de sessão
+
+```
+Set-Cookie: session_id=abc123;
+  HttpOnly;       ← JS não acessa (protege contra XSS)
+  Secure;         ← Só HTTPS
+  SameSite=Lax;   ← Protege contra CSRF
+  Path=/;
+  Max-Age=86400;  ← Expira em 24h
+```
+
+## Na prática
+
+```python
+# Pseudocódigo do fluxo
+def login(email, password):
+    user = db.find_user(email)
+    if not user or not verify_password(password, user.password_hash):
+        return 401, "Credenciais inválidas"
+
+    session_id = generate_random_id()  # ID aleatório e seguro
+    redis.set(session_id, {"user_id": user.id, "role": user.role}, ex=86400)
+
+    response = make_response({"message": "Login OK"})
+    response.set_cookie("session_id", session_id,
+                        httponly=True, secure=True, samesite="Lax")
+    return response
+
+def get_current_user(request):
+    session_id = request.cookies.get("session_id")
+    if not session_id:
+        return None
+    session_data = redis.get(session_id)
+    if not session_data:
+        return None
+    return db.find_user(session_data["user_id"])
+```
+
+## Quando usar (e quando não usar)
+
+### Use session-based auth quando:
+- **Aplicação web tradicional** (server-rendered)
+- **Segurança é prioridade** (revogação instantânea)
+- **Single-domain** (frontend e backend no mesmo domínio)
+
+### Considere token-based (JWT) quando:
+- **API consumida por mobile + web** (cookies são mais complicados em apps nativos)
+- **Microserviços** (cada serviço precisaria acessar o session store)
+- **Cross-domain** (diferentes domínios precisam autenticar)
+- **Stateless** (não quer manter estado no servidor)
+
+## Erros comuns
+
+### 1. Session ID previsível
+
+```python
+# ❌ IDs sequenciais ou previsíveis
+session_id = f"session_{user_id}"  # Atacante pode adivinhar
+
+# ✅ ID aleatório criptograficamente seguro
+import secrets
+session_id = secrets.token_urlsafe(32)  # 256 bits de entropia
+```
+
+### 2. Não invalidar sessão no logout
+
+```python
+# ❌ Só apaga o cookie, sessão continua válida no servidor
+response.delete_cookie("session_id")
+
+# ✅ Remove sessão do store E apaga cookie
+redis.delete(session_id)
+response.delete_cookie("session_id")
+```
+
+### 3. Sessão sem expiração
+
+```python
+# ❌ Sessão dura para sempre — se roubada, acesso permanente
+redis.set(session_id, data)
+
+# ✅ TTL (Time To Live) — expira automaticamente
+redis.set(session_id, data, ex=86400)  # 24 horas
+```
+
+### 4. Não regenerar session ID após login
+
+```
+Antes do login: session_id = "abc123" (sessão anônima)
+Depois do login: session_id = "abc123" (MESMA sessão, agora autenticada)
+→ Vulnerável a session fixation attack
+
+✅ Gerar NOVO session_id após login
+```
+
+### 5. Armazenar dados sensíveis no cookie
+
+```
+❌ Set-Cookie: user={"id":42,"role":"admin","email":"joao@email.com"}
+   → Dados expostos, podem ser manipulados
+
+✅ Set-Cookie: session_id=abc123
+   → Apenas um ID opaco; dados ficam no servidor
+```

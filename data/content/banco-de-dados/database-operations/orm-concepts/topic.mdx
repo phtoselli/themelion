@@ -1,0 +1,299 @@
+---
+title: "ORM Concepts"
+slug: "orm-concepts"
+room: "banco-de-dados"
+category: "database-operations"
+difficulty: "beginner"
+order: 1
+prerequisites: ["joins", "one-to-many-relationships"]
+tags: ["abstração", "mapeamento", "produtividade"]
+aiGenerated: true
+---
+
+## O que é
+
+**ORM (Object-Relational Mapping)** é uma técnica que **mapeia tabelas do banco de dados para objetos/classes** na linguagem de programação. Ao invés de escrever SQL manualmente, você interage com o banco usando a sintaxe da sua linguagem — o ORM traduz para SQL por baixo dos panos.
+
+```python
+# Sem ORM: SQL manual
+cursor.execute("SELECT * FROM users WHERE id = %s", (42,))
+row = cursor.fetchone()
+name = row[1]  # Qual coluna é o índice 1? Frágil.
+
+# Com ORM: objetos da linguagem
+user = User.query.get(42)
+name = user.name  # Autocompletar, type safety, legível
+```
+
+## Por que importa
+
+ORMs existem porque bancos de dados e linguagens de programação "pensam" de formas diferentes — bancos organizam dados em tabelas com linhas e colunas, enquanto linguagens organizam em classes com objetos e atributos. Essa diferença de modelos (chamada de *impedance mismatch*) significa que traduzir entre os dois manualmente é:
+
+- **Repetitivo:** cada query precisa de mapeamento manual de colunas para propriedades
+- **Frágil:** mudar uma coluna quebra código espalhado por toda a aplicação
+- **Propenso a erros:** SQL injection, tipos errados, queries mal formadas
+- **Verboso:** operações CRUD simples viram dezenas de linhas de SQL
+
+ORMs automatizam esse mapeamento, aumentando produtividade e reduzindo bugs — com trade-offs que todo desenvolvedor precisa entender.
+
+## Como funciona
+
+### Mapeamento tabela → classe
+
+```
+Banco de dados (relacional)         Código (objetos)
+┌─────────────────────────┐         ┌─────────────────────────┐
+│ TABLE users             │         │ class User              │
+│   id INT PK             │   ←→    │   id: int               │
+│   name VARCHAR(100)     │         │   name: str             │
+│   email VARCHAR(200)    │         │   email: str            │
+│   created_at TIMESTAMP  │         │   created_at: datetime  │
+└─────────────────────────┘         └─────────────────────────┘
+
+Tabela  →  Classe (Model)
+Coluna  →  Atributo/Propriedade
+Linha   →  Instância (objeto)
+FK      →  Referência a outro objeto
+```
+
+### Operações CRUD
+
+```python
+# CREATE
+user = User(name="João", email="joao@email.com")
+db.session.add(user)
+db.session.commit()
+# SQL gerado: INSERT INTO users (name, email) VALUES ('João', 'joao@email.com')
+
+# READ
+user = User.query.get(1)           # SELECT * FROM users WHERE id = 1
+users = User.query.filter_by(name="João").all()  # SELECT * FROM users WHERE name = 'João'
+
+# UPDATE
+user.name = "João Silva"
+db.session.commit()
+# SQL gerado: UPDATE users SET name = 'João Silva' WHERE id = 1
+
+# DELETE
+db.session.delete(user)
+db.session.commit()
+# SQL gerado: DELETE FROM users WHERE id = 1
+```
+
+### Relacionamentos como objetos
+
+O ORM transforma foreign keys em referências navegáveis entre objetos:
+
+```python
+# Definição do modelo
+class User(Model):
+    id = Column(Integer, primary_key=True)
+    name = Column(String(100))
+    orders = relationship("Order", back_populates="user")  # 1:N
+
+class Order(Model):
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    total = Column(Decimal)
+    user = relationship("User", back_populates="orders")   # N:1
+
+# Uso: navegar relações como atributos
+user = User.query.get(1)
+for order in user.orders:        # Lazy loading: query executada aqui
+    print(f"{order.total}")
+
+order = Order.query.get(5)
+print(order.user.name)           # Navegar no sentido inverso
+```
+
+### Query builders
+
+ORMs permitem construir queries complexas com a sintaxe da linguagem:
+
+```python
+# Query builder (encadeamento de métodos)
+expensive_orders = (
+    Order.query
+    .join(User)
+    .filter(Order.total > 100)
+    .filter(User.name.like("João%"))
+    .order_by(Order.total.desc())
+    .limit(10)
+    .all()
+)
+
+# SQL gerado:
+# SELECT orders.* FROM orders
+# JOIN users ON orders.user_id = users.id
+# WHERE orders.total > 100 AND users.name LIKE 'João%'
+# ORDER BY orders.total DESC
+# LIMIT 10
+```
+
+### Migrations (versionamento do schema)
+
+ORMs geralmente incluem sistema de migrations — versionar mudanças no schema do banco:
+
+```python
+# Migration: adicionar coluna
+# Arquivo: migrations/002_add_phone_to_users.py
+
+def upgrade():
+    # ALTER TABLE users ADD COLUMN phone VARCHAR(20)
+    op.add_column('users', Column('phone', String(20)))
+
+def downgrade():
+    # ALTER TABLE users DROP COLUMN phone
+    op.drop_column('users', 'phone')
+```
+
+```
+Migrations são como "git para o banco de dados":
+  migration_001 → CREATE TABLE users
+  migration_002 → ADD COLUMN phone
+  migration_003 → CREATE TABLE orders
+  migration_004 → ADD INDEX idx_orders_user_id
+
+Cada ambiente (dev, staging, prod) aplica migrations na ordem.
+Resultado: schema sempre consistente entre ambientes.
+```
+
+## Na prática
+
+### Padrões de ORM
+
+```
+Active Record:
+  - Objeto sabe salvar/carregar a si mesmo
+  - user.save(), User.find(1)
+  - ORMs: Rails ActiveRecord, Django ORM, Eloquent (Laravel)
+
+Data Mapper:
+  - Separação entre objeto e persistência
+  - repository.save(user), repository.find(1)
+  - ORMs: SQLAlchemy, TypeORM, Hibernate
+
+Active Record é mais simples para CRUD básico.
+Data Mapper é mais flexível para domínios complexos.
+```
+
+### ORMs populares por linguagem
+
+```
+Python:      SQLAlchemy, Django ORM
+TypeScript:  Prisma, TypeORM, Drizzle
+C#:          Entity Framework Core
+Go:          GORM, sqlx (não é ORM, é query builder)
+Rust:        Diesel, SeaORM
+Java:        Hibernate, JPA
+Ruby:        ActiveRecord (Rails)
+PHP:         Eloquent (Laravel), Doctrine
+```
+
+## Quando usar (e quando não usar)
+
+### Use ORM quando:
+- **CRUD dominante:** a maioria das operações são criar, ler, atualizar, deletar
+- **Produtividade importa:** equipe precisa entregar rápido
+- **Schema evolui:** migrations facilitam mudanças incrementais
+- **Type safety importa:** autocompletar, validação em compile time
+
+### Escreva SQL manual quando:
+- **Queries complexas:** reports com múltiplos JOINs, subqueries, window functions
+- **Performance crítica:** ORM gera SQL subótimo para casos complexos
+- **Bulk operations:** inserir/atualizar milhares de registros de uma vez
+- **Banco-específico:** features específicas do PostgreSQL, MySQL, etc.
+
+### Abordagem pragmática (mais comum na prática):
+
+```
+ORM para 80% do código:
+  - CRUD simples
+  - Relacionamentos
+  - Validações
+  - Migrations
+
+SQL manual para 20% do código:
+  - Relatórios complexos
+  - Queries de performance crítica
+  - Operações em massa
+  - Features banco-específicas
+```
+
+A maioria dos ORMs permite executar SQL raw quando necessário — não é tudo ou nada.
+
+## Erros comuns
+
+### 1. N+1 Query Problem
+
+O erro mais famoso de ORMs — fazer N queries extras dentro de um loop:
+
+```python
+# ❌ N+1: 1 query para users + N queries para orders
+users = User.query.all()                    # Query 1: SELECT * FROM users
+for user in users:
+    print(user.orders)                      # Query 2..N+1: SELECT * FROM orders WHERE user_id = ?
+# 101 queries para 100 usuários!
+
+# ✅ Eager loading: 1-2 queries total
+users = User.query.options(joinedload(User.orders)).all()
+# Query 1: SELECT users.*, orders.* FROM users LEFT JOIN orders ON ...
+# Ou 2 queries: SELECT * FROM users + SELECT * FROM orders WHERE user_id IN (1,2,3...)
+```
+
+### 2. Ignorar o SQL gerado
+
+```python
+# ❌ Não saber o que o ORM está fazendo
+results = User.query.filter(...).all()  # Que SQL isso gera? Quantas queries?
+
+# ✅ Sempre monitorar queries em desenvolvimento
+# Ativar logging de SQL:
+# SQLAlchemy: echo=True
+# Django: django.db.backends logger
+# Prisma: log: ['query']
+```
+
+### 3. Usar ORM para tudo
+
+```python
+# ❌ Forçar ORM em query complexa de relatório
+report = (
+    Order.query
+    .join(User)
+    .join(Product)
+    .group_by(...)
+    .having(...)
+    .subquery(...)
+)
+# ORM gerando SQL feio, lento e difícil de debugar
+
+# ✅ SQL manual para queries complexas
+report = db.session.execute("""
+    SELECT u.name,
+           COUNT(DISTINCT o.id) AS orders,
+           SUM(oi.quantity * p.price) AS revenue
+    FROM users u
+    JOIN orders o ON u.id = o.user_id
+    JOIN order_items oi ON o.id = oi.order_id
+    JOIN products p ON oi.product_id = p.id
+    WHERE o.created_at >= :start_date
+    GROUP BY u.id
+    HAVING SUM(oi.quantity * p.price) > :min_revenue
+    ORDER BY revenue DESC
+""", {"start_date": "2024-01-01", "min_revenue": 1000})
+```
+
+### 4. Migrations destrutivas sem cuidado
+
+```python
+# ❌ Dropar coluna em produção sem pensar
+def upgrade():
+    op.drop_column('users', 'phone')  # Dados perdidos permanentemente!
+
+# ✅ Processo seguro para mudanças destrutivas:
+# 1. Parar de escrever na coluna (código)
+# 2. Deploy do código
+# 3. Migration para dropar coluna
+# 4. Backup ANTES de rodar migration
+```

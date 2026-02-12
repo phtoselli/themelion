@@ -1,0 +1,222 @@
+---
+title: "HTTP e HTTPS"
+slug: "http-https"
+room: "frontend"
+category: "fundamentos-web"
+difficulty: "beginner"
+order: 1
+prerequisites: []
+tags: ["protocolo", "web", "seguranca"]
+aiGenerated: true
+---
+
+## O que é
+
+**HTTP** (HyperText Transfer Protocol) é o protocolo de comunicação da web — a "linguagem" que navegadores e servidores usam para trocar informações. Toda vez que você acessa um site, seu navegador envia uma **requisição HTTP** e o servidor responde com uma **resposta HTTP**.
+
+**HTTPS** é HTTP + **TLS/SSL** (criptografia). A comunicação é encriptada ponta a ponta, impedindo que terceiros leiam ou modifiquem os dados em trânsito.
+
+```
+HTTP:  Navegador ──[dados em texto puro]──→ Servidor
+       Qualquer pessoa na rede pode ler os dados
+
+HTTPS: Navegador ──[🔒 dados criptografados]──→ Servidor
+       Mesmo interceptando, não consegue ler
+```
+
+## Por que importa
+
+HTTP é o **alicerce da web**. Todo desenvolvedor web — frontend ou backend — trabalha com HTTP diariamente. Sem entender HTTP:
+
+- Você não sabe por que sua requisição retornou erro 404 ou 500
+- Não entende por que CORS bloqueou sua chamada de API
+- Não sabe a diferença entre GET e POST (e quando usar cada um)
+- Não consegue debugar problemas de rede usando DevTools
+
+HTTPS é obrigatório para qualquer site moderno:
+- Google penaliza sites HTTP no ranking de busca
+- Navegadores mostram aviso "Não seguro" para HTTP
+- Credenciais (login, cartão de crédito) enviadas via HTTP podem ser interceptadas
+
+## Como funciona
+
+### Modelo request-response
+
+HTTP é **stateless** (sem estado) e baseado em **request-response**: o cliente envia uma requisição, o servidor processa e retorna uma resposta. Cada requisição é independente — o servidor não "lembra" das anteriores.
+
+```
+Cliente (navegador)                    Servidor
+       │                                  │
+       │──── Request (GET /index.html) ──→│
+       │                                  │ Processa
+       │←── Response (200 OK + HTML) ─────│
+       │                                  │
+       │──── Request (GET /style.css) ───→│
+       │                                  │ Processa
+       │←── Response (200 OK + CSS) ──────│
+```
+
+### Anatomia de uma requisição HTTP
+
+```
+GET /api/users?page=1 HTTP/1.1        ← Linha de requisição (método, path, versão)
+Host: api.example.com                  ← Headers (metadados)
+Accept: application/json
+Authorization: Bearer eyJhbGci...
+User-Agent: Mozilla/5.0
+                                       ← Linha vazia (separa headers do body)
+                                       ← Body (vazio em GET, dados em POST)
+```
+
+**Componentes:**
+- **Método:** o que você quer fazer (GET, POST, PUT, DELETE)
+- **Path:** o recurso que você quer acessar (`/api/users`)
+- **Headers:** metadados (tipo de conteúdo, autenticação, cache)
+- **Body:** dados enviados (em POST, PUT, PATCH)
+
+### Anatomia de uma resposta HTTP
+
+```
+HTTP/1.1 200 OK                        ← Linha de status (versão, código, mensagem)
+Content-Type: application/json         ← Headers
+Content-Length: 234
+Cache-Control: max-age=3600
+Set-Cookie: session=abc123
+                                       ← Linha vazia
+{"users": [{"id": 1, "name": "João"}]} ← Body (conteúdo da resposta)
+```
+
+### Como HTTPS funciona (TLS Handshake)
+
+Pense no HTTPS como enviar uma carta em um cofre trancado. Primeiro, você e o destinatário precisam combinar a chave do cofre — mas como combinar uma chave secreta sem que alguém intercepte? A solução: o servidor envia um **cadeado aberto** (chave pública) que qualquer um pode ver, mas só o servidor tem a chave para abrir. Você tranca o cofre com esse cadeado, envia, e a partir daí vocês usam uma chave compartilhada para trocar mensagens.
+
+Antes de trocar dados, cliente e servidor estabelecem uma conexão segura:
+
+```
+Cliente                              Servidor
+   │                                    │
+   │── 1. ClientHello (versão TLS) ───→│
+   │                                    │
+   │←─ 2. ServerHello + Certificado ───│  (certificado contém chave pública)
+   │                                    │
+   │── 3. Verificar certificado ──────→│  (cliente valida com CA)
+   │                                    │
+   │── 4. Gerar chave de sessão ──────→│  (encriptada com chave pública)
+   │                                    │
+   │←─ 5. Confirmação ────────────────│
+   │                                    │
+   │══ 6. Dados criptografados ═══════│  (usando chave de sessão simétrica)
+```
+
+**Resumo:** o handshake usa criptografia assimétrica (cadeado público — lenta, mas segura para o primeiro contato) para combinar uma chave simétrica (chave compartilhada — rápida para o dia a dia). Depois, toda comunicação usa a chave simétrica.
+
+### HTTP/1.1 vs HTTP/2 vs HTTP/3
+
+As versões mais novas do HTTP são mais rápidas, mas a "linguagem" (métodos, headers, status codes) continua a mesma. A diferença principal é **como os dados trafegam pela rede**:
+
+- **HTTP/1.1:** uma requisição por vez por conexão (como um caixa de supermercado que atende um cliente de cada vez)
+- **HTTP/2:** multiplexing — várias requisições simultâneas na mesma conexão (como um caixa que processa vários itens ao mesmo tempo)
+- **HTTP/3:** mesma ideia do HTTP/2, mas usando um protocolo de transporte mais rápido (QUIC, baseado em UDP ao invés de TCP)
+
+Na prática, você não precisa mudar seu código — o navegador e o servidor negociam a versão automaticamente.
+
+## Na prática
+
+Você pode inspecionar qualquer requisição HTTP no navegador:
+
+```
+DevTools → Network tab → Clicar em qualquer requisição
+
+General:
+  Request URL: https://api.example.com/users
+  Request Method: GET
+  Status Code: 200 OK
+
+Request Headers:
+  Accept: application/json
+  Authorization: Bearer eyJhbGci...
+
+Response Headers:
+  Content-Type: application/json
+  Cache-Control: max-age=300
+
+Response Body:
+  {"users": [...]}
+```
+
+Ou via terminal com `curl`:
+```bash
+# Requisição GET simples
+curl https://api.example.com/users
+
+# Ver headers da resposta
+curl -I https://api.example.com/users
+
+# Enviar POST com JSON
+curl -X POST https://api.example.com/users \
+  -H "Content-Type: application/json" \
+  -d '{"name": "João", "email": "joao@email.com"}'
+```
+
+## Quando usar (e quando não usar)
+
+### HTTPS — use SEMPRE:
+- Todo site em produção, sem exceção
+- APIs que trafegam dados de usuários
+- Qualquer formulário (login, cadastro, pagamento)
+
+### HTTP — aceitável apenas para:
+- Desenvolvimento local (`localhost`)
+- Ambientes internos isolados (e mesmo assim, HTTPS é preferível)
+
+## Erros comuns
+
+### 1. Enviar dados sensíveis via HTTP
+
+```
+❌ http://site.com/login  (credenciais em texto puro na rede)
+✅ https://site.com/login (criptografado)
+```
+
+Mesmo em redes "seguras" (Wi-Fi com senha), HTTP pode ser interceptado.
+
+### 2. Mixed content (HTTPS + recursos HTTP)
+
+```html
+<!-- Site HTTPS carregando recurso HTTP → navegador bloqueia -->
+<img src="http://cdn.example.com/image.png">
+<!-- ❌ Blocked: mixed content -->
+
+<!-- ✅ Use HTTPS ou URLs relativas ao protocolo -->
+<img src="https://cdn.example.com/image.png">
+```
+
+### 3. Não entender que HTTP é stateless
+
+```
+Requisição 1: POST /login (autenticação)
+Requisição 2: GET /dashboard → "Não autorizado!"
+
+Por quê? HTTP não "lembra" que você logou.
+Solução: cookies de sessão ou tokens em cada requisição.
+```
+
+### 4. Ignorar headers de cache
+
+```
+Sem Cache-Control: navegador pode cachear respostas antigas
+→ Usuário vê dados desatualizados
+→ "Limpa o cache" vira a solução para tudo
+
+Com Cache-Control: max-age=0, no-cache
+→ Sempre busca dados frescos
+```
+
+### 5. Certificado expirado em produção
+
+Certificados TLS expiram (geralmente a cada 90 dias com Let's Encrypt). Se expirar:
+- Navegador mostra "Conexão não segura"
+- Usuários não conseguem acessar
+- SEO cai drasticamente
+
+Solução: renovação automática com certbot ou serviços como Cloudflare.

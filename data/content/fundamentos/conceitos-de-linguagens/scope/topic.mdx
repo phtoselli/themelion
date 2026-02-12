@@ -1,0 +1,282 @@
+---
+title: "Scope (Léxico, Dinâmico, Global, Local)"
+slug: "scope"
+room: "fundamentos"
+category: "conceitos-de-linguagens"
+difficulty: "beginner"
+order: 18
+prerequisites: []
+tags: ["visibilidade", "variavel", "contexto"]
+aiGenerated: true
+---
+
+## O que é
+
+Scope (escopo) define **onde uma variável é visível e acessível** no código. Pense em escopo como paredes invisíveis: variáveis declaradas dentro de uma "sala" não são visíveis fora dela.
+
+```python
+def greet():
+    message = "Hello"   # 'message' existe APENAS dentro desta função
+    print(message)      # ✅ Funciona
+
+greet()
+print(message)          # ❌ NameError: 'message' não existe aqui
+```
+
+A variável `message` tem **escopo local** à função `greet`. Fora dela, é como se não existisse.
+
+## Por que importa
+
+Scope é o mecanismo que impede o caos em programas grandes. Sem escopo, toda variável seria global — qualquer função poderia modificar qualquer variável a qualquer momento:
+
+```python
+# Mundo sem escopo (tudo global):
+x = 10
+
+def calcular():
+    x = 20  # Modifica o x de todo o programa!
+
+def imprimir():
+    print(x)  # Qual x? O original ou o modificado por calcular()?
+
+# Com 1000 funções, cada uma modificando variáveis globais = caos total
+```
+
+Entender escopo permite:
+- **Prevenir bugs:** variáveis locais não vazam para outros contextos
+- **Reutilizar nomes:** `i` em dois loops diferentes não conflitam
+- **Entender closures:** funções que "lembram" variáveis do escopo onde foram criadas
+- **Debugar:** saber exatamente qual variável está sendo referenciada em cada ponto
+
+## Como funciona
+
+### Escopo léxico (estático)
+
+A maioria das linguagens modernas usa **escopo léxico**: o escopo é determinado pela **posição no código-fonte**, não pela ordem de execução.
+
+```python
+x = "global"
+
+def outer():
+    x = "outer"
+
+    def inner():
+        print(x)  # Qual x? Olha para CIMA no código-fonte → "outer"
+
+    inner()
+
+outer()  # Imprime: "outer"
+```
+
+A regra: quando uma variável é referenciada, a linguagem busca no escopo mais próximo e vai subindo:
+
+```
+inner() → outer() → global
+  ↑ procura aqui primeiro
+```
+
+### Escopo global
+
+Variáveis declaradas no nível mais externo do programa:
+
+```python
+MAX_RETRIES = 3  # Global — visível em todo o programa
+
+def connect():
+    for i in range(MAX_RETRIES):  # ✅ Pode ler global
+        try_connect()
+```
+
+**Problema com globals mutáveis:**
+```python
+counter = 0
+
+def increment():
+    global counter  # Precisa declarar 'global' para MODIFICAR
+    counter += 1
+
+# Em programas grandes, globals mutáveis criam dependências invisíveis
+# entre funções — difícil testar, difícil debugar
+```
+
+### Escopo local (de função)
+
+Variáveis declaradas dentro de uma função:
+
+```python
+def process():
+    result = []        # Local — nasce e morre com a função
+    temp = 0           # Local
+    for item in data:
+        temp += item
+    result.append(temp)
+    return result
+# 'result' e 'temp' não existem mais aqui
+```
+
+### Escopo de bloco
+
+Algumas linguagens criam escopo dentro de `if`, `for`, `while`:
+
+```javascript
+// JavaScript (let/const): escopo de bloco
+if (true) {
+    let x = 10;
+    const y = 20;
+}
+console.log(x);  // ReferenceError: x não existe
+
+// JavaScript (var): escopo de FUNÇÃO (não de bloco)
+if (true) {
+    var z = 30;
+}
+console.log(z);  // 30 — var ignora blocos!
+```
+
+```python
+# Python: NÃO tem escopo de bloco
+if True:
+    x = 10
+
+print(x)  # 10 — funciona! Python só tem escopo de função e global
+```
+
+```go
+// Go: escopo de bloco
+if true {
+    x := 10
+}
+fmt.Println(x)  // Erro: x não definido
+```
+
+### Cadeia de escopos (scope chain)
+
+Quando a linguagem precisa resolver uma variável, percorre a cadeia de escopos de dentro para fora:
+
+```python
+x = "global"
+
+def level1():
+    x = "level1"
+
+    def level2():
+        x = "level2"
+
+        def level3():
+            print(x)  # Busca: level3 → level2 → encontrou! "level2"
+
+        level3()
+
+    level2()
+
+level1()
+```
+
+```
+Cadeia de resolução para 'x' em level3():
+level3 (local) → não tem 'x'
+level2 (enclosing) → tem 'x' = "level2" ✅ PARA AQUI
+level1 (enclosing) → não chega aqui
+global → não chega aqui
+```
+
+### Escopo dinâmico (raro)
+
+Existe também o **escopo dinâmico**, onde a variável é resolvida baseado em **quem chamou a função**, não em onde ela foi escrita no código. Isso é raro nas linguagens modernas (usado em Bash e poucas outras). Se você encontrar um bug onde uma variável tem um valor inesperado, pode ser escopo dinâmico em ação.
+
+## Na prática
+
+<CodeTabs />
+
+## Quando usar (e quando não usar)
+
+### Escopo global — use para:
+- **Constantes imutáveis:** `MAX_CONNECTIONS = 100`, `PI = 3.14159`
+- **Configurações read-only:** variáveis de ambiente, feature flags
+
+### Escopo global — evite para:
+- **Estado mutável:** contadores, caches, flags que mudam durante execução
+- Qualquer dado que funções modificam — difícil testar, rastrear e debugar
+
+### Escopo local — use sempre que possível:
+- Variáveis que só fazem sentido dentro de uma função
+- Resultados intermediários de cálculos
+- Iteradores de loop
+
+### Escopo de bloco — use quando disponível:
+- Limitar variáveis ao menor escopo possível (princípio do menor privilégio)
+- `let`/`const` ao invés de `var` em JavaScript
+
+## Erros comuns
+
+### 1. Variável com mesmo nome em escopos diferentes (shadowing)
+
+```python
+x = 10
+
+def func():
+    x = 20        # Cria NOVA variável local, NÃO modifica a global
+    print(x)      # 20
+
+func()
+print(x)          # 10 — a global não mudou
+```
+
+### 2. Usar `var` ao invés de `let` em JavaScript
+
+```javascript
+// ❌ var: escopo de função, permite uso antes da declaração
+for (var i = 0; i < 3; i++) {
+    setTimeout(() => console.log(i), 100);
+}
+// Imprime: 3, 3, 3 (todas referenciam o MESMO i)
+
+// ✅ let: escopo de bloco, cada iteração tem seu próprio i
+for (let i = 0; i < 3; i++) {
+    setTimeout(() => console.log(i), 100);
+}
+// Imprime: 0, 1, 2
+```
+
+### 3. Modificar global sem declarar
+
+```python
+count = 0
+
+def increment():
+    count += 1  # UnboundLocalError! Python acha que é local
+
+def increment_fixed():
+    global count  # Agora Python sabe que é a global
+    count += 1
+```
+
+### 4. Assumir escopo de bloco em Python
+
+```python
+for i in range(5):
+    last = i
+
+print(last)  # 4 — funciona em Python (sem escopo de bloco)
+# Em Go, Rust, C++: erro de compilação
+```
+
+### 5. Closures capturando variável por referência
+
+Isso acontece porque todas as funções anônimas estão olhando para a **mesma variável** `i`. Quando você chama `f()` depois do loop, o `i` já vale 2 (o último valor). É como se todas tivessem anotado "olhe o valor de `i`" em vez de "anote o valor atual de `i`".
+
+```python
+# ❌ Todas as funções referenciam a MESMA variável 'i'
+funcs = []
+for i in range(3):
+    funcs.append(lambda: i)
+
+print([f() for f in funcs])  # [2, 2, 2] — todas veem i=2 (último valor)
+
+# ✅ Capturar o valor atual como parâmetro default
+funcs = []
+for i in range(3):
+    funcs.append(lambda x=i: x)
+
+print([f() for f in funcs])  # [0, 1, 2]
+```

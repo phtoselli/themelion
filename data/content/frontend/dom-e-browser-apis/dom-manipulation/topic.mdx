@@ -1,0 +1,241 @@
+---
+title: "DOM Manipulation"
+slug: "dom-manipulation"
+room: "frontend"
+category: "dom-e-browser-apis"
+difficulty: "beginner"
+order: 1
+prerequisites: ["semantic-html"]
+tags: ["dom", "elementos", "interatividade"]
+aiGenerated: true
+---
+
+## O que é
+
+O **DOM** (Document Object Model) é uma representação em árvore do HTML que o navegador cria quando carrega uma página. Cada tag HTML vira um **nó** (node) na árvore, e JavaScript pode ler, modificar, adicionar ou remover esses nós — isso é **DOM manipulation**.
+
+```
+HTML:                           DOM (árvore):
+<html>                          document
+  <body>                           └── html
+    <h1>Título</h1>                     └── body
+    <p>Texto</p>                             ├── h1 → "Título"
+  </body>                                   └── p  → "Texto"
+</html>
+```
+
+Quando você muda algo no DOM via JavaScript, o navegador **re-renderiza** a parte afetada da página instantaneamente.
+
+## Por que importa
+
+DOM manipulation é o que torna páginas web **interativas**. Todo comportamento dinâmico — abrir menus, validar formulários, exibir dados de uma API, animar elementos — é feito manipulando o DOM.
+
+Frameworks como React, Vue e Angular fazem DOM manipulation por baixo dos panos (com Virtual DOM ou compilação). Entender o DOM nativo ajuda a:
+- Debugar problemas que frameworks escondem
+- Entender **por que** frameworks existem (o DOM nativo é verboso)
+- Trabalhar em projetos sem framework
+- Otimizar performance (evitar manipulações desnecessárias)
+
+## Como funciona
+
+### Selecionando elementos
+
+```javascript
+// Por ID (retorna 1 elemento ou null)
+const header = document.getElementById('header');
+
+// Por seletor CSS (retorna 1 — o primeiro match)
+const btn = document.querySelector('.btn-primary');
+
+// Por seletor CSS (retorna todos — NodeList)
+const items = document.querySelectorAll('.list-item');
+
+// Iterar NodeList
+items.forEach(item => console.log(item.textContent));
+```
+
+### Lendo e modificando conteúdo
+
+```javascript
+const title = document.querySelector('h1');
+
+// Ler texto
+console.log(title.textContent);  // "Título" (texto puro)
+console.log(title.innerHTML);    // "<em>Título</em>" (com HTML)
+
+// Modificar texto
+title.textContent = 'Novo título';
+
+// Modificar HTML (⚠️ cuidado com XSS)
+title.innerHTML = '<em>Novo</em> título';
+```
+
+### Modificando atributos e classes
+
+```javascript
+const link = document.querySelector('a');
+
+// Atributos
+link.setAttribute('href', 'https://example.com');
+link.getAttribute('href');
+link.removeAttribute('target');
+
+// Classes
+link.classList.add('active');
+link.classList.remove('hidden');
+link.classList.toggle('open');     // Adiciona se não tem, remove se tem
+link.classList.contains('active'); // true/false
+
+// Estilos inline (evite — prefira classes)
+link.style.color = 'red';
+link.style.display = 'none';
+```
+
+### Criando e inserindo elementos
+
+```javascript
+// Criar elemento
+const card = document.createElement('div');
+card.className = 'card';
+card.textContent = 'Novo card';
+
+// Inserir no DOM
+const container = document.querySelector('.container');
+container.appendChild(card);           // No final
+container.prepend(card);               // No início
+container.insertBefore(card, refNode); // Antes de outro nó
+
+// Inserir HTML adjacente
+container.insertAdjacentHTML('beforeend', '<div class="card">Outro</div>');
+```
+
+### Removendo elementos
+
+```javascript
+const element = document.querySelector('.old');
+element.remove(); // Remove do DOM
+```
+
+### Performance: batch DOM operations
+
+Cada manipulação do DOM pode causar **reflow** (recalcular layout) e **repaint** (redesenhar pixels). Manipulações em massa devem ser agrupadas:
+
+```javascript
+// ❌ 1000 reflows (1 por iteração)
+for (let i = 0; i < 1000; i++) {
+    const li = document.createElement('li');
+    li.textContent = `Item ${i}`;
+    list.appendChild(li);  // Reflow a cada append!
+}
+
+// ✅ 1 reflow (DocumentFragment)
+const fragment = document.createDocumentFragment();
+for (let i = 0; i < 1000; i++) {
+    const li = document.createElement('li');
+    li.textContent = `Item ${i}`;
+    fragment.appendChild(li);  // Sem reflow (fragment está fora do DOM)
+}
+list.appendChild(fragment);    // 1 único reflow
+```
+
+## Na prática
+
+Exemplo completo: lista de tarefas simples
+
+```javascript
+const input = document.querySelector('#task-input');
+const list = document.querySelector('#task-list');
+const form = document.querySelector('#task-form');
+
+form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const text = input.value.trim();
+    if (!text) return;
+
+    const li = document.createElement('li');
+    li.textContent = text;
+    li.addEventListener('click', () => li.classList.toggle('done'));
+
+    list.appendChild(li);
+    input.value = '';
+    input.focus();
+});
+```
+
+## Quando usar (e quando não usar)
+
+### Use DOM manipulation nativa quando:
+- Projetos pequenos sem framework
+- Scripts isolados (widgets, embeds)
+- Manipulações pontuais em projetos com framework
+
+### Use um framework quando:
+- UI complexa com muito estado
+- Atualizações frequentes baseadas em dados
+- Equipe grande que precisa de padrões
+- O framework já faz DOM manipulation de forma mais eficiente (Virtual DOM, diffing)
+
+## Erros comuns
+
+### 1. innerHTML com dados do usuário (XSS)
+
+```javascript
+// ❌ Vulnerável a XSS!
+const name = getUserInput();
+element.innerHTML = `Olá, ${name}`;
+// Se name = "<script>alert('hacked')</script>" → executa JS malicioso!
+
+// ✅ textContent escapa HTML automaticamente
+element.textContent = `Olá, ${name}`;
+// Renderiza como texto puro, sem executar HTML/JS
+```
+
+### 2. Selecionar elemento antes do DOM carregar
+
+```javascript
+// ❌ Script no <head> — DOM ainda não existe
+const btn = document.querySelector('#btn');  // null!
+
+// ✅ Opção 1: script no final do <body>
+// ✅ Opção 2: defer
+<script defer src="app.js"></script>
+// ✅ Opção 3: DOMContentLoaded
+document.addEventListener('DOMContentLoaded', () => {
+    const btn = document.querySelector('#btn');  // Funciona!
+});
+```
+
+### 3. Manipular DOM dentro de loop sem batch
+
+```javascript
+// ❌ N reflows
+items.forEach(item => {
+    const el = document.createElement('div');
+    container.appendChild(el);  // Reflow cada iteração
+});
+
+// ✅ 1 reflow com fragment
+const fragment = document.createDocumentFragment();
+items.forEach(item => {
+    const el = document.createElement('div');
+    fragment.appendChild(el);
+});
+container.appendChild(fragment);
+```
+
+### 4. Confundir NodeList com Array
+
+```javascript
+const items = document.querySelectorAll('.item');
+
+// ❌ NodeList não tem todos os métodos de Array
+items.map(i => i.textContent);  // TypeError! NodeList não tem .map
+
+// ✅ Converter para Array
+Array.from(items).map(i => i.textContent);
+// ou
+[...items].map(i => i.textContent);
+// ou usar forEach (NodeList tem forEach)
+items.forEach(i => console.log(i.textContent));
+```

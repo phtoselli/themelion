@@ -1,0 +1,305 @@
+---
+title: "Semantic HTML"
+slug: "semantic-html"
+room: "frontend"
+category: "acessibilidade"
+difficulty: "beginner"
+order: 3
+prerequisites: []
+tags: ["significado", "estrutura", "acessibilidade"]
+aiGenerated: true
+---
+
+## O que é
+
+HTML semântico é o uso de **tags que comunicam o significado do conteúdo**, não apenas sua aparência. Em vez de usar `<div>` e `<span>` para tudo, usar tags como `<header>`, `<nav>`, `<main>`, `<article>`, `<aside>` e `<footer>` que dizem **o que** o conteúdo é, não apenas **como** exibi-lo.
+
+```html
+<!-- ❌ Div soup — sem significado -->
+<div class="header">
+  <div class="nav">
+    <div class="nav-item">Home</div>
+  </div>
+</div>
+<div class="content">
+  <div class="post">
+    <div class="title">Meu artigo</div>
+    <div class="text">Conteúdo aqui...</div>
+  </div>
+</div>
+
+<!-- ✅ HTML semântico — significado claro -->
+<header>
+  <nav>
+    <a href="/">Home</a>
+  </nav>
+</header>
+<main>
+  <article>
+    <h1>Meu artigo</h1>
+    <p>Conteúdo aqui...</p>
+  </article>
+</main>
+```
+
+Visualmente podem ser idênticos. A diferença é que o segundo comunica **estrutura e significado** para navegadores, leitores de tela, motores de busca e outros consumidores do HTML.
+
+## Por que importa
+
+**Acessibilidade:** leitores de tela (NVDA, VoiceOver, JAWS) usam tags semânticas para navegar. Um usuário cego pode pular direto para o `<main>`, listar todos os `<nav>`, ou navegar entre `<h1>`, `<h2>`, `<h3>`. Com `<div>` para tudo, a página é um bloco ilegível.
+
+**SEO:** Google usa tags semânticas para entender o conteúdo. `<article>` diz "isto é conteúdo principal", `<nav>` diz "isto é navegação". Páginas semânticas ranqueiam melhor.
+
+**Manutenção:** `<header>` é autoexplicativo; `<div class="header-wrapper-container">` exige que você leia o CSS para entender.
+
+**Padronização:** com tags semânticas, qualquer desenvolvedor entende a estrutura sem olhar classes CSS ou JavaScript.
+
+## Como funciona
+
+### Tags estruturais
+
+```html
+<body>
+  <header>          <!-- Cabeçalho da página ou seção -->
+    <nav>           <!-- Navegação principal -->
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/about">Sobre</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>            <!-- Conteúdo principal (único por página) -->
+    <article>       <!-- Conteúdo independente (post, notícia, produto) -->
+      <header>      <!-- Cabeçalho do artigo -->
+        <h1>Título do artigo</h1>
+        <time datetime="2024-01-15">15 de Janeiro, 2024</time>
+      </header>
+
+      <section>     <!-- Seção temática dentro do artigo -->
+        <h2>Subtítulo</h2>
+        <p>Conteúdo...</p>
+      </section>
+
+      <footer>      <!-- Rodapé do artigo (autor, tags) -->
+        <p>Escrito por João</p>
+      </footer>
+    </article>
+
+    <aside>         <!-- Conteúdo relacionado mas secundário (sidebar) -->
+      <h2>Artigos relacionados</h2>
+      <ul>...</ul>
+    </aside>
+  </main>
+
+  <footer>          <!-- Rodapé da página -->
+    <p>&copy; 2024 Meu Site</p>
+  </footer>
+</body>
+```
+
+### Tags de texto
+
+| Tag | Significado | Uso |
+|---|---|---|
+| `<h1>` a `<h6>` | Títulos hierárquicos | Estrutura de seções (1 `<h1>` por página) |
+| `<p>` | Parágrafo | Texto corrido |
+| `<strong>` | Importância forte | Texto importante (negrito semântico) |
+| `<em>` | Ênfase | Texto enfatizado (itálico semântico) |
+| `<blockquote>` | Citação longa | Trecho citado de outra fonte |
+| `<code>` | Código | Trecho de código inline |
+| `<pre>` | Texto pré-formatado | Bloco de código, arte ASCII |
+| `<time>` | Data/hora | Data legível por máquina |
+| `<mark>` | Destaque | Texto marcado/destacado |
+| `<abbr>` | Abreviação | Sigla com título expandido |
+
+### Tags de formulário
+
+```html
+<!-- ❌ Sem semântica -->
+<div>Nome:</div>
+<input type="text">
+
+<!-- ✅ Com semântica -->
+<label for="name">Nome:</label>
+<input type="text" id="name" required>
+
+<!-- Label clicável + leitor de tela sabe qual input corresponde a qual label -->
+```
+
+```html
+<fieldset>
+  <legend>Endereço de entrega</legend>
+  <label for="street">Rua:</label>
+  <input type="text" id="street">
+  <label for="city">Cidade:</label>
+  <input type="text" id="city">
+</fieldset>
+```
+
+### Tags interativas
+
+```html
+<!-- Detalhes expansíveis (accordion nativo, sem JS) -->
+<details>
+  <summary>Perguntas frequentes</summary>
+  <p>Conteúdo expansível aqui...</p>
+</details>
+
+<!-- Diálogo modal (nativo, sem lib) -->
+<dialog id="modal">
+  <h2>Confirmar ação</h2>
+  <p>Tem certeza?</p>
+  <button>Sim</button>
+  <button>Não</button>
+</dialog>
+```
+
+### Hierarquia de headings
+
+```html
+<!-- ✅ Hierarquia correta -->
+<h1>Título da página</h1>           <!-- 1 por página -->
+  <h2>Seção principal</h2>
+    <h3>Subseção</h3>
+    <h3>Outra subseção</h3>
+  <h2>Outra seção</h2>
+    <h3>Subseção</h3>
+
+<!-- ❌ Pular níveis -->
+<h1>Título</h1>
+<h4>Subseção</h4>     <!-- Pulou h2 e h3! -->
+```
+
+Leitores de tela geram um índice automático a partir dos headings. Pular níveis quebra a navegação.
+
+## Na prática
+
+Estrutura semântica de uma página de blog:
+
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog - Meu Site</title>
+</head>
+<body>
+  <header>
+    <nav aria-label="Navegação principal">
+      <a href="/">Home</a>
+      <a href="/blog">Blog</a>
+      <a href="/about">Sobre</a>
+    </nav>
+  </header>
+
+  <main>
+    <article>
+      <h1>Como funcionam Hash Tables</h1>
+      <time datetime="2024-01-15">15 Jan 2024</time>
+
+      <section>
+        <h2>O que é</h2>
+        <p>Uma hash table é...</p>
+      </section>
+
+      <section>
+        <h2>Como funciona</h2>
+        <p>Internamente...</p>
+        <figure>
+          <img src="hashtable.png" alt="Diagrama de hash table com buckets">
+          <figcaption>Estrutura interna de uma hash table</figcaption>
+        </figure>
+      </section>
+    </article>
+
+    <aside aria-label="Artigos relacionados">
+      <h2>Leia também</h2>
+      <nav>
+        <a href="/arrays">Arrays</a>
+        <a href="/linked-lists">Linked Lists</a>
+      </nav>
+    </aside>
+  </main>
+
+  <footer>
+    <p>&copy; 2024</p>
+  </footer>
+</body>
+```
+
+## Quando usar (e quando não usar)
+
+### Use tags semânticas quando:
+- A tag HTML existe para aquele propósito (`<nav>` para navegação, `<article>` para conteúdo)
+- Melhora acessibilidade e SEO sem esforço extra
+
+### Use `<div>` e `<span>` quando:
+- **Agrupamento visual** sem significado semântico (wrapper para CSS Grid/Flexbox)
+- **Estilização** de trecho inline (`<span class="highlight">`)
+- Nenhuma tag semântica se encaixa
+
+### Regra prática:
+Antes de usar `<div>`, pergunte: **existe uma tag mais específica?** Se sim, use-a.
+
+## Erros comuns
+
+### 1. Div soup — usar `<div>` para tudo
+
+```html
+<!-- ❌ Nenhum significado -->
+<div class="nav"><div class="link">Home</div></div>
+
+<!-- ✅ Significado claro -->
+<nav><a href="/">Home</a></nav>
+```
+
+### 2. Múltiplos `<h1>` na mesma página
+
+```html
+<!-- ❌ Confuso para leitores de tela e SEO -->
+<h1>Título do site</h1>
+<h1>Título do artigo</h1>
+
+<!-- ✅ Um h1 por página, h2 para seções -->
+<h1>Título do artigo</h1>
+<h2>Seção 1</h2>
+<h2>Seção 2</h2>
+```
+
+### 3. Usar `<b>` e `<i>` ao invés de `<strong>` e `<em>`
+
+```html
+<!-- <b>/<i> = apenas visual (negrito/itálico) -->
+<!-- <strong>/<em> = significado (importância/ênfase) -->
+
+<p>Esse prazo é <strong>inegociável</strong>.</p>  <!-- Importância -->
+<p>Eu <em>nunca</em> disse isso.</p>                <!-- Ênfase -->
+```
+
+### 4. Esquecer `alt` em imagens
+
+```html
+<!-- ❌ Leitor de tela não sabe o que é -->
+<img src="grafico.png">
+
+<!-- ✅ Descrição para quem não pode ver -->
+<img src="grafico.png" alt="Gráfico comparando performance de arrays vs linked lists">
+
+<!-- ✅ Imagem decorativa (alt vazio = leitor de tela ignora) -->
+<img src="divider.png" alt="">
+```
+
+### 5. Botão feito com `<div>` ou `<a>`
+
+```html
+<!-- ❌ Sem acessibilidade: não é focável, não responde a Enter/Space -->
+<div class="button" onclick="submit()">Enviar</div>
+
+<!-- ❌ Link que não navega -->
+<a href="#" onclick="submit()">Enviar</a>
+
+<!-- ✅ Botão real: focável, acessível, semântico -->
+<button type="button" onclick="submit()">Enviar</button>
+```

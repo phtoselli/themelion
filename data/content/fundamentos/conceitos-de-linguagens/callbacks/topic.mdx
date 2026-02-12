@@ -1,0 +1,303 @@
+---
+title: "Callbacks"
+slug: "callbacks"
+room: "fundamentos"
+category: "conceitos-de-linguagens"
+difficulty: "beginner"
+order: 10
+prerequisites: ["pure-functions"]
+tags: ["funcao", "continuacao", "assincrono"]
+aiGenerated: true
+---
+
+## O que é
+
+Um callback é uma **função passada como argumento** para outra função, que será chamada ("called back") em algum momento futuro. Em vez de uma função retornar um resultado diretamente, ela recebe uma função que define **o que fazer com o resultado**.
+
+```python
+def processar(dados, callback):
+    resultado = transformar(dados)
+    callback(resultado)  # "Ei, terminei! Aqui está o resultado."
+
+processar(meus_dados, lambda r: print(f"Pronto: {r}"))
+```
+
+A analogia: você liga para um restaurante para fazer um pedido. Em vez de ficar na linha esperando, você deixa seu número (o callback) e eles te ligam de volta quando estiver pronto.
+
+## Por que importa
+
+Callbacks resolvem dois problemas fundamentais:
+
+**1. Personalização de comportamento**
+
+Você está dando o controle de "o que fazer" para quem chama a função, em vez de decidir tudo dentro dela.
+
+Sem callbacks, cada variação precisa de uma função nova:
+
+```python
+# ❌ Uma função por tipo de ordenação
+def sort_ascending(arr): ...
+def sort_descending(arr): ...
+def sort_by_name(arr): ...
+def sort_by_age(arr): ...
+
+# ✅ Uma função genérica + callback define o critério
+users.sort(key=lambda u: u.age)       # Por idade
+users.sort(key=lambda u: u.name)      # Por nome
+users.sort(key=lambda u: -u.score)    # Por score decrescente
+```
+
+**2. Operações assíncronas**
+
+Sem callbacks, o programa trava esperando I/O:
+
+```python
+# ❌ Síncrono: programa trava por 5 segundos
+data = fetch_from_api()  # Bloqueia até terminar
+process(data)
+
+# ✅ Assíncrono com callback: programa continua executando
+fetch_from_api(callback=lambda data: process(data))
+print("Continuando enquanto o fetch roda...")
+```
+
+Callbacks estão em toda parte:
+- **Event handlers:** `button.onClick(callback)` — o que fazer quando clicar
+- **Array methods:** `map`, `filter`, `reduce` — transformar coleções
+- **APIs assíncronas:** `setTimeout`, `fetch`, `readFile` — operações que levam tempo
+- **Middleware:** Express, Koa — cada middleware é um callback na cadeia
+
+## Como funciona
+
+### Callbacks síncronos
+
+Executados imediatamente, inline:
+
+```python
+# map: aplica callback a cada elemento
+numbers = [1, 2, 3, 4, 5]
+doubled = list(map(lambda x: x * 2, numbers))
+# [2, 4, 6, 8, 10]
+
+# filter: mantém elementos onde callback retorna True
+evens = list(filter(lambda x: x % 2 == 0, numbers))
+# [2, 4]
+
+# sort: usa callback como critério de comparação
+words = ["banana", "fig", "apple", "date"]
+words.sort(key=lambda w: len(w))
+# ["fig", "date", "apple", "banana"]
+```
+
+O fluxo é linear:
+```
+main() → sort(key=callback) → callback("banana") → callback("fig") → ... → retorna
+```
+
+### Callbacks assíncronos
+
+Executados **depois**, quando uma operação termina:
+
+```javascript
+// JavaScript: callback executado quando o timer dispara
+console.log("1. Antes");
+
+setTimeout(function() {
+    console.log("3. Callback executado (após 1 segundo)");
+}, 1000);
+
+console.log("2. Depois (executado imediatamente)");
+
+// Output:
+// 1. Antes
+// 2. Depois
+// 3. Callback executado (após 1 segundo)
+```
+
+O fluxo não é linear:
+```
+main() → setTimeout(callback, 1000) → continua executando → ... → 1s depois → callback()
+```
+
+### Callbacks como estratégia de design
+
+A função que recebe o callback define **quando** executar. Quem passa o callback define **o que** executar.
+
+```python
+def retry(operation, on_success, on_failure, max_attempts=3):
+    for attempt in range(max_attempts):
+        try:
+            result = operation()
+            on_success(result)
+            return
+        except Exception as e:
+            if attempt == max_attempts - 1:
+                on_failure(e)
+
+# Quem chama define o comportamento:
+retry(
+    operation=lambda: fetch_data(),
+    on_success=lambda data: save_to_cache(data),
+    on_failure=lambda err: alert_team(err),
+)
+```
+
+### Callback Hell (Pyramid of Doom)
+
+Quando múltiplas operações assíncronas dependem uma da outra, callbacks se aninham e o código vira uma pirâmide ilegível:
+
+```javascript
+// ❌ Callback Hell
+getUser(userId, function(user) {
+    getOrders(user.id, function(orders) {
+        getOrderDetails(orders[0].id, function(details) {
+            getProductInfo(details.productId, function(product) {
+                console.log(product.name);
+                // 4 níveis de indentação, lógica espalhada
+            });
+        });
+    });
+});
+```
+
+Soluções para callback hell:
+1. **Promises/Futures:** encadear `.then()` ao invés de aninhar
+2. **Async/await:** escrever código assíncrono como se fosse síncrono
+3. **Funções nomeadas:** extrair callbacks em funções separadas
+
+## Na prática
+
+<CodeTabs />
+
+## Quando usar (e quando não usar)
+
+### Use callbacks quando:
+
+**1. Parametrizar comportamento**
+```python
+# Função genérica + callback = infinitas variações
+sorted(data, key=callback)
+filter(callback, data)
+map(callback, data)
+```
+
+**2. Event handling**
+```javascript
+button.addEventListener('click', handleClick);
+input.addEventListener('change', handleChange);
+```
+
+**3. Operação assíncrona simples (1 nível)**
+```javascript
+fs.readFile('data.json', (err, data) => {
+    if (err) console.error(err);
+    else processData(data);
+});
+```
+
+### Não use callbacks quando:
+
+**1. Múltiplas operações assíncronas encadeadas**
+Use Promises ou async/await ao invés de aninhar callbacks.
+
+**2. A lógica é complexa demais para uma lambda**
+Se o callback tem mais de 3-5 linhas, extraia para uma função nomeada.
+
+**3. Precisa de tratamento de erro sofisticado**
+Callbacks tradicionais (error-first) não compõem bem. Promises têm `.catch()`, async/await tem `try/catch`.
+
+## Erros comuns
+
+### 1. Esquecer de tratar erros no callback
+
+No Node.js, existe uma convenção chamada "error-first pattern": o primeiro parâmetro do callback é sempre o erro (ou `null` se não houve erro), e o segundo é o resultado.
+
+```javascript
+// ❌ Ignora erro completamente
+fs.readFile('data.json', (err, data) => {
+    console.log(data);  // Se err !== null, data é undefined
+});
+
+// ✅ Sempre checar erro primeiro (error-first pattern)
+fs.readFile('data.json', (err, data) => {
+    if (err) {
+        console.error('Erro:', err.message);
+        return;
+    }
+    console.log(data);
+});
+```
+
+### 2. Chamar callback múltiplas vezes
+
+```javascript
+// ❌ Callback chamado 2 vezes
+function process(data, callback) {
+    if (!data) {
+        callback(new Error('No data'));
+        // Esqueceu o return! Continua executando...
+    }
+    callback(null, transform(data)); // Chamado mesmo quando data é null
+}
+
+// ✅ Sempre usar return após chamar callback em branch de erro
+function process(data, callback) {
+    if (!data) {
+        return callback(new Error('No data'));
+    }
+    callback(null, transform(data));
+}
+```
+
+### 3. Perder o contexto do `this`
+
+Em JavaScript, quando você passa uma função normal como callback, ela pode "perder" o contexto do objeto onde foi definida. Arrow functions (`() => {}`) resolvem esse problema porque mantêm o contexto automaticamente.
+
+```javascript
+// ❌ this se perde quando callback é passado como referência
+class Timer {
+    constructor() { this.seconds = 0; }
+    start() {
+        setInterval(function() {
+            this.seconds++;  // this é window/undefined, não Timer!
+        }, 1000);
+    }
+}
+
+// ✅ Arrow function preserva o this do escopo léxico
+class Timer {
+    constructor() { this.seconds = 0; }
+    start() {
+        setInterval(() => {
+            this.seconds++;  // this é Timer ✅
+        }, 1000);
+    }
+}
+```
+
+### 4. Callback síncrono vs assíncrono inconsistente
+
+**Nota:** este é um conceito mais avançado. Se você está começando, pode pular esta seção por enquanto.
+
+```javascript
+// ❌ Às vezes síncrono, às vezes assíncrono
+function getData(key, callback) {
+    if (cache[key]) {
+        callback(cache[key]);  // Síncrono!
+    } else {
+        fetch(url, (data) => {
+            callback(data);    // Assíncrono!
+        });
+    }
+}
+// Quem chama não sabe se o callback executa agora ou depois
+
+// ✅ Sempre assíncrono (consistente)
+function getData(key, callback) {
+    if (cache[key]) {
+        setTimeout(() => callback(cache[key]), 0);  // Força assíncrono
+    } else {
+        fetch(url, (data) => callback(data));
+    }
+}
+```

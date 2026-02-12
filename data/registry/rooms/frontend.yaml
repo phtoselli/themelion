@@ -157,6 +157,34 @@ categories:
         prerequisites: ["http-https"]
         tags: ["seguranca", "hash", "cdn"]
 
+      - slug: "xml"
+        title: "XML"
+        difficulty: beginner
+        order: 22
+        prerequisites: ["semantic-html"]
+        tags: ["markup", "dados", "estrutura", "parsing"]
+
+      - slug: "json"
+        title: "JSON"
+        difficulty: beginner
+        order: 23
+        prerequisites: ["http-https"]
+        tags: ["dados", "intercambio", "serializacao", "api"]
+
+      - slug: "url-e-uri"
+        title: "URL e URI"
+        difficulty: beginner
+        order: 24
+        prerequisites: ["http-https"]
+        tags: ["endereco", "roteamento", "encoding", "query-string"]
+
+      - slug: "character-encoding"
+        title: "Codificação de Caracteres (UTF-8, Unicode)"
+        difficulty: beginner
+        order: 25
+        prerequisites: []
+        tags: ["utf-8", "unicode", "ascii", "encoding"]
+
   - slug: "dom-e-browser-apis"
     name: "DOM e Browser APIs"
     order: 2

@@ -1,0 +1,191 @@
+---
+title: "Primary Keys"
+slug: "primary-keys"
+room: "banco-de-dados"
+category: "sql-e-bancos-relacionais"
+difficulty: "beginner"
+order: 1
+prerequisites: []
+tags: ["identificador", "unicidade", "indice"]
+aiGenerated: true
+---
+
+## O que é
+
+Uma **Primary Key (chave primária)** é uma coluna (ou combinação de colunas) que **identifica unicamente** cada registro em uma tabela. Nenhum valor de PK pode ser repetido e nenhum pode ser NULL. É o "CPF" de cada linha da tabela.
+
+```sql
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,  -- Chave primária: única, não nula, auto-incremento
+    name VARCHAR(100),
+    email VARCHAR(100)
+);
+
+-- Cada user tem um id único
+-- id = 1 → existe exatamente 1 registro com esse id
+-- id = NULL → impossível (constraint NOT NULL)
+-- id = 1 (duplicado) → impossível (constraint UNIQUE)
+```
+
+## Por que importa
+
+Sem chave primária:
+- Como referenciar um registro específico? `WHERE name = 'João'` se existem 3 Joãos?
+- Como criar relações entre tabelas (foreign keys)?
+- Como garantir que não existem duplicatas?
+- Como o banco otimiza buscas? (PK cria índice automaticamente)
+
+Com chave primária:
+- `WHERE id = 42` → exatamente 1 registro, busca extremamente rápida via índice
+- Foreign keys referenciam a PK → integridade relacional
+- Banco garante unicidade automaticamente
+
+## Como funciona
+
+### Tipos de chaves primárias
+
+**Auto-incremento (SERIAL/IDENTITY):**
+```sql
+id SERIAL PRIMARY KEY        -- PostgreSQL
+id INT AUTO_INCREMENT PRIMARY KEY  -- MySQL
+id INTEGER PRIMARY KEY AUTOINCREMENT  -- SQLite
+```
+Banco gera 1, 2, 3, 4... automaticamente.
+
+**UUID:**
+```sql
+id UUID PRIMARY KEY DEFAULT gen_random_uuid()
+-- "550e8400-e29b-41d4-a716-446655440000"
+```
+ID universalmente único. Bom para sistemas distribuídos.
+
+**Chave natural:**
+```sql
+-- Usar um valor do domínio como PK
+CREATE TABLE countries (
+    code CHAR(2) PRIMARY KEY,  -- "BR", "US", "JP"
+    name VARCHAR(100)
+);
+```
+
+**Chave composta:**
+```sql
+-- Combinação de colunas
+CREATE TABLE order_items (
+    order_id INT,
+    product_id INT,
+    quantity INT,
+    PRIMARY KEY (order_id, product_id)  -- Par é único
+);
+```
+
+### Auto-incremento vs UUID
+
+| Aspecto | Auto-incremento | UUID |
+|---|---|---|
+| Tamanho | 4-8 bytes | 16 bytes |
+| Legibilidade | id = 42 (legível) | id = 550e8400-... (ilegível) |
+| Sequencial | Sim (previsível) | Não (aleatório) |
+| Distribuído | Problemático (conflitos) | Seguro (sem conflitos) |
+| Performance | Melhor (índice sequencial) | Pior (índice fragmentado) |
+| Segurança | Enumerável (/users/1, /users/2) | Não enumerável |
+
+## Na prática
+
+```sql
+-- Tabela com auto-incremento
+CREATE TABLE products (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(200) NOT NULL,
+    price DECIMAL(10,2) NOT NULL
+);
+
+INSERT INTO products (name, price) VALUES ('Notebook', 2999.90);
+-- id = 1 (gerado automaticamente)
+
+INSERT INTO products (name, price) VALUES ('Mouse', 79.90);
+-- id = 2
+
+SELECT * FROM products WHERE id = 1;
+-- Busca instantânea via índice (o banco vai direto ao registro, sem percorrer a tabela inteira)
+```
+
+## Quando usar (e quando não usar)
+
+### Auto-incremento quando:
+- Banco único (sem replicação/sharding)
+- IDs não são expostos em URLs (ou não importa se são sequenciais)
+- Performance de índice é prioridade
+
+### UUID quando:
+- Sistema distribuído (múltiplos bancos geram IDs)
+- Segurança (IDs em URLs não devem ser enumeráveis)
+- Merging de dados entre ambientes (dev → prod)
+
+### Chave natural quando:
+- Valor é naturalmente único e imutável (código de país, CPF)
+- Cuidado: se o valor mudar, todas as referências precisam mudar
+
+## Erros comuns
+
+### 1. Tabela sem primary key
+
+```sql
+-- ❌ Sem PK — como identificar registros unicamente?
+CREATE TABLE logs (
+    message TEXT,
+    timestamp TIMESTAMP
+);
+
+-- ✅ Sempre tenha PK
+CREATE TABLE logs (
+    id SERIAL PRIMARY KEY,
+    message TEXT,
+    timestamp TIMESTAMP
+);
+```
+
+### 2. Usar dado mutável como PK
+
+```sql
+-- ❌ Email pode mudar — todas as foreign keys quebram
+CREATE TABLE users (
+    email VARCHAR(100) PRIMARY KEY,
+    name VARCHAR(100)
+);
+-- Se João mudar de email, precisa atualizar TODAS as tabelas que referenciam
+
+-- ✅ ID imutável como PK
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(100) UNIQUE,
+    name VARCHAR(100)
+);
+```
+
+### 3. Expor auto-incremento em URLs
+
+```
+GET /api/users/42    → Atacante sabe que existem users 1 a 41
+GET /api/users/43    → Pode enumerar todos os usuários
+GET /api/invoices/1  → Pode acessar faturas sequencialmente
+
+Solução: usar UUID em URLs ou adicionar slug público separado
+```
+
+### 4. Chave composta excessiva
+
+```sql
+-- ❌ PK com 4+ colunas — difícil de referenciar, indexar e manter
+PRIMARY KEY (user_id, product_id, variant_id, warehouse_id)
+
+-- ✅ Surrogate key + unique constraint
+CREATE TABLE inventory (
+    id SERIAL PRIMARY KEY,
+    user_id INT,
+    product_id INT,
+    variant_id INT,
+    warehouse_id INT,
+    UNIQUE (user_id, product_id, variant_id, warehouse_id)
+);
+```

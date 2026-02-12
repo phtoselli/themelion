@@ -1,0 +1,318 @@
+---
+title: "Deployment Strategies"
+slug: "deployment-strategies"
+room: "devops"
+category: "ci-cd"
+difficulty: "beginner"
+order: 1
+prerequisites: ["containers-vs-vms", "environment-variables"]
+tags: ["deploy", "producao", "estrategia"]
+aiGenerated: true
+---
+
+## O que é
+
+**Deployment strategies** são métodos para **colocar código novo em produção** minimizando risco. A estratégia define como a transição da versão antiga (v1) para a versão nova (v2) acontece — de uma só vez, gradualmente, ou em paralelo. A escolha impacta diretamente o tempo de downtime, a velocidade de rollback e o risco de afetar usuários.
+
+```
+Problema: como atualizar a aplicação em produção sem derrubar o serviço?
+
+v1 (rodando) → ??? → v2 (rodando)
+
+A estratégia define o "???":
+  - Parar v1, subir v2?          → Big Bang (arriscado)
+  - Subir v2 ao lado de v1?       → Blue-Green (seguro)
+  - Mandar 5% do tráfego para v2? → Canary (gradual)
+  - Trocar servidor por servidor? → Rolling (balanceado)
+```
+
+## Por que importa
+
+Deploy é o momento de **maior risco** no ciclo de vida do software. Código que funciona em dev e staging pode falhar em produção por:
+- Diferenças de dados (milhões de registros vs poucos)
+- Carga real (1000 requests/s vs 10 em staging)
+- Integrações de terceiros (sandbox vs produção)
+- Configurações diferentes
+
+Uma boa estratégia de deploy permite:
+- **Rollback rápido** se algo der errado
+- **Zero downtime** para os usuários
+- **Detecção precoce** de problemas antes de afetar 100% dos usuários
+- **Confiança** para fazer deploys frequentes (múltiplos por dia)
+
+## Como funciona
+
+### 1. Big Bang (Recreate)
+
+Para tudo, atualiza, sobe de novo:
+
+```
+Antes:    [v1] [v1] [v1]     ← 3 instâncias rodando v1
+Deploy:   [---] [---] [---]   ← Todas paradas (DOWNTIME!)
+Depois:   [v2] [v2] [v2]     ← 3 instâncias rodando v2
+
+Timeline:
+  ████████░░░░░░████████
+  v1 rodando  ↑  v2 rodando
+            downtime
+```
+
+```
+✅ Simples de implementar
+✅ Não precisa de infraestrutura extra
+❌ Downtime durante o deploy
+❌ Rollback é outro deploy completo (lento)
+❌ Tudo ou nada — se v2 tem bug, todos são afetados
+
+Quando usar: aplicações internas, ambientes de dev/staging,
+             manutenções programadas fora do horário
+```
+
+### 2. Rolling Update
+
+Atualiza instâncias uma a uma, sem downtime:
+
+```
+Início:   [v1] [v1] [v1] [v1]
+Step 1:   [v2] [v1] [v1] [v1]   ← 1ª instância atualizada
+Step 2:   [v2] [v2] [v1] [v1]   ← 2ª instância atualizada
+Step 3:   [v2] [v2] [v2] [v1]   ← 3ª instância atualizada
+Step 4:   [v2] [v2] [v2] [v2]   ← Todas atualizadas
+
+Tráfego flui para instâncias saudáveis durante todo o processo.
+```
+
+```
+✅ Zero downtime
+✅ Rollback: reverter instâncias atualizadas
+✅ Não precisa de infraestrutura duplicada
+❌ v1 e v2 coexistem temporariamente (compatibilidade necessária)
+❌ Deploy mais lento (sequencial)
+❌ Se v2 tem bug, afeta parte dos usuários antes de detectar
+
+Quando usar: maioria das aplicações web, Kubernetes (padrão)
+```
+
+### 3. Blue-Green Deployment
+
+Dois ambientes idênticos, alterna tráfego instantaneamente:
+
+```
+         Load Balancer
+              │
+    ┌─────────┴─────────┐
+    │                    │
+ BLUE (ativo)        GREEN (standby)
+ [v1] [v1] [v1]     [v2] [v2] [v2]
+                     (testando...)
+
+Após validar GREEN:
+         Load Balancer
+              │
+    ┌─────────┴─────────┐
+    │                    │
+ BLUE (standby)      GREEN (ativo)  ← Switch!
+ [v1] [v1] [v1]     [v2] [v2] [v2]
+```
+
+```
+✅ Zero downtime
+✅ Rollback instantâneo (apontar de volta para Blue)
+✅ Testar v2 no ambiente real antes de receber tráfego
+❌ Custo dobrado de infraestrutura (2 ambientes completos)
+❌ Banco de dados compartilhado precisa ser compatível com ambas versões
+❌ Complexidade de gerenciar dois ambientes
+
+Quando usar: aplicações críticas, e-commerce, fintech
+```
+
+### 4. Canary Deployment
+
+Libera para uma pequena porcentagem de usuários, monitora, expande:
+
+```
+Step 1: 5% do tráfego para v2
+         Load Balancer
+         ┌──── 95% ────→ [v1] [v1] [v1]
+         └───── 5% ────→ [v2]
+
+Step 2: Métricas OK? → 25%
+         ┌──── 75% ────→ [v1] [v1] [v1]
+         └──── 25% ────→ [v2]
+
+Step 3: Métricas OK? → 50% → 100%
+         └─── 100% ────→ [v2] [v2] [v2]
+
+Se métricas RUINS em qualquer step → rollback para 0%
+```
+
+```
+✅ Risco mínimo (poucos usuários afetados por bugs)
+✅ Dados reais de produção validam a versão nova
+✅ Rollback rápido (voltar tráfego para v1)
+❌ Mais complexo de implementar (roteamento por porcentagem)
+❌ Precisa de monitoramento para decidir quando expandir
+❌ v1 e v2 coexistem (compatibilidade necessária)
+
+Quando usar: aplicações com muitos usuários, features arriscadas,
+             mudanças de infraestrutura (novo banco, nova API)
+```
+
+### 5. Feature Flags (complementar)
+
+Não é uma estratégia de deploy em si, mas complementa todas elas:
+
+```python
+# Código v2 está em produção, mas desativado
+if feature_flag("new_checkout"):
+    return new_checkout_flow(order)
+else:
+    return old_checkout_flow(order)
+
+# Ativar para 5% dos usuários → 25% → 100%
+# Sem deploy! Apenas mudar a configuração da flag.
+# Se der problema → desativar a flag instantaneamente.
+```
+
+```
+Deploy: colocar CÓDIGO em produção
+Feature flag: ATIVAR funcionalidade em produção
+
+Vantagem: separar "deploy de código" de "release de feature"
+  → Deploy frequente (código sempre atualizado)
+  → Release controlado (feature ativada quando pronta)
+```
+
+### Comparação rápida
+
+```
+┌───────────────┬──────────┬──────────┬───────────┬──────────┐
+│ Estratégia    │ Downtime │ Rollback │ Risco     │ Custo    │
+├───────────────┼──────────┼──────────┼───────────┼──────────┤
+│ Big Bang      │ Sim      │ Lento    │ Alto      │ Baixo    │
+│ Rolling       │ Não      │ Médio    │ Médio     │ Baixo    │
+│ Blue-Green    │ Não      │ Instant  │ Baixo     │ Alto     │
+│ Canary        │ Não      │ Rápido   │ Muito baixo│ Médio   │
+└───────────────┴──────────┴──────────┴───────────┴──────────┘
+```
+
+## Na prática
+
+### Kubernetes Rolling Update (padrão)
+
+```yaml
+# deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+spec:
+  replicas: 4
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1        # No máximo 1 pod a mais durante deploy
+      maxUnavailable: 0  # Nenhum pod indisponível (zero downtime)
+  template:
+    spec:
+      containers:
+        - name: api
+          image: minha-app:v2  # Atualizar imagem → rolling update automático
+```
+
+### CI/CD Pipeline básico
+
+```
+1. Developer faz push na main
+2. CI: rodar testes automatizados
+3. CI: build da imagem Docker (tag com SHA do commit)
+4. CI: push da imagem para registry
+5. CD: atualizar deployment no Kubernetes (nova imagem)
+6. Kubernetes: rolling update automático
+7. Monitoramento: verificar métricas (erros, latência)
+8. Se problema: kubectl rollout undo (rollback automático)
+```
+
+## Quando usar (e quando não usar)
+
+### Big Bang:
+- Aplicações internas com janela de manutenção
+- Ambientes de desenvolvimento/staging
+
+### Rolling Update:
+- **Maioria dos casos** — bom equilíbrio entre simplicidade e segurança
+- Padrão do Kubernetes
+
+### Blue-Green:
+- Aplicações críticas que não podem ter risco
+- Quando rollback instantâneo é requisito
+- Empresa com budget para infraestrutura duplicada
+
+### Canary:
+- Aplicações com milhões de usuários
+- Mudanças arriscadas (novo banco, nova arquitetura)
+- Quando precisa de validação com dados reais de produção
+
+## Erros comuns
+
+### 1. Deploy sem rollback plan
+
+```
+❌ "Vamos deployar e ver o que acontece"
+   → Bug em produção → equipe em pânico → rollback manual → 2 horas de downtime
+
+✅ Antes de deployar:
+   - Como faço rollback? (reverter imagem? feature flag? blue-green switch?)
+   - Quanto tempo leva o rollback?
+   - Quem tem permissão para executar?
+   - O banco precisa de migration reversa?
+```
+
+### 2. Migrations de banco incompatíveis
+
+```sql
+-- Deploy com Rolling Update: v1 e v2 rodam ao mesmo tempo!
+
+-- ❌ Migration que quebra v1:
+ALTER TABLE users RENAME COLUMN name TO full_name;
+-- v1 ainda procura coluna 'name' → crash!
+
+-- ✅ Migration compatível (expand-and-contract):
+-- Step 1 (v1.5): adicionar coluna nova, preencher, aceitar ambas
+ALTER TABLE users ADD COLUMN full_name VARCHAR(100);
+UPDATE users SET full_name = name;
+
+-- Step 2 (v2): código usa full_name
+-- Step 3 (v2.1): remover coluna antiga (quando v1 não roda mais)
+ALTER TABLE users DROP COLUMN name;
+```
+
+### 3. Não monitorar após deploy
+
+```
+❌ Deploy → "passou o CI" → ir embora
+   → Bug sutil que só aparece com carga real
+   → Ninguém percebe até cliente reclamar
+
+✅ Deploy → observar métricas por 15-30 minutos:
+   - Taxa de erro (HTTP 5xx) aumentou?
+   - Latência (p99) aumentou?
+   - CPU/memória dentro do normal?
+   - Logs com erros novos?
+   Se qualquer anomalia → rollback imediato
+```
+
+### 4. Deploy na sexta-feira
+
+```
+❌ "Só vou deployar uma coisinha rapidinho na sexta 17h"
+   → Bug em produção → ninguém disponível no fim de semana
+   → Clientes afetados por 48 horas
+
+✅ Deployar no início da semana, durante horário comercial
+   → Equipe disponível para reagir
+   → Tempo para monitorar e corrigir
+
+   Ou: ter confiança no processo (CI/CD maduro, canary, rollback automático)
+   → Deploy em qualquer dia, automaticamente
+```

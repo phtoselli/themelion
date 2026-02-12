@@ -1,0 +1,249 @@
+---
+title: "Flexbox"
+slug: "flexbox"
+room: "frontend"
+category: "css-fundamentals"
+difficulty: "beginner"
+order: 2
+prerequisites: ["box-model"]
+tags: ["layout", "alinhamento", "responsivo"]
+aiGenerated: true
+---
+
+## O que é
+
+Flexbox (Flexible Box Layout) é um modelo de layout CSS que distribui espaço e alinha elementos em **uma dimensão** — horizontalmente (row) ou verticalmente (column). Resolve os problemas clássicos de layout que atormentavam desenvolvedores por décadas: centralizar vertical, distribuir espaço igual, reordenar elementos.
+
+```css
+.container {
+    display: flex;          /* Ativa flexbox */
+    justify-content: center; /* Centraliza horizontalmente */
+    align-items: center;     /* Centraliza verticalmente */
+    height: 100vh;
+}
+/* 3 linhas para centralizar perfeitamente. Antes do flexbox? Hacks com margin, position, transform. */
+```
+
+## Por que importa
+
+Antes do Flexbox, layouts horizontais exigiam:
+- `float: left` + clearfix (hack)
+- `display: inline-block` + whitespace bugs
+- `position: absolute` + cálculos manuais
+- `display: table-cell` (abuso semântico)
+
+Flexbox substitui tudo isso com uma API intuitiva. É o modelo de layout **mais usado** na web moderna — presente em praticamente todo site e framework CSS.
+
+## Como funciona
+
+### Eixos
+
+Flexbox opera em dois eixos:
+
+```
+flex-direction: row (padrão)
+
+Main axis (eixo principal) →→→→→→→→→→
+┌─────────────────────────────────────┐
+│  [Item 1]  [Item 2]  [Item 3]      │  ↕ Cross axis
+└─────────────────────────────────────┘    (eixo cruzado)
+
+flex-direction: column
+
+Main axis ↓↓↓
+┌──────────┐
+│ [Item 1] │  ←→ Cross axis
+│ [Item 2] │
+│ [Item 3] │
+└──────────┘
+```
+
+- **Main axis:** direção principal dos itens (`row` = horizontal, `column` = vertical)
+- **Cross axis:** perpendicular ao main axis
+
+### Propriedades do container (pai)
+
+```css
+.container {
+    display: flex;
+
+    /* Direção dos itens */
+    flex-direction: row;          /* → horizontal (padrão) */
+    flex-direction: column;       /* ↓ vertical */
+    flex-direction: row-reverse;  /* ← horizontal invertido */
+
+    /* Quebra de linha */
+    flex-wrap: nowrap;   /* Todos na mesma linha (padrão) */
+    flex-wrap: wrap;     /* Quebra para próxima linha se não couber */
+
+    /* Alinhamento no main axis */
+    justify-content: flex-start;    /* ←[1][2][3]          */
+    justify-content: center;        /*      [1][2][3]      */
+    justify-content: flex-end;      /*          [1][2][3]→ */
+    justify-content: space-between; /* [1]    [2]    [3]   */
+    justify-content: space-around;  /*  [1]   [2]   [3]   */
+    justify-content: space-evenly;  /*  [1]  [2]  [3]     */
+
+    /* Alinhamento no cross axis */
+    align-items: stretch;     /* Itens esticam para preencher (padrão) */
+    align-items: flex-start;  /* Alinhados no topo */
+    align-items: center;      /* Centralizados verticalmente */
+    align-items: flex-end;    /* Alinhados embaixo */
+    align-items: baseline;    /* Alinhados pela baseline do texto */
+
+    /* Gap entre itens */
+    gap: 16px;           /* Espaço uniforme entre itens */
+    gap: 16px 24px;      /* Row gap | Column gap */
+}
+```
+
+### Propriedades dos itens (filhos)
+
+```css
+.item {
+    /* Crescer para preencher espaço */
+    flex-grow: 0;    /* Não cresce (padrão) */
+    flex-grow: 1;    /* Cresce proporcionalmente */
+
+    /* Encolher quando não cabe */
+    flex-shrink: 1;  /* Encolhe proporcionalmente (padrão) */
+    flex-shrink: 0;  /* Nunca encolhe */
+
+    /* Tamanho base antes de crescer/encolher */
+    flex-basis: auto;   /* Tamanho do conteúdo (padrão) */
+    flex-basis: 200px;  /* Tamanho fixo como ponto de partida */
+
+    /* Shorthand (grow | shrink | basis) */
+    flex: 1;         /* flex: 1 1 0% — cresce e encolhe igualmente */
+    flex: 0 0 200px; /* Fixo em 200px, não cresce nem encolhe */
+
+    /* Alinhamento individual (override do align-items) */
+    align-self: center;  /* Só este item centralizado */
+
+    /* Ordem visual */
+    order: 2;  /* Muda posição visual sem alterar HTML */
+}
+```
+
+### Padrões de layout comuns
+
+**Navbar:**
+```css
+.navbar {
+    display: flex;
+    justify-content: space-between; /* Logo à esquerda, links à direita */
+    align-items: center;
+    padding: 0 24px;
+}
+```
+
+**Centralizar perfeitamente:**
+```css
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+```
+
+**Sidebar + conteúdo:**
+```css
+.layout {
+    display: flex;
+}
+.sidebar {
+    flex: 0 0 250px; /* Fixa em 250px */
+}
+.content {
+    flex: 1;         /* Ocupa o resto */
+}
+```
+
+**Cards responsivos:**
+```css
+.cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+.card {
+    flex: 1 1 300px; /* Mínimo 300px, cresce para preencher */
+}
+```
+
+## Na prática
+
+A forma mais eficaz de aprender Flexbox é experimentar. Abra o DevTools, selecione um `display: flex` e o navegador mostra ferramentas visuais para manipular `justify-content`, `align-items`, `flex-wrap` e `gap` em tempo real.
+
+## Quando usar (e quando não usar)
+
+### Use Flexbox para:
+- **Layouts 1D** (uma direção: linha OU coluna)
+- Navbars, toolbars, menus
+- Centralizar elementos
+- Distribuir espaço entre itens
+- Card layouts simples
+
+### Use CSS Grid ao invés de Flexbox para:
+- **Layouts 2D** (linhas E colunas simultaneamente)
+- Grids complexos com áreas nomeadas
+- Layouts de página inteira com header/sidebar/content/footer
+
+### Regra prática:
+- **1 dimensão** → Flexbox
+- **2 dimensões** → Grid
+- Muitas vezes usa **ambos**: Grid para o layout geral, Flexbox dentro dos componentes.
+
+## Erros comuns
+
+### 1. Esquecer que flex items encolhem por padrão
+
+```css
+/* flex-shrink: 1 é o padrão — itens encolhem para caber */
+.container { display: flex; width: 500px; }
+.item { width: 200px; }
+/* 3 itens de 200px = 600px, mas container é 500px */
+/* Resultado: cada item encolhe para ~166px */
+
+/* Para manter tamanho fixo: */
+.item { flex-shrink: 0; width: 200px; }
+```
+
+### 2. Usar width quando deveria usar flex-basis
+
+```css
+/* flex-basis é o "width" para flex items */
+/* Com flex-direction: column, flex-basis vira "height" */
+
+/* ❌ width não respeita flex-direction */
+.item { width: 200px; }
+
+/* ✅ flex-basis respeita o main axis */
+.item { flex-basis: 200px; }
+```
+
+### 3. justify-content vs align-items com direction: column
+
+```css
+/* Com row: justify-content = horizontal, align-items = vertical */
+/* Com column: INVERTIDO! justify-content = vertical, align-items = horizontal */
+
+.column-center {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centraliza VERTICALMENTE (main axis) */
+    align-items: center;     /* Centraliza HORIZONTALMENTE (cross axis) */
+}
+```
+
+### 4. Não usar gap (usar margin nos itens)
+
+```css
+/* ❌ Margin cria espaço extra no primeiro/último item */
+.item { margin: 0 8px; }
+/* Primeiro e último item têm margin nas bordas do container */
+
+/* ✅ Gap: espaço APENAS entre itens */
+.container { display: flex; gap: 16px; }
+```

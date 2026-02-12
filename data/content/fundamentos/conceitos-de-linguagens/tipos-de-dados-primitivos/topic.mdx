@@ -1,0 +1,244 @@
+---
+title: "Tipos de Dados Primitivos"
+slug: "tipos-de-dados-primitivos"
+room: "fundamentos"
+category: "conceitos-de-linguagens"
+difficulty: "beginner"
+order: 1
+prerequisites: []
+tags: ["int", "string", "boolean", "float"]
+aiGenerated: true
+---
+
+## O que é
+
+Tipos primitivos são os **átomos** de uma linguagem de programação — os blocos de construção mais básicos que não podem ser decompostos em partes menores. Assim como toda matéria é feita de átomos, todo dado em um programa é construído a partir de tipos primitivos.
+
+Os tipos primitivos universais (presentes em praticamente toda linguagem):
+- **Inteiros** (`int`): números sem parte decimal — 1, -42, 0, 1000000
+- **Ponto flutuante** (`float`/`double`): números com parte decimal — 3.14, -0.001, 2.0
+- **Booleanos** (`bool`): verdadeiro ou falso — `true`, `false`
+- **Caracteres** (`char`): um único caractere — 'a', 'Z', '9', '漢'
+- **Strings** (`string`): sequência de caracteres — "hello", "João"
+
+## Por que importa
+
+Tipos primitivos determinam **como o computador armazena, interpreta e opera** sobre seus dados. O mesmo padrão de bits `01000001` pode ser o inteiro 65, o caractere 'A', ou parte de um float — o tipo diz ao computador qual interpretação usar.
+
+Entender tipos primitivos evita bugs clássicos:
+
+```python
+# Por que 0.1 + 0.2 ≠ 0.3?
+print(0.1 + 0.2)        # 0.30000000000000004
+print(0.1 + 0.2 == 0.3) # False!
+
+# Por que? Porque 0.1 não tem representação exata em binário (IEEE 754)
+# Assim como 1/3 = 0.333... em decimal, 0.1 = 0.000110011... em binário
+```
+
+Saber escolher o tipo certo afeta:
+- **Precisão:** usar float para dinheiro = bugs de centavos que somam milhões
+- **Performance:** usar números maiores do que o necessário desperdiça memória
+- **Segurança:** integer overflow pode causar falhas de segurança graves
+
+## Como funciona
+
+### Inteiros
+
+Inteiros são armazenados em **representação binária** com tamanho fixo (na maioria das linguagens):
+
+```
+int32 (32 bits):
+Valor: 42
+Binário: 00000000 00000000 00000000 00101010
+
+Range: -2.147.483.648 a 2.147.483.647 (±2³¹)
+```
+
+**Números negativos:** o computador tem um truque para representar números negativos chamado "complemento de dois" — usa o primeiro bit como indicador de sinal (0 = positivo, 1 = negativo). Você não precisa decorar como funciona, mas precisa saber que isso existe porque explica por que números inteiros têm um limite máximo.
+
+**Integer overflow** — quando o valor ultrapassa o range:
+```
+int8 (8 bits): range -128 a 127
+127 + 1 = ???
+
+Em C/C++/Rust: overflow → undefined behavior ou wrap-around (-128)
+Em Python: sem overflow → inteiros crescem indefinidamente (big integers)
+Em Java/C#: overflow silencioso → -128
+```
+
+### Ponto flutuante (IEEE 754)
+
+Números com ponto decimal (como 3.14) são armazenados de forma similar à notação científica. O detalhe importante é: **nem todo número decimal tem representação exata em binário**. Assim como 1/3 = 0.333... em decimal (nunca termina), 0.1 em binário também nunca termina. É por isso que 0.1 + 0.2 não dá exatamente 0.3.
+
+**Problemas de precisão:**
+```python
+# Nem todo decimal tem representação binária exata
+0.1 + 0.2    # 0.30000000000000004
+0.1 * 3      # 0.30000000000000004
+1.0 - 0.9    # 0.09999999999999998
+```
+
+**Valores especiais:**
+- `Infinity` / `-Infinity`: resultado de divisão por zero (em floats)
+- `NaN` (Not a Number): resultado de operações inválidas (`0/0`, `sqrt(-1)`)
+
+```python
+float('inf') > 1000000000  # True
+float('nan') == float('nan')  # False! NaN não é igual a nada, nem a si mesmo
+```
+
+### Booleanos
+
+Booleanos são o tipo mais simples: 1 bit de informação (verdadeiro/falso). Mas na prática, a maioria das linguagens usa 1 byte (8 bits) por motivos de alinhamento de memória.
+
+**Truthy e Falsy** — em linguagens com tipagem dinâmica, outros valores podem ser "convertidos" para boolean:
+
+```python
+# Python — valores "falsy"
+bool(0)        # False
+bool(0.0)      # False
+bool("")       # False
+bool([])       # False
+bool(None)     # False
+
+# Todo o resto é "truthy"
+bool(1)        # True
+bool("hello")  # True
+bool([1, 2])   # True
+```
+
+### Caracteres e Strings
+
+**Char** representa um único caractere, armazenado como número (encoding):
+```
+'A' = 65 (ASCII)
+'漢' = 28450 (Unicode, 3 bytes em UTF-8)
+```
+
+**Strings** são sequências de caracteres. Cada linguagem implementa diferente:
+- **Python/Java/C#/Go:** strings são imutáveis
+- **C:** array de chars terminado com `\0` (null terminator)
+- **Rust:** `String` (heap, mutável) vs `&str` (referência, imutável)
+
+**Imutabilidade de strings:**
+```python
+s = "hello"
+s[0] = "H"  # ERRO! Strings são imutáveis em Python
+
+# Toda "modificação" cria uma nova string
+s = "H" + s[1:]  # Novo objeto "Hello", o antigo "hello" será coletado pelo garbage collector (o limpador automático de memória da linguagem)
+```
+
+### Representação em memória
+
+Tipos simples como números e booleanos ocupam pouco espaço na memória e são muito rápidos de acessar. Strings e outros dados maiores precisam de mais espaço e são um pouco mais lentos.
+
+### Aprofundamento: Stack vs Heap
+
+Tipos primitivos simples (int, float, bool, char) vivem na **stack** (região de memória rápida para dados temporários) — acesso O(1), sem overhead. Strings e big integers vivem no **heap** (região de memória para dados de tamanho variável) — requerem alocação dinâmica.
+
+```
+Stack (variáveis locais):
+┌──────────────────────────┐
+│ x: int32    = 42         │  4 bytes
+│ y: float64  = 3.14       │  8 bytes
+│ flag: bool  = true       │  1 byte (+ 7 padding)
+│ c: char     = 'A'        │  1 byte (+ padding)
+│ name: &str  = 0x7ff...   │  8 bytes (ponteiro para heap)
+└──────────────────────────┘
+
+Heap (dados dinâmicos):
+┌──────────────────────────┐
+│ "João Silva" (11 bytes)  │  ← name aponta aqui
+└──────────────────────────┘
+```
+
+## Na prática
+
+<CodeTabs />
+
+## Quando usar (e quando não usar)
+
+### Escolhendo o tipo certo:
+
+| Situação | Tipo correto | Por quê |
+|---|---|---|
+| Contadores, índices | `int` | Sem parte decimal, operações rápidas |
+| Dinheiro, finanças | `Decimal` / inteiro em centavos | Float causa erros de arredondamento |
+| Cálculos científicos | `float64` (`double`) | Precisão suficiente para a maioria dos casos |
+| Flags on/off | `bool` | Semântica clara, 1 byte |
+| Texto | `string` | Imutável na maioria das linguagens, otimizado |
+| IDs, chaves | `string` ou `int` | Depende se precisa ser legível ou compacto |
+
+### Armadilhas de escolha errada:
+
+**Float para dinheiro:**
+```python
+# ❌ Float: acumula erros
+preco = 0.10
+total = sum([preco] * 100)  # Espera 10.00
+print(total)  # 9.999999999999998
+
+# ✅ Inteiro em centavos
+preco = 10  # centavos
+total = sum([preco] * 100)  # 1000 centavos = R$ 10.00
+```
+
+## Erros comuns
+
+### 1. Comparar floats com ==
+
+```python
+# ❌ Nunca compare floats diretamente
+if 0.1 + 0.2 == 0.3:  # False!
+
+# ✅ Use tolerância (epsilon)
+def approx_equal(a, b, epsilon=1e-9):
+    return abs(a - b) < epsilon
+
+if approx_equal(0.1 + 0.2, 0.3):  # True
+```
+
+### 2. Integer overflow silencioso
+
+```c
+// C: int8_t (8 bits, range -128 a 127)
+int8_t x = 127;
+x = x + 1;  // x = -128 (wrap-around)
+
+// Em sistemas críticos, isso causa bugs fatais
+// O Ariane 5 explodiu em 1996 por um overflow de int16 → int32
+```
+
+### 3. Confundir string com número
+
+```python
+# ❌ Concatenação ao invés de soma
+age = input("Idade: ")  # Retorna string!
+print(age + 10)  # TypeError (Python) ou "2510" (JavaScript)
+
+# ✅ Converter explicitamente
+age = int(input("Idade: "))
+print(age + 10)  # 35
+```
+
+### 4. Divisão inteira vs float
+
+```python
+# Python 3
+7 / 2   # 3.5 (float division)
+7 // 2  # 3   (integer division)
+
+# C/Java/Go: int / int = int (trunca)
+# 7 / 2 = 3 (não 3.5!)
+```
+
+### 5. NaN é contagioso
+
+```python
+x = float('nan')
+x + 1      # nan
+x * 0      # nan
+x == x     # False! (única forma de checar: math.isnan(x))
+```

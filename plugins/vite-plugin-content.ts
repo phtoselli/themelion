@@ -54,6 +54,7 @@ interface Topic {
 	prerequisites: string[];
 	tags: string[];
 	relatedTools?: { name: string; searchTerm: string; url: string }[];
+	aiGenerated?: boolean;
 	status: string;
 	contentPath: string;
 	content: string;

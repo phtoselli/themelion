@@ -115,6 +115,9 @@ export interface Locale {
 		markCompleted: string;
 		completed: string;
 		completedAt: (date: string) => string;
+		aiGenerated: string;
+		backToRoadmap: string;
+		backToModule: string;
 	};
 
 	roadmapsPage: {
@@ -281,6 +284,9 @@ export const ptBR: Locale = {
 		markCompleted: "Marcar como concluído",
 		completed: "Concluído",
 		completedAt: (date: string) => `Concluído em ${date}`,
+		aiGenerated: "Conteúdo gerado por IA",
+		backToRoadmap: "Voltar para a trilha",
+		backToModule: "Voltar para o módulo",
 	},
 
 	roadmapsPage: {

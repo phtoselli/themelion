@@ -1,0 +1,349 @@
+---
+title: "JSON"
+slug: "json"
+room: "frontend"
+category: "fundamentos-web"
+difficulty: "beginner"
+order: 23
+prerequisites: ["http-https"]
+tags: ["dados", "intercambio", "serializacao", "api"]
+aiGenerated: true
+---
+
+## O que é
+
+JSON (JavaScript Object Notation) é um formato de texto para **representar dados estruturados**. Apesar do nome, JSON é independente de linguagem — praticamente toda linguagem de programação sabe ler e escrever JSON nativamente.
+
+```json
+{
+  "nome": "Maria Silva",
+  "idade": 28,
+  "desenvolvedor": true,
+  "linguagens": ["TypeScript", "Python", "Go"],
+  "endereco": {
+    "cidade": "São Paulo",
+    "estado": "SP"
+  }
+}
+```
+
+Pense em JSON como um **envelope universal para dados**. Assim como o sistema postal tem regras sobre como endereçar envelopes (formato padronizado que qualquer agência entende), JSON tem regras simples que qualquer linguagem ou sistema sabe interpretar.
+
+## Por que importa
+
+JSON é o **formato padrão de troca de dados na web**. Se você faz `fetch()` para uma API, a resposta quase certamente é JSON. Se você salva dados no `localStorage`, precisa converter para JSON. Se você instala um pacote npm, `package.json` define as dependências.
+
+Onde JSON aparece no dia a dia de um frontend developer:
+
+```
+fetch('/api/usuarios')      → resposta em JSON
+localStorage.setItem(...)   → precisa JSON.stringify()
+package.json                → dependências do projeto
+tsconfig.json               → configuração do TypeScript
+.eslintrc.json              → configuração do linter
+Web APIs (GitHub, Stripe...) → request e response em JSON
+```
+
+Antes do JSON se popularizar (~2006), a alternativa era XML — que funciona, mas é significativamente mais verboso para dados simples. A mesma informação em XML ocupa ~2x mais bytes e requer parsing manual. JSON venceu pela simplicidade: `JSON.parse()` e pronto.
+
+## Como funciona
+
+### Tipos de dados JSON
+
+JSON suporta exatamente **6 tipos de valores**:
+
+```
+┌─────────────────────────────────────────┐
+│ Tipo        │ Exemplo                   │
+├─────────────┼───────────────────────────┤
+│ String      │ "texto entre aspas duplas" │
+│ Number      │ 42, 3.14, -1, 2.5e10     │
+│ Boolean     │ true, false               │
+│ Null        │ null                      │
+│ Object      │ { "chave": "valor" }      │
+│ Array       │ [1, 2, 3]                 │
+└─────────────────────────────────────────┘
+```
+
+O que JSON **não suporta** (e isso é proposital):
+
+| Não existe em JSON | Alternativa |
+|---|---|
+| `undefined` | Use `null` |
+| Comentários | Nenhuma (use JSONC ou JSON5 se precisar) |
+| Funções | JSON é dados, não código |
+| `Date` | String ISO 8601: `"2025-01-15T10:30:00Z"` |
+| `NaN`, `Infinity` | Use `null` ou string |
+| Trailing comma | `[1, 2, 3]` (sem vírgula após o 3) |
+| Single quotes | Apenas aspas duplas `"texto"` |
+
+### Sintaxe rigorosa
+
+```json
+// ❌ INVÁLIDO — JSON é rigoroso
+{
+  nome: "Maria",        // chaves precisam de aspas duplas
+  'idade': 28,          // aspas simples não são permitidas
+  "ativo": true,        // trailing comma após o último item
+}
+
+// ✅ VÁLIDO
+{
+  "nome": "Maria",
+  "idade": 28,
+  "ativo": true
+}
+```
+
+### Serialização e desserialização
+
+```
+          JSON.stringify()
+Objeto JS ──────────────→ String JSON
+          ←──────────────
+           JSON.parse()
+```
+
+```javascript
+// Serializar: objeto → string (para enviar/armazenar)
+const usuario = { nome: "Maria", idade: 28 };
+const json = JSON.stringify(usuario);
+// '{"nome":"Maria","idade":28}'
+// typeof json === "string"
+
+// Desserializar: string → objeto (para usar no código)
+const obj = JSON.parse(json);
+// { nome: "Maria", idade: 28 }
+// typeof obj === "object"
+
+// JSON.stringify com formatação (útil para debug)
+JSON.stringify(usuario, null, 2);
+// {
+//   "nome": "Maria",
+//   "idade": 28
+// }
+```
+
+O segundo argumento de `JSON.stringify` é um **replacer** (função ou array para filtrar propriedades). O terceiro é o **espaçamento** para indentação.
+
+### JSON não é JavaScript
+
+JSON foi inspirado pela sintaxe de objetos JavaScript, mas **não são a mesma coisa**:
+
+```javascript
+// Objeto JavaScript (válido em JS, inválido como JSON)
+const obj = {
+  nome: "Maria",         // chaves sem aspas — OK em JS
+  'idade': 28,           // aspas simples — OK em JS
+  greet() {},            // funções — OK em JS
+  data: new Date(),      // objetos Date — OK em JS
+  valor: undefined,      // undefined — OK em JS
+};
+
+// JSON (subset restrito)
+// - Chaves DEVEM ter aspas duplas
+// - Valores DEVEM ser um dos 6 tipos
+// - Sem funções, undefined, Date, NaN, Infinity
+```
+
+### Content-Type em HTTP
+
+```
+Request:
+POST /api/usuarios HTTP/1.1
+Content-Type: application/json     ← indica que o body é JSON
+
+{"nome": "Maria", "idade": 28}
+
+Response:
+HTTP/1.1 200 OK
+Content-Type: application/json     ← indica que a resposta é JSON
+
+{"id": 1, "nome": "Maria", "idade": 28}
+```
+
+O header `Content-Type: application/json` informa ao receptor como interpretar o body. Sem ele, o servidor pode rejeitar a requisição ou interpretar errado.
+
+## Na prática
+
+### Fetch API + JSON (uso mais comum no frontend)
+
+```javascript
+// GET — receber JSON
+const response = await fetch("/api/usuarios");
+const usuarios = await response.json(); // desserializa automaticamente
+// usuarios é um array de objetos, pronto para usar
+
+// POST — enviar JSON
+const novoUsuario = { nome: "João", email: "joao@email.com" };
+await fetch("/api/usuarios", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(novoUsuario) // serializa para string
+});
+```
+
+### localStorage com JSON
+
+```javascript
+// localStorage só armazena strings — JSON faz a ponte
+const config = { tema: "escuro", idioma: "pt-BR", fontSize: 16 };
+
+// Salvar
+localStorage.setItem("config", JSON.stringify(config));
+
+// Recuperar
+const salvo = localStorage.getItem("config");
+const configRecuperada = salvo ? JSON.parse(salvo) : null;
+// { tema: "escuro", idioma: "pt-BR", fontSize: 16 }
+```
+
+### Estrutura de um package.json
+
+```json
+{
+  "name": "minha-app",
+  "version": "1.0.0",
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  }
+}
+```
+
+<CodeTabs />
+
+## Quando usar (e quando não usar)
+
+### Use JSON quando:
+- **APIs REST** — padrão de facto para request/response bodies
+- **Configuração** — `package.json`, `tsconfig.json`, `.prettierrc`
+- **Armazenamento local** — localStorage, sessionStorage, IndexedDB
+- **Comunicação entre serviços** — microserviços, mensageria
+- **Dados simples a moderadamente complexos** — objetos, listas, aninhamento
+
+### Prefira alternativas quando:
+- **Precisa de comentários** → JSONC (JSON with Comments), YAML, TOML
+- **Dados binários** → Protocol Buffers, MessagePack, BSON
+- **Schema complexo com validação rigorosa** → XML + XSD
+- **Arquivos de configuração complexos** → YAML (mais legível), TOML
+- **Streaming de dados** → JSONL (JSON Lines — um objeto JSON por linha)
+- **Dados tabulares** → CSV (muito mais compacto)
+
+### Comparação de formatos
+
+| Critério | JSON | XML | YAML |
+|---|---|---|---|
+| Verbosidade | Baixa | Alta | Muito baixa |
+| Legibilidade | Boa | Boa | Excelente |
+| Comentários | Não | Sim | Sim |
+| Tipos nativos | 6 tipos | Tudo é texto | Muitos tipos |
+| Parsing em JS | Nativo (`JSON.parse`) | Manual (`DOMParser`) | Requer lib |
+| Tamanho | Referência | ~2x maior | ~0.8x |
+| Schema | JSON Schema | XSD/DTD | Não padronizado |
+
+## Erros comuns
+
+### 1. Trailing comma (vírgula no final)
+
+```javascript
+// ❌ INVÁLIDO em JSON (mas válido em JavaScript)
+{
+  "nome": "Maria",
+  "idade": 28,    // ← esta vírgula quebra o parsing
+}
+
+// ✅ VÁLIDO
+{
+  "nome": "Maria",
+  "idade": 28
+}
+```
+
+Ferramentas como VS Code aceitam trailing commas em `.jsonc`, mas JSON puro não permite. `JSON.parse()` lança erro.
+
+### 2. Aspas simples
+
+```javascript
+// ❌ JSON exige aspas DUPLAS
+{ 'nome': 'Maria' }
+
+// ✅ Correto
+{ "nome": "Maria" }
+```
+
+### 3. JSON.parse sem try/catch
+
+```javascript
+// ❌ Se o JSON for inválido, a aplicação crasheia
+const dados = JSON.parse(respostaDoServidor);
+
+// ✅ Sempre tratar erro de parsing
+try {
+  const dados = JSON.parse(respostaDoServidor);
+} catch (erro) {
+  console.error("JSON inválido:", erro.message);
+  // Tratar o erro adequadamente
+}
+```
+
+### 4. JSON.parse em dados já parseados
+
+```javascript
+// ❌ response.json() já retorna objeto — não precisa de JSON.parse
+const response = await fetch("/api/dados");
+const dados = await response.json();
+const obj = JSON.parse(dados); // ERRO! dados já é objeto
+
+// ✅ response.json() faz o parse automaticamente
+const response = await fetch("/api/dados");
+const dados = await response.json(); // pronto, já é objeto
+```
+
+### 5. Referências circulares
+
+```javascript
+const usuario = { nome: "Maria" };
+usuario.self = usuario; // referência circular
+
+// ❌ TypeError: Converting circular structure to JSON
+JSON.stringify(usuario);
+
+// ✅ Usar replacer para ignorar referências circulares
+// ou reestruturar os dados para evitar ciclos
+```
+
+### 6. Datas não são tipo nativo
+
+```javascript
+const evento = { nome: "Deploy", data: new Date("2025-01-15") };
+const json = JSON.stringify(evento);
+// '{"nome":"Deploy","data":"2025-01-15T00:00:00.000Z"}'
+
+const parsed = JSON.parse(json);
+typeof parsed.data; // "string" — NÃO é Date!
+parsed.data instanceof Date; // false
+
+// ✅ Converter manualmente após parse
+parsed.data = new Date(parsed.data);
+```
+
+JSON não tem tipo `Date`. `JSON.stringify` converte datas para strings ISO 8601, mas `JSON.parse` **não converte de volta** — você recebe uma string e precisa transformar manualmente.
+
+### 7. Confundir JSON com objeto JavaScript
+
+```javascript
+// Isso é um OBJETO JavaScript (na memória, com métodos)
+const obj = { nome: "Maria", idade: 28 };
+
+// Isso é uma STRING JSON (texto puro, sem métodos)
+const json = '{"nome":"Maria","idade":28}';
+
+// obj.nome funciona (é um objeto)
+// json.nome NÃO funciona (é uma string)
+// JSON.parse(json).nome funciona (parse converte para objeto)
+```

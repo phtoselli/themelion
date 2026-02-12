@@ -1,0 +1,256 @@
+---
+title: "Joins (INNER, LEFT, RIGHT, FULL)"
+slug: "joins"
+room: "banco-de-dados"
+category: "sql-e-bancos-relacionais"
+difficulty: "beginner"
+order: 3
+prerequisites: ["foreign-keys"]
+tags: ["consulta", "relacao", "combinacao"]
+aiGenerated: true
+---
+
+## O que é
+
+JOINs são operações SQL que **combinam dados de duas ou mais tabelas** baseado em uma condição de relacionamento (geralmente uma foreign key). São o mecanismo fundamental para consultar dados distribuídos em tabelas diferentes — o modelo relacional normalizado.
+
+```sql
+-- Dados em tabelas separadas:
+-- users: {id, name}
+-- orders: {id, user_id, total}
+
+-- JOIN combina as duas:
+SELECT users.name, orders.total
+FROM users
+JOIN orders ON users.id = orders.user_id;
+
+-- Resultado:
+-- João  | 199.90
+-- João  | 89.90
+-- Maria | 49.90
+```
+
+## Por que importa
+
+Bancos relacionais normalizam dados em tabelas separadas para evitar redundância. JOINs são a forma de "juntar" esses dados quando precisa consultar. Sem JOINs, você precisaria:
+- Fazer múltiplas queries e combinar no código (lento, complexo)
+- Duplicar dados em cada tabela (desperdiça espaço, causa inconsistência)
+
+## Como funciona
+
+### Dados de exemplo
+
+```
+users                    orders
+┌────┬─────────┐        ┌────┬─────────┬────────┐
+│ id │  name   │        │ id │ user_id │ total  │
+├────┼─────────┤        ├────┼─────────┼────────┤
+│  1 │ João    │        │  1 │    1    │ 199.90 │
+│  2 │ Maria   │        │  2 │    1    │  89.90 │
+│  3 │ Pedro   │        │  3 │    2    │  49.90 │
+│  4 │ Ana     │        │  4 │    5    │  29.90 │
+└────┴─────────┘        └────┴─────────┴────────┘
+                        (user 5 não existe na tabela users!)
+```
+
+### INNER JOIN
+
+Retorna **apenas registros que têm match nas duas tabelas**:
+
+```sql
+SELECT u.name, o.total
+FROM users u
+INNER JOIN orders o ON u.id = o.user_id;
+
+-- Resultado:
+-- João  | 199.90
+-- João  | 89.90
+-- Maria | 49.90
+
+-- Pedro e Ana NÃO aparecem (sem pedidos)
+-- Pedido do user_id 5 NÃO aparece (user não existe)
+```
+
+```
+    users          orders
+  ┌────────┐    ┌────────┐
+  │        │    │        │
+  │   ╔════╪════╪════╗   │
+  │   ║ MATCH  ║    │   │
+  │   ╚════╪════╪════╝   │
+  │        │    │        │
+  └────────┘    └────────┘
+        INNER JOIN
+```
+
+### LEFT JOIN (LEFT OUTER JOIN)
+
+Retorna **todos os registros da tabela esquerda** + matches da direita (NULL se não houver match):
+
+```sql
+SELECT u.name, o.total
+FROM users u
+LEFT JOIN orders o ON u.id = o.user_id;
+
+-- Resultado:
+-- João  | 199.90
+-- João  | 89.90
+-- Maria | 49.90
+-- Pedro | NULL     ← sem pedidos, mas aparece
+-- Ana   | NULL     ← sem pedidos, mas aparece
+```
+
+### RIGHT JOIN (RIGHT OUTER JOIN)
+
+Inverso do LEFT: retorna **todos os registros da tabela direita** + matches da esquerda:
+
+```sql
+SELECT u.name, o.total
+FROM users u
+RIGHT JOIN orders o ON u.id = o.user_id;
+
+-- Resultado:
+-- João  | 199.90
+-- João  | 89.90
+-- Maria | 49.90
+-- NULL  | 29.90    ← pedido do user 5 (user não existe)
+```
+
+### FULL OUTER JOIN
+
+Retorna **todos os registros de ambas as tabelas**, com NULL onde não há match:
+
+```sql
+SELECT u.name, o.total
+FROM users u
+FULL OUTER JOIN orders o ON u.id = o.user_id;
+
+-- Resultado:
+-- João  | 199.90
+-- João  | 89.90
+-- Maria | 49.90
+-- Pedro | NULL
+-- Ana   | NULL
+-- NULL  | 29.90
+```
+
+### JOIN com múltiplas tabelas
+
+```sql
+SELECT u.name, o.id AS order_id, p.name AS product
+FROM users u
+JOIN orders o ON u.id = o.user_id
+JOIN order_items oi ON o.id = oi.order_id
+JOIN products p ON oi.product_id = p.id
+WHERE u.id = 1;
+
+-- João | 1 | Notebook
+-- João | 1 | Mouse
+-- João | 2 | Teclado
+```
+
+### Agregações com JOIN
+
+```sql
+-- Total gasto por usuário
+SELECT u.name, COUNT(o.id) AS num_orders, SUM(o.total) AS total_spent
+FROM users u
+LEFT JOIN orders o ON u.id = o.user_id
+GROUP BY u.id, u.name;
+
+-- João  | 2 | 289.80
+-- Maria | 1 | 49.90
+-- Pedro | 0 | NULL
+-- Ana   | 0 | NULL
+```
+
+## Na prática
+
+Escolha rápida do tipo de JOIN:
+
+```
+Quero APENAS registros com match em ambas:         → INNER JOIN
+Quero TODOS da esquerda, com ou sem match:         → LEFT JOIN
+Quero TODOS de ambas, com ou sem match:            → FULL OUTER JOIN
+Quero encontrar registros SEM match:               → LEFT JOIN + WHERE IS NULL
+```
+
+```sql
+-- Usuários que NUNCA fizeram pedido
+SELECT u.name
+FROM users u
+LEFT JOIN orders o ON u.id = o.user_id
+WHERE o.id IS NULL;
+-- Pedro, Ana
+```
+
+## Quando usar (e quando não usar)
+
+### Use JOINs quando:
+- Precisa combinar dados de tabelas relacionadas
+- O banco relacional é a ferramenta certa (a maioria dos casos)
+
+### Evite JOINs desnecessários:
+- Se só precisa de dados de 1 tabela, não faça JOIN
+- JOINs em tabelas enormes sem índice = lento
+
+### Considere desnormalização quando:
+- JOINs complexos (5+ tabelas) são necessários em toda query
+- Performance de leitura é crítica e dados mudam raramente
+
+## Erros comuns
+
+### 1. JOIN sem condição (cross join acidental)
+
+```sql
+-- ❌ Sem ON: cada user combina com CADA order (produto cartesiano)
+SELECT * FROM users, orders;
+-- 4 users × 4 orders = 16 linhas! Dados sem sentido.
+
+-- ✅ Sempre especificar condição
+SELECT * FROM users JOIN orders ON users.id = orders.user_id;
+```
+
+### 2. LEFT JOIN com WHERE que filtra NULLs
+
+```sql
+-- ❌ WHERE anula o LEFT JOIN (vira INNER)
+SELECT u.name, o.total
+FROM users u
+LEFT JOIN orders o ON u.id = o.user_id
+WHERE o.total > 100;  -- Filtra NULLs! Pedro e Ana desaparecem
+
+-- ✅ Colocar filtro no ON
+SELECT u.name, o.total
+FROM users u
+LEFT JOIN orders o ON u.id = o.user_id AND o.total > 100;
+```
+
+### 3. N+1 query (JOIN evitaria)
+
+```python
+# ❌ N+1: 1 query para users + N queries para orders
+users = db.query("SELECT * FROM users")
+for user in users:
+    orders = db.query(f"SELECT * FROM orders WHERE user_id = {user.id}")
+# 101 queries para 100 usuários!
+
+# ✅ 1 query com JOIN
+results = db.query("""
+    SELECT u.*, o.*
+    FROM users u
+    LEFT JOIN orders o ON u.id = o.user_id
+""")
+# 1 query para tudo
+```
+
+### 4. JOIN em colunas sem índice
+
+```sql
+-- ❌ Sem índice em user_id: banco faz full table scan
+SELECT * FROM users u JOIN orders o ON u.id = o.user_id;
+-- Se orders tem 1M registros, verifica CADA um
+
+-- ✅ Índice na FK
+CREATE INDEX idx_orders_user_id ON orders(user_id);
+```

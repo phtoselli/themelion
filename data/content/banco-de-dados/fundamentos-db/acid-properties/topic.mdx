@@ -1,0 +1,192 @@
+---
+title: "ACID Properties"
+slug: "acid-properties"
+room: "banco-de-dados"
+category: "fundamentos-db"
+difficulty: "beginner"
+order: 1
+prerequisites: []
+tags: ["transacao", "consistencia", "confiabilidade"]
+aiGenerated: true
+---
+
+## O que é
+
+ACID é um acrônimo para **Atomicity, Consistency, Isolation, Durability** — quatro propriedades que garantem que transações em um banco de dados são **confiáveis**, mesmo em caso de falhas (queda de energia, crash, concorrência).
+
+Uma **transação** é um grupo de operações que deve ser tratado como uma unidade indivisível:
+
+```sql
+-- Transferir R$100 de João para Maria
+BEGIN TRANSACTION;
+  UPDATE contas SET saldo = saldo - 100 WHERE usuario = 'João';
+  UPDATE contas SET saldo = saldo + 100 WHERE usuario = 'Maria';
+COMMIT;
+-- As duas operações acontecem juntas, ou nenhuma acontece
+```
+
+## Por que importa
+
+Sem ACID, bancos de dados seriam não confiáveis:
+- Transferência bancária poderia debitar sem creditar (dinheiro desaparece)
+- Crash no meio de uma operação poderia corromper dados
+- Dois processos simultâneos poderiam vender o mesmo ingresso
+
+ACID é o que torna bancos de dados relacionais (PostgreSQL, MySQL, SQL Server) confiáveis para sistemas financeiros, e-commerce, saúde — qualquer sistema onde perder ou corromper dados é inaceitável.
+
+## Como funciona
+
+### A — Atomicity (Atomicidade)
+
+Uma transação é **tudo ou nada**. Se qualquer operação falhar, todas são desfeitas (rollback).
+
+```sql
+BEGIN TRANSACTION;
+  UPDATE contas SET saldo = saldo - 100 WHERE usuario = 'João'; -- OK
+  UPDATE contas SET saldo = saldo + 100 WHERE usuario = 'Maria'; -- ERRO!
+ROLLBACK; -- Desfaz TUDO — saldo do João volta ao original
+```
+
+Sem atomicidade: João perde R$100, Maria não recebe → dinheiro desaparece.
+
+### C — Consistency (Consistência)
+
+Transações levam o banco de um **estado válido** para outro **estado válido**. Todas as regras (constraints, triggers, foreign keys) são respeitadas.
+
+```sql
+-- Constraint: saldo >= 0
+UPDATE contas SET saldo = saldo - 1000 WHERE usuario = 'João';
+-- Se saldo de João é R$500 → VIOLAÇÃO DE CONSTRAINT → transação falha
+-- Banco permanece consistente (saldo nunca fica negativo)
+```
+
+### I — Isolation (Isolamento)
+
+Transações **simultâneas** não interferem umas nas outras. Cada transação vê o banco como se fosse a única executando.
+
+```
+Transação A (thread 1):                  Transação B (thread 2):
+READ saldo = 1000                        READ saldo = 1000
+saldo = saldo - 100                      saldo = saldo - 200
+WRITE saldo = 900                        WRITE saldo = 800
+
+Sem isolamento: saldo final = 800 (deveria ser 700!)
+                Transação A foi sobrescrita
+
+Com isolamento: banco serializa ou detecta conflito → resultado correto (700)
+```
+
+**Níveis de isolamento** (do menos ao mais restritivo):
+
+Antes de entender os níveis, conheça os três problemas que podem acontecer quando duas transações rodam ao mesmo tempo:
+
+- **Dirty Read (leitura suja):** ler dados que outra transação ainda não confirmou. Se essa transação desfizer a mudança, você leu algo que "nunca existiu".
+- **Non-Repeatable Read (leitura não repetível):** ler o mesmo dado duas vezes na mesma transação e obter valores diferentes (porque outra transação mudou entre as leituras).
+- **Phantom Read (leitura fantasma):** rodar a mesma query duas vezes e obter linhas a mais ou a menos (porque outra transação inseriu ou deletou entre as queries).
+
+| Nível | Leitura suja | Leitura não repetível | Leitura fantasma |
+|---|---|---|---|
+| Read Uncommitted | Possível | Possível | Possível |
+| Read Committed | Não | Possível | Possível |
+| Repeatable Read | Não | Não | Possível |
+| Serializable | Não | Não | Não |
+
+Maior isolamento = mais seguro, mas **mais lento** (o banco precisa travar mais dados para garantir).
+
+### D — Durability (Durabilidade)
+
+Uma vez que uma transação é **committed**, os dados estão **permanentemente salvos**, mesmo se o sistema crashar 1 milissegundo depois.
+
+```
+COMMIT; → dados gravados em disco usando WAL (Write-Ahead Log)
+         WAL = um "diário" onde o banco anota tudo que vai fazer ANTES de fazer
+→ Queda de energia imediatamente após
+→ Ao reiniciar: banco lê o diário (WAL) e recupera a transação committed
+```
+
+## Na prática
+
+```sql
+-- Exemplo real: reservar ingresso
+BEGIN TRANSACTION;
+
+  -- Verificar disponibilidade
+  SELECT quantidade FROM ingressos WHERE evento = 'Show' FOR UPDATE;
+  -- FOR UPDATE: trava o registro para outras transações
+
+  -- Se disponível, reservar
+  UPDATE ingressos SET quantidade = quantidade - 1 WHERE evento = 'Show';
+  INSERT INTO reservas (usuario, evento) VALUES ('João', 'Show');
+
+COMMIT;
+-- Atomicidade: se qualquer operação falhar, nenhuma reserva é feita
+-- Isolamento: FOR UPDATE impede que dois usuários reservem o último ingresso
+```
+
+## Quando usar (e quando não usar)
+
+### ACID é essencial para:
+- **Finanças:** transferências, pagamentos, cobranças
+- **E-commerce:** estoque, pedidos, reservas
+- **Saúde:** prontuários, prescrições
+- **Qualquer dado** onde inconsistência causa prejuízo real
+
+### ACID pode ser relaxado para:
+- **Analytics/BI:** dados de leitura, eventual consistency é OK
+- **Cache:** dados temporários, perda aceitável
+- **Logs/Métricas:** volume alto, consistência eventual
+- **Redes sociais:** likes, contadores (eventual consistency)
+
+Bancos NoSQL (MongoDB, Cassandra) tradicionalmente relaxam ACID em troca de performance e escalabilidade — mas versões recentes suportam transações ACID para operações críticas.
+
+## Erros comuns
+
+### 1. Não usar transações para operações relacionadas
+
+```sql
+-- ❌ Operações separadas (sem transação)
+UPDATE contas SET saldo = saldo - 100 WHERE id = 1;
+-- Crash aqui → dinheiro perdido
+UPDATE contas SET saldo = saldo + 100 WHERE id = 2;
+
+-- ✅ Dentro de transação
+BEGIN;
+  UPDATE contas SET saldo = saldo - 100 WHERE id = 1;
+  UPDATE contas SET saldo = saldo + 100 WHERE id = 2;
+COMMIT;
+```
+
+### 2. Transações muito longas
+
+```sql
+-- ❌ Transação aberta por minutos → bloqueia outros processos
+BEGIN;
+  SELECT * FROM pedidos FOR UPDATE;
+  -- ... processamento lento de 5 minutos ...
+COMMIT;
+
+-- ✅ Minimizar tempo dentro da transação
+-- Ler dados fora, processar fora, só escrever dentro da transação
+```
+
+### 3. Ignorar deadlocks
+
+```
+Transação A: trava Tabela1, quer Tabela2
+Transação B: trava Tabela2, quer Tabela1
+→ Deadlock! Ambas esperam uma pela outra infinitamente
+
+Solução: acessar tabelas sempre na mesma ordem, ou implementar retry
+```
+
+### 4. Nível de isolamento errado
+
+```
+Read Committed para operações financeiras?
+→ Pode causar non-repeatable reads (dados mudam entre queries na mesma transação)
+
+Serializable para consultas simples de leitura?
+→ Overhead desnecessário, performance ruim
+
+Escolha o nível adequado ao caso de uso.
+```
